@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:visible="false"
+        android:id="@+id/nav_group_accounts"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_curr_account"
+            android:icon="@drawable/profile_default_male"
+            android:title="Kyrylo" />
+
+        <item
+            android:id="@+id/nav_add_account"
+            android:icon="@drawable/ic_plus"
+            android:title="Add account" />
+    </group>
+
+    <group
+        android:id="@+id/group_make_new"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_groupchat"
+            android:icon="@drawable/ic_new_group"
+            android:title="New Group" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_lock"
+            android:title="Gallery" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/ic_loudspeaker"
+            android:title="Slideshow" />
+    </group>
+
+    <group android:checkableBehavior="none"
+        android:id="@+id/group_quick_access"
+        >
+        <item
+            android:id="@+id/nav_contacts"
+            android:icon="@drawable/ic_contacts"
+            android:title="Contacts" />
+
+        <item
+            android:id="@+id/nav_savedMessages"
+            android:icon="@drawable/ic_bookmark"
+            android:title="Saved Messages" />
+
+        <item
+            android:id="@+id/nav_calls"
+            android:icon="@drawable/ic_call"
+            android:title="Calls" />
+
+        <item
+            android:id="@+id/nav_invite_friends"
+            android:icon="@drawable/ic_person_add"
+            android:title="Invite Friends" />
+
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="Settings" />
+
+        <item
+            android:id="@+id/nav_faq"
+            android:icon="@drawable/ic_faq"
+            android:title="Telegram FAQ" />
+    </group>
+
+</menu>

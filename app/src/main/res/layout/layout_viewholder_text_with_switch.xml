@@ -1,0 +1,28 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/recycle_item_one_line"
+    android:background="?android:selectableItemBackground"
+    android:clickable="true"
+    >
+
+    <TextView
+        android:id="@+id/txt_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_start_txt"
+        android:layout_centerVertical="true"
+        android:text="Text descript"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/settings_text_fontsize" />
+
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/simpleSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/margin_end_txt"
+        android:layout_marginTop="5dp"
+        android:checked="true"
+        android:theme="@style/SwitchCompatTheme" />
+
+</RelativeLayout>

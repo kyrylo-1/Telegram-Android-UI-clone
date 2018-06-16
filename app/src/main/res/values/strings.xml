@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">TelegramClone_UI</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="cam_options">
+        <item>From camera</item>
+        <item>From gallery</item>
+        <item>Delete photo</item>
+    </string-array>
+
+</resources>

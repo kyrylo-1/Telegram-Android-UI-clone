@@ -1,0 +1,26 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/recycle_item_one_line">
+
+    <TextView
+        android:id="@+id/txt_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_start_txt"
+        android:text="Text descript"
+        android:layout_centerVertical="true"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/settings_text_fontsize" />
+
+    <TextView
+        android:id="@+id/txt_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/margin_end_txt"
+        android:text="Selected option"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/settings_text_fontsize" />
+
+</RelativeLayout>

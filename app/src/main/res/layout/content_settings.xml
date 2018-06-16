@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackGray"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        card_view:cardBackgroundColor="@android:color/white"
+        tools:style="@style/CardView">
+
+        <include
+            android:id="@+id/snippet_txt_info"
+            layout="@layout/layout_settings_header_text" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/recycle_top_margin"
+            android:fitsSystemWindows="true" />
+
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        card_view:cardBackgroundColor="@android:color/white"
+        tools:style="@style/CardView">
+
+        <include
+            android:id="@+id/snippet_txt_settings"
+            layout="@layout/layout_settings_header_text" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/recycle_top_margin"
+            android:fitsSystemWindows="true" />
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        card_view:cardBackgroundColor="@android:color/white"
+        tools:style="@style/CardView">
+
+        <include
+            android:id="@+id/snippet_messages"
+            layout="@layout/layout_settings_header_text" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_messages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/recycle_top_margin"
+            android:fitsSystemWindows="true" />
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fitsSystemWindows="true"
+        android:paddingBottom="10dp"
+        card_view:cardBackgroundColor="@android:color/white"
+        tools:style="@style/CardView">
+
+        <include
+            android:id="@+id/snippet_txt_support"
+            layout="@layout/layout_settings_header_text" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_support"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/recycle_top_margin"
+                android:fitsSystemWindows="true" />
+
+            <TextView
+                android:id="@+id/txt_telegram_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/recycler_view_support"
+                android:text="Telegram for Android v4.8.9 (2362) arm-v7a"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="13sp" />
+
+            <Space
+                android:layout_below="@id/txt_telegram_version"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
