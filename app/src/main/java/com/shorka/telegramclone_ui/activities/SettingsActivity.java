@@ -1,4 +1,4 @@
-package com.shorka.telegramclone_ui;
+package com.shorka.telegramclone_ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +20,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.shorka.telegramclone_ui.adapter.ComplexRecyclerViewAdapter;
+import com.shorka.telegramclone_ui.DividerCustomItemDecoration;
+import com.shorka.telegramclone_ui.HeaderView;
+import com.shorka.telegramclone_ui.ProfilePicDialogFragment;
+import com.shorka.telegramclone_ui.R;
+import com.shorka.telegramclone_ui.entities.SettingsTextEntity;
+
 import java.util.ArrayList;
 
 /**
@@ -35,6 +42,11 @@ public class SettingsActivity extends AppCompatActivity  implements AppBarLayout
     protected Toolbar toolbar;
     private boolean isHideToolbarView = false;
 
+    public static void open(Context context){
+        context.startActivity(new Intent(context, SettingsActivity.class));
+    }
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,14 +54,14 @@ public class SettingsActivity extends AppCompatActivity  implements AppBarLayout
 
         toolbarHeaderView = findViewById(R.id.header_view_top);
         floatHeaderView = findViewById(R.id.float_header_view);
-
+//
         toolbarHeaderView.setTxtName((TextView) toolbarHeaderView.findViewById(R.id.name));
         toolbarHeaderView.setTxtLastSeen((TextView) toolbarHeaderView.findViewById(R.id.last_seen));
-
+//
         floatHeaderView.setTxtName((TextView) floatHeaderView.findViewById(R.id.name_float));
         floatHeaderView.setTxtLastSeen((TextView) floatHeaderView.findViewById(R.id.last_seen_float));
 
-        appBarLayout = findViewById(R.id.settings_appbar);
+        appBarLayout = findViewById(R.id.appbar_test);
         toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -85,9 +97,6 @@ public class SettingsActivity extends AppCompatActivity  implements AppBarLayout
         if (percentage == 1f && isHideToolbarView) {
             toolbarHeaderView.setVisibility(View.VISIBLE);
             CoordinatorLayout.LayoutParams lpFloat = (CoordinatorLayout.LayoutParams) floatHeaderView.getLayoutParams();
-//            CoordinatorLayout.LayoutParams lpHead = (CoordinatorLayout.LayoutParams) toolbarHeaderView.getLayoutParams();
-
-//            lpHead.leftMargin = lpFloat.leftMargin;
 
             isHideToolbarView = !isHideToolbarView;
 
@@ -155,7 +164,7 @@ public class SettingsActivity extends AppCompatActivity  implements AppBarLayout
         recyclerView.setAdapter(new ComplexRecyclerViewAdapter(list));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setNestedScrollingEnabled(false);
-
+        recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(itemDecor);
     }
 

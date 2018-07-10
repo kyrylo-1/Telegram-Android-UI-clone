@@ -28,4 +28,11 @@
     <dimen name="recycle_item_one_line">45dp</dimen>
     <dimen name="recycle_top_margin">45dp</dimen>
 
+    <dimen name="message_image_preview_scale">56dp</dimen>
+
+    <dimen name="convo_edittext_scale">46dp</dimen>
+    <dimen name="convo_btn_in_edittext_scale">24dp</dimen>
+
+    <dimen name="text_margin">5dp</dimen>
+
 </resources>

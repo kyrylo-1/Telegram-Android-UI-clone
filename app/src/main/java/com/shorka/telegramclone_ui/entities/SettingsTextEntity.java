@@ -1,4 +1,4 @@
-package com.shorka.telegramclone_ui;
+package com.shorka.telegramclone_ui.entities;
 
 /**
  * Created by Kyrylo Avramenko on 6/12/2018.

@@ -1,0 +1,33 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/action_convo_call"
+        android:orderInCategory="100"
+        android:title="Call"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_convo_search"
+        android:orderInCategory="100"
+        android:title="Search"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_convo_clear"
+        android:orderInCategory="100"
+        android:title="Clear history"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_convo_delete"
+        android:orderInCategory="100"
+        android:title="Delete chat"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_convo_mute"
+        android:orderInCategory="100"
+        android:title="Mute notifications"
+        app:showAsAction="never" />
+</menu>

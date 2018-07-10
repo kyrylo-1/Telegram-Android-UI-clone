@@ -24,16 +24,16 @@ public class ViewHolderSubTitle extends RecyclerView.ViewHolder{
         return title;
     }
 
-    public void setTitle(TextView title) {
-        this.title = title;
-    }
+//    public void setTitle(TextView title) {
+//        this.title = title;
+//    }
 
     public TextView getSubTitle() {
         return subTitle;
     }
 
-    public void setSubTitle(TextView subTitle) {
-        this.subTitle = subTitle;
-    }
+//    public void setSubTitle(TextView subTitle) {
+//        this.subTitle = subTitle;
+//    }
 
 }

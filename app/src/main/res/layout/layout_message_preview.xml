@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="75dp"
+    android:paddingLeft="9dp"
+    android:clickable="true"
+    android:background="?android:selectableItemBackground"
+    android:id="@+id/message_prev_rel_layout"
+    android:paddingRight="7dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_chat_contact"
+        android:layout_width="@dimen/message_image_preview_scale"
+        android:layout_height="@dimen/message_image_preview_scale"
+        android:layout_centerVertical="true"
+        android:src="@drawable/kochek_withback" />
+
+
+    <LinearLayout
+        android:id="@+id/layout_texts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="12dp"
+        android:layout_toEndOf="@id/img_chat_contact"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingEnd="40dp">
+
+        <TextView
+            android:id="@+id/message_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:paddingRight="25dp"
+            android:text="Bob bodybuilder qwertyuiiopa"
+            android:textColor="@android:color/black"
+            android:gravity="center_vertical"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/message_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="top"
+            android:maxLines="1"
+            android:text="R u even liftin bro?"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/message_check_sign"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/ic_check" />
+
+    <TextView
+        android:id="@+id/message_sent_time"
+        android:layout_width="35dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:text="12:34"
+        android:textSize="13sp" />
+
+
+    <ImageView
+        android:id="@+id/pin_image"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="4dp"
+        android:src="@drawable/ic_pin" />
+
+</RelativeLayout>
