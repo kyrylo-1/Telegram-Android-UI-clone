@@ -12,6 +12,6 @@ public class Utils {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
-    public final static String SPACES_15 = "                   ";
+    public final static String SPACES_15 = "";
 
 }

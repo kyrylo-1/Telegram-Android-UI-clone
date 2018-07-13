@@ -7,9 +7,6 @@
         android:color="#effdde" >
     </solid>
 
-    <!-- The radius makes the corners rounded -->
-    <corners
-        android:radius="20dp">
-    </corners>
+    <corners android:radius="10dp"/>
 
 </shape>

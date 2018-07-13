@@ -37,7 +37,7 @@
             android:clipToPadding="false"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
-            tools:listitem="@layout/message_list_item_out" />
+            tools:listitem="@layout/item_message_sent" />
 
 
         <View

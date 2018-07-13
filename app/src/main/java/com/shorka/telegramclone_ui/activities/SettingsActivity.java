@@ -140,7 +140,7 @@ public class SettingsActivity extends AppCompatActivity  implements AppBarLayout
 
         setRecycleView(R.id.recycler_view_info, getInfoArrayList(), itemCustomDecor);
         setRecycleView(R.id.recycler_view_settings, getSettingsArrayList(), itemCustomDecor);
-        setRecycleView(R.id.recycler_view_messages, getMessagesArrayList(), itemCustomDecor);
+        setRecycleView(R.id.main_recycler_view_messages, getMessagesArrayList(), itemCustomDecor);
         setRecycleView(R.id.recycler_view_support, getSupporArrayList(), itemDefaultDecor);
 //         findViewById(R.id.nav_view)
 

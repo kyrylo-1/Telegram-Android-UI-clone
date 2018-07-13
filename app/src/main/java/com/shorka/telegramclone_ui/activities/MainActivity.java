@@ -1,12 +1,10 @@
 package com.shorka.telegramclone_ui.activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +23,7 @@ import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
 import com.shorka.telegramclone_ui.DividerCustomPaddingItemDecoration;
+import com.shorka.telegramclone_ui.FabScroll;
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.RecyclerItemClickListener;
 import com.shorka.telegramclone_ui.Utils;
@@ -42,8 +41,8 @@ public class MainActivity extends AppCompatActivity
     private final Context mContext = MainActivity.this;
     private RecyclerView mRecycleView;
     private RecyclerView.Adapter mAdapter;
-    private FloatingActionButton fab;
-
+    private FloatingActionButton mFab;
+    FabScroll mFabScroll;
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +51,13 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = (FloatingActionButton) findViewById(R.id.main_write_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+//        mFab = (FloatingActionButton) findViewById(R.id.main_write_fab);
+//        mFab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -155,7 +154,7 @@ public class MainActivity extends AppCompatActivity
 
     private void initContentMain() {
 
-        mRecycleView = findViewById(R.id.recycler_view_messages);
+        mRecycleView = findViewById(R.id.main_recycler_view_messages);
         mRecycleView.setAdapter(new MessagesGridRecycleViewAdapter(mContext, getInfoArrayList()));
         mRecycleView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecycleView.setNestedScrollingEnabled(false);
@@ -171,13 +170,10 @@ public class MainActivity extends AppCompatActivity
         mRecycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-
-                if(dy<=0){
-                    fab.show();
-                }
-                else {
-                    fab.hide();
-                }
+//                if(mFabScroll == null)
+//                    mFabScroll = new FabScroll(mFab);
+//
+//                mFabScroll.scroll(dy);
             }
         });
 
@@ -284,6 +280,16 @@ public class MainActivity extends AppCompatActivity
                 .withImageResId(R.drawable.avatar3_female)
                 .buildMesagePreview();
         items.add(entity8);
+
+        MessagePreviewEntity entity9 = new MessagePreviewEntity.MessagePreviewBuilder()
+                .withContactName("Tranue Clark")
+                .withLastMessage("bye")
+                .withIsPinned(false)
+                .withIsReaded(false)
+                .withDate("Jun 2")
+                .withImageResId(R.drawable.profile_default_male)
+                .buildMesagePreview();
+        items.add(entity9);
 
         return items;
     }

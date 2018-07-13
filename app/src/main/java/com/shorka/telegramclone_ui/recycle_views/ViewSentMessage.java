@@ -28,7 +28,7 @@ public class ViewSentMessage  extends RecyclerView.ViewHolder  {
     public void bind(Message message){
 
         Log.d(TAG, "bind: BIND");
-        mTxtMessageBody.setText(message.getMessage() + Utils.SPACES_15);
+        mTxtMessageBody.setText(message.getMessage());
 //        mTxtTime.setText(message.getCreatedAt());
 
         mTxtTime.setText("14:48");
