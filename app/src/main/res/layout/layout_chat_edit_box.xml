@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/colorWhite"
-    android:orientation="horizontal">
-
+    android:layout_height="wrap_content">
 
     <EditText
         android:id="@+id/convo_message_edittext"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/colorWhite"
         android:cursorVisible="true"
-        android:ems="10"
-        android:gravity="center_vertical"
-        android:hint="Write a message"
+        android:hint="@string/hint_chat_edittext"
         android:inputType="textLongMessage|textCapSentences|textMultiLine"
-        android:minHeight="48dp"
-        android:paddingBottom="8dp"
-        android:paddingEnd="20dp"
-        android:paddingStart="30dp"
-        android:paddingTop="8dp"
-        android:textCursorDrawable="@color/colorPrimary" />
+        android:paddingEnd="50dp"
+        android:paddingStart="15dp"
+        android:maxLines="4"
+        android:minHeight="54dp"
+        android:ems="10"
+        android:textCursorDrawable="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/convo_send_btn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="4dp"
         android:background="@null"
-        android:padding="12dp"
-        android:src="@drawable/ic_send" />
+        android:src="@drawable/ic_send"
+        app:layout_constraintBottom_toBottomOf="@id/convo_message_edittext"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="7dp"
+ />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

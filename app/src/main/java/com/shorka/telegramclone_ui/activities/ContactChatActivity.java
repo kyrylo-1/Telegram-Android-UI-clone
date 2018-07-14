@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -60,6 +61,13 @@ public class ContactChatActivity extends AppCompatActivity {
         initEditText();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mEditText.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -116,7 +124,6 @@ public class ContactChatActivity extends AppCompatActivity {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-
                 //Initialize FabHelper object
                 if (mFabHelper == null && Math.abs(dy) > 1) {
                     mFabHelper = new FabHelper(fabScrollDown, 200L);
@@ -148,27 +155,27 @@ public class ContactChatActivity extends AppCompatActivity {
     private void initEditText() {
         mEditText = findViewById(R.id.convo_message_edittext);
 
+
         mEditText.addTextChangedListener(new TextWatcher() {
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 //                Log.d(TAG, "onTextChanged: s: " + s + "\n start: " + start + " _before: " + before + " _count: " + count);
-                if (before == 0 && count == 1) {
-                    enableBtnSend(true);
-                } else if (count == 0) {
-                    enableBtnSend(false);
-                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+//                Log.d(TAG, "afterTextChanged: " + mEditText.getText().toString());
+
+                enableBtnSend(!s.toString().isEmpty());
             }
         });
     }
+
 
     private MessageListAdapter createRecycleAdapter() {
         final MessageListAdapter adapter = new MessageListAdapter(mContext, mListMessages);
@@ -236,7 +243,7 @@ public class ContactChatActivity extends AppCompatActivity {
         Log.d(TAG, "onScrolled: dy: " + dy + "; RollingState: " + mFabHelper.getRollingState());
 
         int lastVisible = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
-//        Log.d(TAG, "onScrolled: lastVisible: " + lastVisible);
+        Log.d(TAG, "onScrolled: lastVisible: " + lastVisible);
         //hide fab when user scrolls to the f
         if (lastVisible >= mListMessages.size() - 2) {
             Log.d(TAG, "scrollButton: scroll to FirstCompletelyVisibleItem");
