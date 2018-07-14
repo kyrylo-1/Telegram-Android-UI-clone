@@ -1,59 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorBackGray">
+    android:background="@color/colorWhite"
+    android:orientation="horizontal">
 
 
     <EditText
         android:id="@+id/convo_message_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorWhite"
-        android:ems="10"
-        android:hint="Message"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
         android:layout_weight="1"
+        android:background="@color/colorWhite"
         android:cursorVisible="true"
+        android:ems="10"
+        android:gravity="center_vertical"
+        android:hint="Write a message"
         android:inputType="textLongMessage|textCapSentences|textMultiLine"
-        android:maxLines="4"
-        android:textAlignment="viewStart"
+        android:minHeight="48dp"
         android:paddingBottom="8dp"
-        android:paddingEnd="30dp"
+        android:paddingEnd="20dp"
         android:paddingStart="30dp"
         android:paddingTop="8dp"
-
-        android:textCursorDrawable="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
-        android:id="@+id/convo_attachment_btn"
-        android:layout_width="@dimen/convo_btn_in_edittext_scale"
-        android:layout_height="@dimen/convo_btn_in_edittext_scale"
-        android:layout_marginEnd="8dp"
-        android:background="@null"
-        android:scaleType="fitXY"
-        android:src="@drawable/ic_attach"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/convo_message_edittext"
-        app:layout_constraintTop_toTopOf="@+id/convo_message_edittext" />
+        android:textCursorDrawable="@color/colorPrimary" />
 
     <ImageButton
         android:id="@+id/convo_send_btn"
-        android:layout_width="@dimen/convo_btn_in_edittext_scale"
-        android:layout_height="@dimen/convo_btn_in_edittext_scale"
-        android:layout_marginEnd="8dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="@null"
-        android:scaleType="fitXY"
-        android:src="@drawable/ic_send"
-        android:visibility="visible"
+        android:padding="12dp"
+        android:src="@drawable/ic_send" />
 
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/convo_message_edittext"
-        app:layout_constraintTop_toTopOf="@+id/convo_message_edittext" />
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

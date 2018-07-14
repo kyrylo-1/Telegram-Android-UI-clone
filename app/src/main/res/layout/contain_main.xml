@@ -46,7 +46,8 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
             app:backgroundTint="@color/colorPrimary"
-            app:layout_behavior=".FabScrollBehavior"
+            app:layout_behavior=".FabScrollInListBehavior"
+            android:clickable="true"
             app:srcCompat="@drawable/ic_write" />
 
     </android.support.design.widget.CoordinatorLayout>

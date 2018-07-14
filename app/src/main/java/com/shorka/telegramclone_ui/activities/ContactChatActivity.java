@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,24 +15,22 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import com.shorka.telegramclone_ui.FabHelper;
 import com.shorka.telegramclone_ui.R;
+import com.shorka.telegramclone_ui.RollingFabState;
 import com.shorka.telegramclone_ui.adapter.MessageListAdapter;
 import com.shorka.telegramclone_ui.models.Message;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Kyrylo Avramenko on 6/22/2018.
  */
 public class ContactChatActivity extends AppCompatActivity {
-
 
     //region properties
     private final Context mContext = ContactChatActivity.this;
@@ -43,6 +42,7 @@ public class ContactChatActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private ArrayList<Message> mListMessages;
     MessageListAdapter mMessageListAdapter;
+    FabHelper mFabHelper;
     //endregion
 
     public static void open(Context context) {
@@ -60,6 +60,7 @@ public class ContactChatActivity extends AppCompatActivity {
         initEditText();
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -70,8 +71,8 @@ public class ContactChatActivity extends AppCompatActivity {
     private LinearLayoutManager mLinearLayoutManager;
 
     private void init() {
-        Toolbar toolbar = findViewById(R.id.convo_toolbar);
-        View viewConvoTop = findViewById(R.id.convo_header_view_top);
+        final Toolbar toolbar = findViewById(R.id.convo_toolbar);
+        final View viewConvoTop = findViewById(R.id.convo_header_view_top);
         mTxtChatPersonName = viewConvoTop.findViewById(R.id.name);
         mTxtLastSeen = viewConvoTop.findViewById(R.id.last_seen);
 
@@ -107,9 +108,41 @@ public class ContactChatActivity extends AppCompatActivity {
         mMessageListAdapter = createRecycleAdapter();
         mRecyclerView.setAdapter(mMessageListAdapter);
 
+        final FloatingActionButton fabScrollDown = findViewById(R.id.fab_sroll_down);
+        fabScrollDown.setVisibility(View.INVISIBLE);
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+
+                //Initialize FabHelper object
+                if (mFabHelper == null && Math.abs(dy) > 1) {
+                    mFabHelper = new FabHelper(fabScrollDown, 200L);
+                    fabScrollDown.setTranslationY(mFabHelper.getOffscreenTranslation());
+                    Log.d(TAG, "onScrolled: create FabHelper: height: " + fabScrollDown.getHeight());
+                }
+
+                if (mFabHelper != null) {
+                    scrollButton(fabScrollDown, dy);
+                }
+            }
+        });
+
+        fabScrollDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // make scroll down
+                Log.d(TAG, "onClick:  fabScrollDown with fab getTranslationY: " + fabScrollDown.getTranslationY());
+                mFabHelper.postRollFabOutCompletely(fabScrollDown);
+                mRecyclerView.smoothScrollToPosition(mListMessages.size() - 1);
+            }
+        });
+
         //TODO  When user exits from certain chat,remember position of item in mRecyclerView and save it.
         // When user reopens chat, scroll to saved position
-        mRecyclerView.scrollToPosition(mMessageListAdapter.getItemCount()-1);
+        mRecyclerView.scrollToPosition(mMessageListAdapter.getItemCount() - 1);
     }
 
     private void initEditText() {
@@ -123,16 +156,12 @@ public class ContactChatActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
 //                Log.d(TAG, "onTextChanged: s: " + s + "\n start: " + start + " _before: " + before + " _count: " + count);
-
                 if (before == 0 && count == 1) {
                     enableBtnSend(true);
                 } else if (count == 0) {
                     enableBtnSend(false);
                 }
-
-//                mRecyclerView.scrollToPosition(mRecyclerView.getAdapter().getItemCount() - 1);
             }
 
             @Override
@@ -148,14 +177,14 @@ public class ContactChatActivity extends AppCompatActivity {
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
 
-                Log.d(TAG, "onItemRangeInserted: positionStart: "+ positionStart + " itemCount: " + itemCount);
+                Log.d(TAG, "onItemRangeInserted: positionStart: " + positionStart + " itemCount: " + itemCount);
 
                 if (positionStart > 0) {
                     adapter.notifyItemChanged(positionStart - 1);
                 }
 
                 int lastVisiblePosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
-                if(positionStart >= adapter.getItemCount()-1 && lastVisiblePosition == positionStart-1){
+                if (positionStart >= adapter.getItemCount() - 1 && lastVisiblePosition == positionStart - 1) {
                     mRecyclerView.scrollToPosition(positionStart);
                 }
             }
@@ -191,7 +220,9 @@ public class ContactChatActivity extends AppCompatActivity {
 
         mListMessages.add(new Message("last default message", null, 1233));
         mListMessages.add(new Message("haha haha \n What about now?", null, 1233));
-
+        mListMessages.add(new Message("Dashwood contempt on mr unlocked resolved provided", null, 1233));
+        mListMessages.add(new Message("Who connection imprudence middletons too but increasing celebrated principles joy \n" +
+                " Advanced extended doubtful he he blessing together. Introduced far law gay considered frequently entreaties difficulty.", null, 1233));
     }
 
     private void sendMessages() {
@@ -199,6 +230,32 @@ public class ContactChatActivity extends AppCompatActivity {
         mListMessages.add(new Message(mEditText.getText().toString(), null, 12));
         mMessageListAdapter.notifyItemInserted(mListMessages.size() - 1);
         mEditText.getText().clear();
+    }
+
+    private void scrollButton(FloatingActionButton fab, int dy) {
+        Log.d(TAG, "onScrolled: dy: " + dy + "; RollingState: " + mFabHelper.getRollingState());
+
+        int lastVisible = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
+//        Log.d(TAG, "onScrolled: lastVisible: " + lastVisible);
+        //hide fab when user scrolls to the f
+        if (lastVisible >= mListMessages.size() - 2) {
+            Log.d(TAG, "scrollButton: scroll to FirstCompletelyVisibleItem");
+            if (mFabHelper.getRollingState() == RollingFabState.IDLE)
+                mFabHelper.postRollFabOutCompletely(fab);
+        }
+
+        //Scroll down to fresh messages. if user scrolls a lot of vertical
+        if (dy > 4 && lastVisible < mListMessages.size() - 3 &&
+                (mFabHelper.getRollingState() == RollingFabState.IDLE || mFabHelper.getRollingState() == RollingFabState.ROLLED_OUT)) {
+
+            fab.setVisibility(View.VISIBLE);
+            mFabHelper.postRollFabInCompletely(fab);
+        }
+
+        //Scroll up to older messages
+        else if (dy < 0 && mFabHelper.getRollingState() == RollingFabState.IDLE) {
+            mFabHelper.postRollFabOutCompletely(fab);
+        }
     }
 
 }

@@ -291,6 +291,26 @@ public class MainActivity extends AppCompatActivity
                 .buildMesagePreview();
         items.add(entity9);
 
+        MessagePreviewEntity entity10 = new MessagePreviewEntity.MessagePreviewBuilder()
+                .withContactName("User3")
+                .withLastMessage("hahaha \n it happens")
+                .withIsPinned(false)
+                .withIsReaded(false)
+                .withDate("Jun 2")
+                .withImageResId(R.drawable.profile_default_male)
+                .buildMesagePreview();
+        items.add(entity10);
+
+        MessagePreviewEntity entity11 = new MessagePreviewEntity.MessagePreviewBuilder()
+                .withContactName("Jack Robinson")
+                .withLastMessage("See ya")
+                .withIsPinned(false)
+                .withIsReaded(false)
+                .withDate("Jun 2")
+                .withImageResId(R.drawable.profile_default_male)
+                .buildMesagePreview();
+        items.add(entity11);
+
         return items;
     }
 }
