@@ -16,6 +16,7 @@
         <item name="android:actionMenuTextColor">@color/colorAccent</item>
         <item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayout</item>
         <item name="cardViewStyle">@style/CardView</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

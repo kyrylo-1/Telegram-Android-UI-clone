@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rel_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_content"
@@ -60,15 +61,15 @@
             app:layout_behavior="com.shorka.telegramclone_ui.HeaderViewBehaviour" />
 
         <android.support.v4.widget.NestedScrollView
-        android:id="@+id/settings_scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:id="@+id/settings_scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/content_settings" />
+            <include layout="@layout/content_settings" />
 
-    </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.NestedScrollView>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/settings_fab"

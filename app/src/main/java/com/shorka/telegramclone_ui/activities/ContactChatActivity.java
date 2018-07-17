@@ -28,10 +28,13 @@ import com.shorka.telegramclone_ui.models.Message;
 
 import java.util.ArrayList;
 
+import me.imid.swipebacklayout.lib.SwipeBackLayout;
+import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
+
 /**
  * Created by Kyrylo Avramenko on 6/22/2018.
  */
-public class ContactChatActivity extends AppCompatActivity {
+public class ContactChatActivity extends SwipeBackActivity {
 
     //region properties
     private final Context mContext = ContactChatActivity.this;
@@ -44,7 +47,7 @@ public class ContactChatActivity extends AppCompatActivity {
     private ArrayList<Message> mListMessages;
     MessageListAdapter mMessageListAdapter;
     FabHelper mFabHelper;
-    //endregion
+    //    //endregion
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, ContactChatActivity.class));
@@ -59,6 +62,7 @@ public class ContactChatActivity extends AppCompatActivity {
         setDefaultMessages();
         init();
         initEditText();
+        getSwipeBackLayout().setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);
     }
 
     @Override
@@ -79,7 +83,7 @@ public class ContactChatActivity extends AppCompatActivity {
     private LinearLayoutManager mLinearLayoutManager;
 
     private void init() {
-        final Toolbar toolbar = findViewById(R.id.convo_toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.convo_toolbar);
         final View viewConvoTop = findViewById(R.id.convo_header_view_top);
         mTxtChatPersonName = viewConvoTop.findViewById(R.id.name);
         mTxtLastSeen = viewConvoTop.findViewById(R.id.last_seen);
@@ -87,7 +91,7 @@ public class ContactChatActivity extends AppCompatActivity {
         mTxtChatPersonName.setTextColor(getResources().getColor(R.color.colorWhite));
         mTxtLastSeen.setTextColor(getResources().getColor(R.color.colorWhite));
 
-        mBtnSend = findViewById(R.id.convo_send_btn);
+        mBtnSend = (ImageButton) findViewById(R.id.convo_send_btn);
         enableBtnSend(false);
 
         setSupportActionBar(toolbar);
@@ -108,7 +112,7 @@ public class ContactChatActivity extends AppCompatActivity {
             }
         });
 
-        mRecyclerView = findViewById(R.id.test_convo_recycler_view_messages);
+        mRecyclerView = (RecyclerView) findViewById(R.id.test_convo_recycler_view_messages);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
@@ -116,7 +120,7 @@ public class ContactChatActivity extends AppCompatActivity {
         mMessageListAdapter = createRecycleAdapter();
         mRecyclerView.setAdapter(mMessageListAdapter);
 
-        final FloatingActionButton fabScrollDown = findViewById(R.id.fab_sroll_down);
+        final FloatingActionButton fabScrollDown = (FloatingActionButton) findViewById(R.id.fab_sroll_down);
         fabScrollDown.setVisibility(View.INVISIBLE);
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -153,7 +157,7 @@ public class ContactChatActivity extends AppCompatActivity {
     }
 
     private void initEditText() {
-        mEditText = findViewById(R.id.convo_message_edittext);
+        mEditText = (EditText) findViewById(R.id.convo_message_edittext);
 
 
         mEditText.addTextChangedListener(new TextWatcher() {

@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,55 +28,58 @@ import com.shorka.telegramclone_ui.entities.SettingsTextEntity;
 
 import java.util.ArrayList;
 
+import me.imid.swipebacklayout.lib.SwipeBackLayout;
+import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
+
 /**
  * Created by Kyrylo Avramenko on 6/11/2018.
  */
-public class SettingsActivity extends AppCompatActivity  implements AppBarLayout.OnOffsetChangedListener{
+public class SettingsActivity extends SwipeBackActivity implements AppBarLayout.OnOffsetChangedListener{
 
     private static final String TAG = "SettingsActivity";
     private final Context mContext = SettingsActivity.this;
-    protected HeaderView toolbarHeaderView;
-    protected HeaderView floatHeaderView;
-    protected AppBarLayout appBarLayout;
-    protected Toolbar toolbar;
+    protected HeaderView mToolbarHeaderView;
+    protected HeaderView mFloatHeaderView;
+    protected AppBarLayout mAppBarLayout;
+    protected Toolbar mToolbar;
+
     private boolean isHideToolbarView = false;
 
     public static void open(Context context){
         context.startActivity(new Intent(context, SettingsActivity.class));
     }
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        toolbarHeaderView = findViewById(R.id.header_view_top);
-        floatHeaderView = findViewById(R.id.float_header_view);
+        mToolbarHeaderView = (HeaderView) findViewById(R.id.header_view_top);
+        mFloatHeaderView = (HeaderView) findViewById(R.id.float_header_view);
 //
-        toolbarHeaderView.setTxtName((TextView) toolbarHeaderView.findViewById(R.id.name));
-        toolbarHeaderView.setTxtLastSeen((TextView) toolbarHeaderView.findViewById(R.id.last_seen));
+        mToolbarHeaderView.setTxtName((TextView) mToolbarHeaderView.findViewById(R.id.name));
+        mToolbarHeaderView.setTxtLastSeen((TextView) mToolbarHeaderView.findViewById(R.id.last_seen));
 //
-        floatHeaderView.setTxtName((TextView) floatHeaderView.findViewById(R.id.name_float));
-        floatHeaderView.setTxtLastSeen((TextView) floatHeaderView.findViewById(R.id.last_seen_float));
+        mFloatHeaderView.setTxtName((TextView) mFloatHeaderView.findViewById(R.id.name_float));
+        mFloatHeaderView.setTxtLastSeen((TextView) mFloatHeaderView.findViewById(R.id.last_seen_float));
 
-        appBarLayout = findViewById(R.id.appbar_test);
-        toolbar = findViewById(R.id.toolbar);
+        mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar_test);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        appBarLayout.addOnOffsetChangedListener(this);
+        mAppBarLayout.addOnOffsetChangedListener(this);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
 
-        FloatingActionButton fabCam = findViewById(R.id.settings_fab);
+        FloatingActionButton fabCam = (FloatingActionButton) findViewById(R.id.settings_fab);
         fabCam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +89,8 @@ public class SettingsActivity extends AppCompatActivity  implements AppBarLayout
         });
 
         init();
+
+        getSwipeBackLayout().setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);
     }
 
     @Override
@@ -95,13 +99,13 @@ public class SettingsActivity extends AppCompatActivity  implements AppBarLayout
         float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
 
         if (percentage == 1f && isHideToolbarView) {
-            toolbarHeaderView.setVisibility(View.VISIBLE);
-            CoordinatorLayout.LayoutParams lpFloat = (CoordinatorLayout.LayoutParams) floatHeaderView.getLayoutParams();
+            mToolbarHeaderView.setVisibility(View.VISIBLE);
+            CoordinatorLayout.LayoutParams lpFloat = (CoordinatorLayout.LayoutParams) mFloatHeaderView.getLayoutParams();
 
             isHideToolbarView = !isHideToolbarView;
 
         } else if (percentage < 1f && !isHideToolbarView) {
-            toolbarHeaderView.setVisibility(View.GONE);
+            mToolbarHeaderView.setVisibility(View.GONE);
             isHideToolbarView = !isHideToolbarView;
         }
     }
@@ -127,6 +131,7 @@ public class SettingsActivity extends AppCompatActivity  implements AppBarLayout
         inflater.inflate(R.menu.menu_settings,menu);
         return true;
     }
+
 
     private void init() {
 
