@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView.Adapter mAdapter;
     private FloatingActionButton mFab;
     FabScroll mFabScroll;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,15 +115,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+
         switch (item.getItemId()) {
 
             case R.id.action_search:
                 Log.d(TAG, "onOptionsItemSelected: Press action_search");
                 return true;
+
 
             default:
                 // If we got here, the user's action was not recognized.
@@ -135,19 +134,30 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        switch (item.getItemId()) {
 
-        if (id == R.id.nav_groupchat) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+            case R.id.nav_groupchat:
+                break;
 
-        } else if (id == R.id.nav_settings) {
-            Log.d(TAG, "onNavigationItemSelected: press nav_settings");
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawer.closeDrawer(GravityCompat.START);
-//            startActivity(new Intent(mContext, SettingsActivity.class));
-            SettingsActivity.open(mContext);
+            case R.id.nav_gallery:
+                break;
+
+            case R.id.nav_settings:
+                Log.d(TAG, "onNavigationItemSelected: press nav_settings");
+
+                drawer.closeDrawer(GravityCompat.START);
+                SettingsActivity.open(mContext);
+                break;
+
+            case R.id.nav_contacts:
+                Log.d(TAG, "onNavigationItemSelected: press nav_contacts");
+                drawer.closeDrawer(GravityCompat.START);
+                ContactsActivity.open(mContext);
+                break;
         }
+
+
         return true;
     }
 
@@ -162,9 +172,9 @@ public class MainActivity extends AppCompatActivity
 
         DividerCustomPaddingItemDecoration itemCustomDecor = new DividerCustomPaddingItemDecoration(mContext,
                 DividerItemDecoration.VERTICAL,
-                Utils.dpToPx(getResources().getDimension(R.dimen.message_image_preview_scale),mContext) -
-                        Utils.dpToPx(9,mContext)
-                );
+                Utils.dpToPx(getResources().getDimension(R.dimen.message_image_preview_scale), mContext) -
+                        Utils.dpToPx(9, mContext)
+        );
         mRecycleView.addItemDecoration(itemCustomDecor);
 
         mRecycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -180,7 +190,7 @@ public class MainActivity extends AppCompatActivity
         mRecycleView.addOnItemTouchListener(new RecyclerItemClickListener(mContext, mRecycleView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Log.d(TAG, "onItemClick: click on pos: " + position + "_  " +view.getId());
+                Log.d(TAG, "onItemClick: click on pos: " + position + "_  " + view.getId());
                 ContactChatActivity.open(mContext);
             }
 
