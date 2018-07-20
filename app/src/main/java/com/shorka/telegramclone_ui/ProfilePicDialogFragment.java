@@ -4,8 +4,14 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 
 /**
  * Created by Kyrylo Avramenko on 6/15/2018.
@@ -45,6 +51,13 @@ public class ProfilePicDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Window window = getDialog().getWindow();
+        window.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.dialog_bg));
+    }
 
     public interface OnCameraClickOptions {
         void onFromCamClicked();

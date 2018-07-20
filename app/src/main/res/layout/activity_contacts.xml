@@ -13,8 +13,8 @@
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/colorPrimary"
         app:layout_constraintTop_toTopOf="parent"
-
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        >
 
     </android.support.v7.widget.Toolbar>
 
@@ -23,8 +23,8 @@
         android:id="@+id/recycler_view_phone_contacts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
         android:layout_below="@id/contacts_toolbar"
+        android:clipToPadding="false"
         app:stackFromEnd="true"
         tools:listitem="@layout/item_contact_row">
 

@@ -1,33 +1,30 @@
 package com.shorka.telegramclone_ui.activities;
 
-import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 
 import com.shorka.telegramclone_ui.R;
+import com.shorka.telegramclone_ui.RecyclerItemClickListener;
+import com.shorka.telegramclone_ui.SmsHelper;
 import com.shorka.telegramclone_ui.adapter.ContactsRecyclerViewAdapter;
 import com.shorka.telegramclone_ui.models.ContactPhoneBook;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -37,8 +34,7 @@ import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 /**
  * Created by Kyrylo Avramenko on 7/17/2018.
  */
-public class ContactsActivity extends SwipeBackActivity implements LoaderManager.LoaderCallbacks<Cursor>,
-        AdapterView.OnItemClickListener {
+public class ContactsActivity extends SwipeBackActivity {
 
     private static final String TAG = "ContactsActivity";
     private final Context mContext = ContactsActivity.this;
@@ -79,7 +75,7 @@ public class ContactsActivity extends SwipeBackActivity implements LoaderManager
         //TODO: load this on start of app for optimization sake
         ContentResolver cr = mContext.getContentResolver(); //Activity/Application android.content.Context
         Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-        List<ContactPhoneBook> listContacts = cursor.moveToFirst() ? getAllContacts(cursor, cr) : null;
+        final List<ContactPhoneBook> listContacts = cursor.moveToFirst() ? getAllContacts(cursor, cr) : null;
 //        List<ContactPhoneBook> listContacts = getTestList();
 
         Collections.sort(listContacts, new Comparator<ContactPhoneBook>() {
@@ -98,12 +94,24 @@ public class ContactsActivity extends SwipeBackActivity implements LoaderManager
             }
         });
 
-//        for (ContactPhoneBook phoneBook : listContacts) {
-//            Log.d(TAG, "initRecyclerView: Contact: " + phoneBook.getName());
-//        }
-
         rv.setAdapter(adapter);
-//        rv.scrollToPosition(0);
+
+        rv.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rv, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Log.d(TAG, "onItemClick: pos: " + position);
+
+                ContactPhoneBook contactPhoneBook = listContacts.get(position);
+                Log.d(TAG, "onItemClick: phoneNumber: " + listContacts.get(position).getPhoneNumber());
+                showInvitationDialog(listContacts.get(position).getPhoneNumber());
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        }));
+
         Log.d(TAG, "initRecyclerView: rvPos: ");
     }
 
@@ -124,35 +132,13 @@ public class ContactsActivity extends SwipeBackActivity implements LoaderManager
             case R.id.action_search:
                 Log.d(TAG, "onOptionsItemSelected: contacts_add");
                 return true;
-                
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    @NonNull
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
 
     private List<ContactPhoneBook> getAllContacts(Cursor cursor, ContentResolver cr) {
 
@@ -164,7 +150,7 @@ public class ContactsActivity extends SwipeBackActivity implements LoaderManager
                 Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
                 while (pCur.moveToNext()) {
 
-                    String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                    String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     String contactName = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                     allContacts.add(new ContactPhoneBook(contactNumber, contactName));
 
@@ -184,5 +170,24 @@ public class ContactsActivity extends SwipeBackActivity implements LoaderManager
             list.add(new ContactPhoneBook("", "Name_" + (i + 1)));
         }
         return list;
+    }
+
+    private void showInvitationDialog(final String phoneNumber) {
+
+        final AlertDialog.Builder builder;
+        builder = new AlertDialog.Builder(mContext, R.style.CustomDialog);
+        builder.setTitle("Telegram")
+                .setMessage("This user does not have Telegram yet, send an invitation?")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        SmsHelper.sendSms(mContext,phoneNumber);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
     }
 }
