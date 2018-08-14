@@ -49,7 +49,7 @@ public class HeaderView extends LinearLayout {
         return txtName;
     }
 
-    public void setTxtName(TextView txtName) {
+    public void setTxtViewName(TextView txtName) {
         this.txtName = txtName;
     }
 
@@ -57,7 +57,7 @@ public class HeaderView extends LinearLayout {
         return txtLastSeen;
     }
 
-    public void setTxtLastSeen(TextView txtLastSeen) {
+    public void setTxtViewLastSeen(TextView txtLastSeen) {
         this.txtLastSeen = txtLastSeen;
     }
 

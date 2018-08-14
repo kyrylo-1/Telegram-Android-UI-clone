@@ -70,12 +70,12 @@ public class HeaderViewBehaviour extends CoordinatorLayout.Behavior<HeaderView> 
                 - child.getHeight()
                 - (getToolbarHeight(mContext) - child.getHeight()) * percentage / 1;
 
-        Log.d(TAG, "onDependentViewChanged: "+
-                "\n dependency.getY():" +  Math.abs(dependency.getY()) +
-                "\n childPos: " + childPosition +
-                "\n child.getHeight: " + child.getHeight() +
-                "\n percentage: " + percentage
-        );
+//        Log.d(TAG, "onDependentViewChanged: "+
+//                "\n dependency.getY():" +  Math.abs(dependency.getY()) +
+//                "\n childPos: " + childPosition +
+//                "\n child.getHeight: " + child.getHeight() +
+//                "\n percentage: " + percentage
+//        );
 
         childPosition = childPosition - mStartMarginBottom * (1f - percentage);
 

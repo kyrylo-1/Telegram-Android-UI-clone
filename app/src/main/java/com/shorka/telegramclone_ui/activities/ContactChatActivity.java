@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -217,28 +216,27 @@ public class ContactChatActivity extends SwipeBackActivity {
         if (mListMessages == null)
             mListMessages = new ArrayList<>();
 
-        mListMessages.add(new Message("How are you?", null, 123));
-        mListMessages.add(new Message("fam", null, 1233));
+        mListMessages.add(new Message("How are you?", 123));
         mListMessages.add(new Message("To be, or not to be:" +
-                "that is the question: whether 'tis nobler in the mind to suffer ", null, 1233));
-        mListMessages.add(new Message("a lot of symblos \n here and \n here", null, 1233));
-        mListMessages.add(new Message("another row \n stuff like that", null, 1233));
+                "that is the question: whether 'tis nobler in the mind to suffer ", 1233));
+        mListMessages.add(new Message("a lot of symblos \n here and \n here", 1233));
+        mListMessages.add(new Message("another row \n stuff like that", 1233));
         mListMessages.add(new Message("Forfeited you engrossed but gay sometimes explained. Another as studied it to evident." +
                 " Merry sense given he be arise. Conduct at an replied removal an amongst. " +
                 "Remaining determine few her two cordially admitting old. Sometimes strangers his ourselves her depending you boy." +
                 " Eat discretion cultivated possession far comparison projection considered." +
-                " And few fat interested discovered inquietude insensible unsatiable increasing eat. ", null, 1233));
+                " And few fat interested discovered inquietude insensible unsatiable increasing eat. ", 1233));
 
-        mListMessages.add(new Message("last default message", null, 1233));
-        mListMessages.add(new Message("haha haha \n What about now?", null, 1233));
-        mListMessages.add(new Message("Dashwood contempt on mr unlocked resolved provided", null, 1233));
+        mListMessages.add(new Message("last default message", 1233));
+        mListMessages.add(new Message("haha haha \n What about now?", 1233));
+        mListMessages.add(new Message("Dashwood contempt on mr unlocked resolved provided", 1233));
         mListMessages.add(new Message("Who connection imprudence middletons too but increasing celebrated principles joy \n" +
-                " Advanced extended doubtful he he blessing together. Introduced far law gay considered frequently entreaties difficulty.", null, 1233));
+                " Advanced extended doubtful he he blessing together. Introduced far law gay considered frequently entreaties difficulty.", 1233));
     }
 
     private void sendMessages() {
 
-        mListMessages.add(new Message(mEditText.getText().toString(), null, 12));
+        mListMessages.add(new Message(mEditText.getText().toString(), 12));
         mMessageListAdapter.notifyItemInserted(mListMessages.size() - 1);
         mEditText.getText().clear();
     }

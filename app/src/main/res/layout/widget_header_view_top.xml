@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:maxLines="1"
-            android:text="main text top"
+            android:text="PLACEHOLDER NAME"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
 
@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:text="sub text top"
+            android:text="PLACEHOLDER state"
             android:textColor="@android:color/black" />
 
     </LinearLayout>

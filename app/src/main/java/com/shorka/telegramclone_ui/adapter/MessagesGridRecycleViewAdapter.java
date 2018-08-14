@@ -21,11 +21,16 @@ import java.util.List;
  */
 public class MessagesGridRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    private List<MessagePreviewEntity> items = new ArrayList<>();
+    private List<MessagePreviewEntity> mItems = new ArrayList<>();
     private Context mContext;
     private static final String TAG = "MessagesGridRecycleView";
+
+    public MessagesGridRecycleViewAdapter(Context mContext) {
+        this.mContext = mContext;
+    }
+
     public MessagesGridRecycleViewAdapter(Context context, List<MessagePreviewEntity> items) {
-        this.items = items;
+        mItems = items;
         mContext = context;
     }
 
@@ -47,7 +52,7 @@ public class MessagesGridRecycleViewAdapter extends RecyclerView.Adapter<Recycle
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
 
         ViewMessageGridPreview viewMessageGridPreview = (ViewMessageGridPreview) viewHolder;
-        MessagePreviewEntity entity = items.get(position);
+        MessagePreviewEntity entity = mItems.get(position);
         if(entity!= null){
 //            viewMessageGridPreview.s
             viewMessageGridPreview.getTitle().setText(entity.getContactName());
@@ -62,6 +67,6 @@ public class MessagesGridRecycleViewAdapter extends RecyclerView.Adapter<Recycle
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return mItems.size();
     }
 }

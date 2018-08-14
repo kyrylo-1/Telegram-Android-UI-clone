@@ -8,7 +8,7 @@
         <item
             android:id="@+id/nav_curr_account"
             android:icon="@drawable/profile_default_male"
-            android:title="Kyrylo" />
+            android:title="PLACEHOLD name" />
 
         <item
             android:id="@+id/nav_add_account"

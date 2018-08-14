@@ -20,13 +20,13 @@ public class FabScrollInListBehavior extends FloatingActionButton.Behavior {
     }
 
     public FabScrollInListBehavior(Context context, AttributeSet attrs) {
-        Log.d(TAG, "FabScrollInListBehavior: ");
+//        Log.d(TAG, "FabScrollInListBehavior: ");
     }
 
 
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, FloatingActionButton child, View dependency) {
-        Log.d(TAG, "layoutDependsOn: ");
+//        Log.d(TAG, "layoutDependsOn: ");
         return super.layoutDependsOn(parent, child, dependency) || dependency instanceof NestedScrollingChild;
     }
 
@@ -53,7 +53,7 @@ public class FabScrollInListBehavior extends FloatingActionButton.Behavior {
         if (fabHelper == null)
             fabHelper = new FabHelper(child, 300L);
 
-        Log.d(TAG, "onLayoutChild: ");
+//        Log.d(TAG, "onLayoutChild: ");
         return superLayout;
     }
 
