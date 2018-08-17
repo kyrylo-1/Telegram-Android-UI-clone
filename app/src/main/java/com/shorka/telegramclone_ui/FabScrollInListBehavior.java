@@ -38,7 +38,7 @@ public class FabScrollInListBehavior extends FloatingActionButton.Behavior {
 
     @Override
     public void onNestedPreScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull FloatingActionButton child, @NonNull View target, int dx, int dy, @NonNull int[] consumed, int type) {
-        Log.d(TAG, "onNestedPreScroll: dy: " + dy + " ; RollingState: " + fabHelper.getRollingState());
+//        Log.d(TAG, "onNestedPreScroll: dy: " + dy + " ; RollingState: " + fabHelper.getRollingState());
 
         if (dy > 0 && (fabHelper.getRollingState() == RollingFabState.IDLE || fabHelper.getRollingState() == RollingFabState.ROLLING_IN)) {
             fabHelper.postRollFabOutCompletely(child);

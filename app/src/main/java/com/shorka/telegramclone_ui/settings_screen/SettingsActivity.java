@@ -28,7 +28,6 @@ import com.shorka.telegramclone_ui.DividerCustomItemDecoration;
 import com.shorka.telegramclone_ui.HeaderView;
 import com.shorka.telegramclone_ui.ProfilePicDialogFragment;
 import com.shorka.telegramclone_ui.R;
-import com.shorka.telegramclone_ui.chats_previews_screen.ChatPreviewPresenter;
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.entities.SettingsTextEntity;
 
@@ -165,8 +164,8 @@ public class SettingsActivity extends SwipeBackActivity implements AppBarLayout.
 
     private void initPresenter() {
 //        settActionsListener =
-        settActionsListener = new SettingsPresenter(Injection.provideUserRepo(getApplication()), this);
-        settActionsListener.loadUserInfo();
+//        settActionsListener = new SettingsPresenter(Injection.provideUserRepo(getApplication()), this);
+//        settActionsListener.loadUserInfo();
     }
 
     final int CAMERA_PIC_REQUEST = 1337;

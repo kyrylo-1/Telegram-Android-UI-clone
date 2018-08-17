@@ -36,16 +36,16 @@ import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 public class ContactChatActivity extends SwipeBackActivity {
 
     //region properties
-    private final Context mContext = ContactChatActivity.this;
+    private final Context context = ContactChatActivity.this;
     private static final String TAG = "ContactChatActivity";
 
-    private TextView mTxtChatPersonName, mTxtLastSeen;
+    private TextView txtChatPersonName, txtLastSeen;
     private ImageButton mBtnSend;
-    private EditText mEditText;
-    private RecyclerView mRecyclerView;
+    private EditText editText;
+    private RecyclerView recyclerView;
     private ArrayList<Message> mListMessages;
-    MessageListAdapter mMessageListAdapter;
-    FabHelper mFabHelper;
+    private MessageListAdapter mMessageListAdapter;
+    private FabHelper fabHelper;
     //    //endregion
 
     public static void open(Context context) {
@@ -67,9 +67,9 @@ public class ContactChatActivity extends SwipeBackActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mEditText.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+        editText.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 
     @Override
@@ -84,11 +84,11 @@ public class ContactChatActivity extends SwipeBackActivity {
     private void init() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.convo_toolbar);
         final View viewConvoTop = findViewById(R.id.convo_header_view_top);
-        mTxtChatPersonName = viewConvoTop.findViewById(R.id.name);
-        mTxtLastSeen = viewConvoTop.findViewById(R.id.last_seen);
+        txtChatPersonName = viewConvoTop.findViewById(R.id.name);
+        txtLastSeen = viewConvoTop.findViewById(R.id.last_seen);
 
-        mTxtChatPersonName.setTextColor(getResources().getColor(R.color.colorWhite));
-        mTxtLastSeen.setTextColor(getResources().getColor(R.color.colorWhite));
+        txtChatPersonName.setTextColor(getResources().getColor(R.color.colorWhite));
+        txtLastSeen.setTextColor(getResources().getColor(R.color.colorWhite));
 
         mBtnSend = (ImageButton) findViewById(R.id.convo_send_btn);
         enableBtnSend(false);
@@ -104,62 +104,54 @@ public class ContactChatActivity extends SwipeBackActivity {
             }
         });
 
-        mBtnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendMessages();
-            }
-        });
+        mBtnSend.setOnClickListener(v -> sendMessages());
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.test_convo_recycler_view_messages);
+        recyclerView = (RecyclerView) findViewById(R.id.test_convo_recycler_view_messages);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setStackFromEnd(true);
-        mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        recyclerView.setLayoutManager(mLinearLayoutManager);
 
         mMessageListAdapter = createRecycleAdapter();
-        mRecyclerView.setAdapter(mMessageListAdapter);
+        recyclerView.setAdapter(mMessageListAdapter);
 
         final FloatingActionButton fabScrollDown = (FloatingActionButton) findViewById(R.id.fab_sroll_down);
         fabScrollDown.setVisibility(View.INVISIBLE);
 
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
                 //Initialize FabHelper object
-                if (mFabHelper == null && Math.abs(dy) > 1) {
-                    mFabHelper = new FabHelper(fabScrollDown, 200L);
-                    fabScrollDown.setTranslationY(mFabHelper.getOffscreenTranslation());
+                if (fabHelper == null && Math.abs(dy) > 1) {
+                    fabHelper = new FabHelper(fabScrollDown, 200L);
+                    fabScrollDown.setTranslationY(fabHelper.getOffscreenTranslation());
                     Log.d(TAG, "onScrolled: create FabHelper: height: " + fabScrollDown.getHeight());
                 }
 
-                if (mFabHelper != null) {
+                if (fabHelper != null) {
                     scrollButton(fabScrollDown, dy);
                 }
             }
         });
 
-        fabScrollDown.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // make scroll down
-                Log.d(TAG, "onClick:  fabScrollDown with fab getTranslationY: " + fabScrollDown.getTranslationY());
-                mFabHelper.postRollFabOutCompletely(fabScrollDown);
-                mRecyclerView.smoothScrollToPosition(mListMessages.size() - 1);
-            }
+        fabScrollDown.setOnClickListener(v -> {
+            // make scroll down
+            Log.d(TAG, "onClick:  fabScrollDown with fab getTranslationY: " + fabScrollDown.getTranslationY());
+            fabHelper.postRollFabOutCompletely(fabScrollDown);
+            recyclerView.smoothScrollToPosition(mListMessages.size() - 1);
         });
 
-        //TODO  When user exits from certain chat,remember position of item in mRecyclerView and save it.
+        //TODO  When user exits from certain chat,remember position of item in recyclerView and save it.
         // When user reopens chat, scroll to saved position
-        mRecyclerView.scrollToPosition(mMessageListAdapter.getItemCount() - 1);
+        recyclerView.scrollToPosition(mMessageListAdapter.getItemCount() - 1);
     }
 
     private void initEditText() {
-        mEditText = (EditText) findViewById(R.id.convo_message_edittext);
+        editText = (EditText) findViewById(R.id.convo_message_edittext);
 
 
-        mEditText.addTextChangedListener(new TextWatcher() {
+        editText.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -172,7 +164,7 @@ public class ContactChatActivity extends SwipeBackActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-//                Log.d(TAG, "afterTextChanged: " + mEditText.getText().toString());
+//                Log.d(TAG, "afterTextChanged: " + editText.getText().toString());
 
                 enableBtnSend(!s.toString().isEmpty());
             }
@@ -181,7 +173,7 @@ public class ContactChatActivity extends SwipeBackActivity {
 
 
     private MessageListAdapter createRecycleAdapter() {
-        final MessageListAdapter adapter = new MessageListAdapter(mContext, mListMessages);
+        final MessageListAdapter adapter = new MessageListAdapter(context, mListMessages);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
@@ -195,7 +187,7 @@ public class ContactChatActivity extends SwipeBackActivity {
 
                 int lastVisiblePosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
                 if (positionStart >= adapter.getItemCount() - 1 && lastVisiblePosition == positionStart - 1) {
-                    mRecyclerView.scrollToPosition(positionStart);
+                    recyclerView.scrollToPosition(positionStart);
                 }
             }
         });
@@ -208,7 +200,7 @@ public class ContactChatActivity extends SwipeBackActivity {
 
         mBtnSend.setVisibility(doEnable ? View.VISIBLE : View.GONE);
 //        mBtnAttachments.setVisibility(doEnable ? View.GONE : View.VISIBLE);
-//        mRecyclerView.
+//        recyclerView.
     }
 
     private void setDefaultMessages() {
@@ -236,34 +228,34 @@ public class ContactChatActivity extends SwipeBackActivity {
 
     private void sendMessages() {
 
-        mListMessages.add(new Message(mEditText.getText().toString(), 12));
+        mListMessages.add(new Message(editText.getText().toString(), 12));
         mMessageListAdapter.notifyItemInserted(mListMessages.size() - 1);
-        mEditText.getText().clear();
+        editText.getText().clear();
     }
 
     private void scrollButton(FloatingActionButton fab, int dy) {
-        Log.d(TAG, "onScrolled: dy: " + dy + "; RollingState: " + mFabHelper.getRollingState());
+        Log.d(TAG, "onScrolled: dy: " + dy + "; RollingState: " + fabHelper.getRollingState());
 
         int lastVisible = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
         Log.d(TAG, "onScrolled: lastVisible: " + lastVisible);
         //hide fab when user scrolls to the f
         if (lastVisible >= mListMessages.size() - 2) {
             Log.d(TAG, "scrollButton: scroll to FirstCompletelyVisibleItem");
-            if (mFabHelper.getRollingState() == RollingFabState.IDLE)
-                mFabHelper.postRollFabOutCompletely(fab);
+            if (fabHelper.getRollingState() == RollingFabState.IDLE)
+                fabHelper.postRollFabOutCompletely(fab);
         }
 
         //Scroll down to fresh messages. if user scrolls a lot of vertical
         if (dy > 4 && lastVisible < mListMessages.size() - 3 &&
-                (mFabHelper.getRollingState() == RollingFabState.IDLE || mFabHelper.getRollingState() == RollingFabState.ROLLED_OUT)) {
+                (fabHelper.getRollingState() == RollingFabState.IDLE || fabHelper.getRollingState() == RollingFabState.ROLLED_OUT)) {
 
             fab.setVisibility(View.VISIBLE);
-            mFabHelper.postRollFabInCompletely(fab);
+            fabHelper.postRollFabInCompletely(fab);
         }
 
         //Scroll up to older messages
-        else if (dy < 0 && mFabHelper.getRollingState() == RollingFabState.IDLE) {
-            mFabHelper.postRollFabOutCompletely(fab);
+        else if (dy < 0 && fabHelper.getRollingState() == RollingFabState.IDLE) {
+            fabHelper.postRollFabOutCompletely(fab);
         }
     }
 

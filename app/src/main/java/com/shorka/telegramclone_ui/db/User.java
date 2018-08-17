@@ -1,11 +1,8 @@
 package com.shorka.telegramclone_ui.db;
 
-import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.Nullable;
-
-import java.util.UUID;
 
 /**
  * Created by Kyrylo Avramenko on 8/1/2018.

@@ -35,7 +35,7 @@ import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 public class ContactsActivity extends SwipeBackActivity {
 
     private static final String TAG = "ContactsActivity";
-    private final Context mContext = ContactsActivity.this;
+    private final Context context = ContactsActivity.this;
 
 
     public static void open(Context context) {
@@ -66,7 +66,7 @@ public class ContactsActivity extends SwipeBackActivity {
         rv.setLayoutManager(layoutManager);
 
         //TODO: load this on start of app for optimization sake
-        ContentResolver cr = mContext.getContentResolver(); //Activity/Application android.content.Context
+        ContentResolver cr = context.getContentResolver(); //Activity/Application android.content.Context
         Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
         final List<ContactPhoneBook> listContacts = cursor.moveToFirst() ? getAllContacts(cursor, cr) : null;
 //        List<ContactPhoneBook> listContacts = getTestList();
@@ -89,7 +89,7 @@ public class ContactsActivity extends SwipeBackActivity {
 
         rv.setAdapter(adapter);
 
-        rv.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rv, new RecyclerItemClickListener.OnItemClickListener() {
+        rv.addOnItemTouchListener(new RecyclerItemClickListener(context, rv, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Log.d(TAG, "onItemClick: pos: " + position);
@@ -168,12 +168,12 @@ public class ContactsActivity extends SwipeBackActivity {
     private void showInvitationDialog(final String phoneNumber) {
 
         final AlertDialog.Builder builder;
-        builder = new AlertDialog.Builder(mContext, R.style.CustomDialog);
+        builder = new AlertDialog.Builder(context, R.style.CustomDialog);
         builder.setTitle("Telegram")
                 .setMessage("This user does not have Telegram yet, send an invitation?")
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        SmsHelper.sendSms(mContext,phoneNumber);
+                        SmsHelper.sendSms(context,phoneNumber);
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

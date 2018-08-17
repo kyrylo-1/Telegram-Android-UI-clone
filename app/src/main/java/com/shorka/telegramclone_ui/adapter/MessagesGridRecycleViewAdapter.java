@@ -21,19 +21,28 @@ import java.util.List;
  */
 public class MessagesGridRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    private List<MessagePreviewEntity> mItems = new ArrayList<>();
-    private Context mContext;
+    private List<MessagePreviewEntity> items = new ArrayList<>();
+    private Context context;
     private static final String TAG = "MessagesGridRecycleView";
 
+
+    public void setItems(List<MessagePreviewEntity> items) {
+        this.items = items;
+    }
+
     public MessagesGridRecycleViewAdapter(Context mContext) {
-        this.mContext = mContext;
+        this.context = mContext;
     }
+//
+//    public MessagesGridRecycleViewAdapter(Context context, List<MessagePreviewEntity> items) {
+//        this.items = items;
+//        this.context = context;
+//    }
 
-    public MessagesGridRecycleViewAdapter(Context context, List<MessagePreviewEntity> items) {
-        mItems = items;
-        mContext = context;
+    public void setItem(List<MessagePreviewEntity> items){
+        this.items = items;
+        notifyDataSetChanged();
     }
-
 
     @NonNull
     @Override
@@ -52,7 +61,7 @@ public class MessagesGridRecycleViewAdapter extends RecyclerView.Adapter<Recycle
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
 
         ViewMessageGridPreview viewMessageGridPreview = (ViewMessageGridPreview) viewHolder;
-        MessagePreviewEntity entity = mItems.get(position);
+        MessagePreviewEntity entity = items.get(position);
         if(entity!= null){
 //            viewMessageGridPreview.s
             viewMessageGridPreview.getTitle().setText(entity.getContactName());
@@ -60,13 +69,16 @@ public class MessagesGridRecycleViewAdapter extends RecyclerView.Adapter<Recycle
             viewMessageGridPreview.setPinImage(entity.isPinned());
             viewMessageGridPreview.setMessageSentTime(entity.getDate());
             Log.d(TAG, "onBindViewHolder: entity.getImageResId()" + entity.getImageResId());
-            viewMessageGridPreview.setImage(ContextCompat.getDrawable(mContext, entity.getImageResId()));
+            viewMessageGridPreview.setImage(ContextCompat.getDrawable(context, entity.getImageResId()));
+        }
+        else {
+            Log.e(TAG, "onBindViewHolder: entity is NULL at position: " + position );
         }
     }
 
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return items.size();
     }
 }

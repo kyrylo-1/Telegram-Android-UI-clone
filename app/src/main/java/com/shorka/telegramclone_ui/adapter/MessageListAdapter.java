@@ -21,12 +21,12 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
 
-    private Context mContext;
-    private List<Message> mMessageList;
+    private Context context;
+    private List<Message> messageList;
 
     public MessageListAdapter(Context context, List<Message> messageList) {
-        mContext = context;
-        mMessageList = messageList;
+        this.context = context;
+        this.messageList = messageList;
     }
 
     @NonNull
@@ -39,14 +39,14 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Message message = mMessageList.get(position);
+        Message message = messageList.get(position);
 
         ((ViewSentMessage) holder).bind(message);
     }
 
     @Override
     public int getItemCount() {
-        return mMessageList.size();
+        return messageList.size();
     }
 
     @Override

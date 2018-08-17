@@ -1,6 +1,5 @@
 package com.shorka.telegramclone_ui.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,10 +17,10 @@ import java.util.List;
  */
 public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<ContactsRecyclerViewAdapter.ViewHolder> {
 
-    private List<ContactPhoneBook> mItems;
+    private List<ContactPhoneBook> items;
 
     public ContactsRecyclerViewAdapter(List<ContactPhoneBook> items){
-        mItems = items;
+        this.items = items;
     }
 
     @NonNull
@@ -35,13 +34,13 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<ContactsRe
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String strContact = mItems.get(position).getName();
+        String strContact = items.get(position).getName();
         holder.myTextView.setText(strContact);
     }
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return items.size();
     }
 
     // stores and recycles views as they are scrolled off screen

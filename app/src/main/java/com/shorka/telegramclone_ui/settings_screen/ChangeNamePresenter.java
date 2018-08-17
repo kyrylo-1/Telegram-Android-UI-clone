@@ -10,7 +10,7 @@ import com.shorka.telegramclone_ui.db.UserRepository;
 /**
  * Created by Kyrylo Avramenko on 8/14/2018.
  */
-public class ChangeNamePresenter implements ChangeNameContract.UserActionsListener {
+public class ChangeNamePresenter  {
 
     private static final String TAG = "ChangeNamePresenter";
     @NonNull
@@ -23,29 +23,27 @@ public class ChangeNamePresenter implements ChangeNameContract.UserActionsListen
 
         this.userRepo = userRepo;
         this.view = view;
-        user = userRepo.getCurrUser();
+//        user = userRepo.getCurrUser();
     }
 
-    @Override
+
     public void updateName(@Nullable String firstName, @Nullable String lastName) {
 
-        Log.d(TAG, "updateName: ");
-        if (firstName == null || firstName.isEmpty()) {
-            view.returnToPreviousScreen();
-            return;
-        }
-        user.name = firstName;
-        userRepo.update(user);
-        view.returnToPreviousScreen();
+//        Log.d(TAG, "updateName: ");
+//        if (firstName == null || firstName.isEmpty()) {
+//            view.returnToPreviousScreen();
+//            return;
+//        }
+//        user.name = firstName;
+//        userRepo.updateUser(user);
+//        view.returnToPreviousScreen();
     }
 
-    @Override
+
     public void loadName() {
 
-        User user = userRepo.getCurrUser();
-
-        Log.d(TAG, "loadName: user:" + user.name);
-
-        view.showName(user.name, user.name);
+//        user = userRepo.getCurrUser();
+//        Log.d(TAG, "loadName: user:" + user.name);
+//        view.showName(user.name, user.name);
     }
 }

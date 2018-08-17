@@ -18,7 +18,7 @@ import com.shorka.telegramclone_ui.R;
 /**
  * Created by Kyrylo Avramenko on 8/13/2018.
  */
-public class ChangeNameActivity extends AppCompatActivity implements ChangeNameContract.View {
+public class ChangeNameActivity extends AppCompatActivity {
 
     private static final String TAG = "ChangeNameActivity";
     private EditText etFirstName, etLastName;
@@ -57,8 +57,8 @@ public class ChangeNameActivity extends AppCompatActivity implements ChangeNameC
 
     private void initPresenter() {
         Log.d(TAG, "initPresenter: ");
-        actionsListener = new ChangeNamePresenter(Injection.provideUserRepo(getApplication()), this);
-        actionsListener.loadName();
+//        actionsListener = new ChangeNamePresenter(Injection.provideUserRepo(getApplication()), this);
+//        actionsListener.loadName();
     }
     
     @Override
@@ -79,13 +79,11 @@ public class ChangeNameActivity extends AppCompatActivity implements ChangeNameC
     }
 
 
-    @Override
     public void returnToPreviousScreen() {
         Log.d(TAG, "returnToPreviousScreen: ");
         onBackPressed();
     }
 
-    @Override
     public void showName(String firsName, @Nullable String lastName) {
 
         if(!TextUtils.isEmpty(firsName)){

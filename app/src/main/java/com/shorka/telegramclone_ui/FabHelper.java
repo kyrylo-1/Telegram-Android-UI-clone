@@ -33,7 +33,7 @@ public class FabHelper {
     public FabHelper(View fab, long duration) {
         LINEAR_INTERPOLATOR = new LinearInterpolator();
         mOffscreenTranslation = fab.getHeight() + fab.getHeight() / 2;
-        Log.d(TAG,  " fab.getHeight(): " +fab.getHeight() + "\n mOffscreenTranslation:" + mOffscreenTranslation);
+//        Log.d(TAG,  " fab.getHeight(): " +fab.getHeight() + "\n mOffscreenTranslation:" + mOffscreenTranslation);
         this.duration = duration;
     }
 

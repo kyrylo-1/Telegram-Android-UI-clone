@@ -1,7 +1,10 @@
 package com.shorka.telegramclone_ui.chats_previews_screen;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
@@ -30,6 +33,7 @@ import com.shorka.telegramclone_ui.Utils;
 import com.shorka.telegramclone_ui.activities.ContactChatActivity;
 import com.shorka.telegramclone_ui.activities.ContactsActivity;
 import com.shorka.telegramclone_ui.db.User;
+import com.shorka.telegramclone_ui.db.UserMsgs;
 import com.shorka.telegramclone_ui.settings_screen.SettingsActivity;
 import com.shorka.telegramclone_ui.adapter.MessagesGridRecycleViewAdapter;
 
@@ -38,17 +42,17 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatsPreviewActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ChatPreviewContract.View {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     //region Define global variables
-    private final Context mContext = ChatsPreviewActivity.this;
-    private RecyclerView mRecycleView;
+    private final Context context = ChatsPreviewActivity.this;
+    private RecyclerView recycleView;
+    private MessagesGridRecycleViewAdapter adapterRv;
     private RecyclerView.Adapter mAdapter;
     private FloatingActionButton mFab;
     private FabScroll mFabScroll;
     private TextView txtUsername, txtPhoneNumber;
     private MenuItem menuCurrAccount;
-    private ChatPreviewContract.UserActionsListener chatActionListener;
 
     private static final String TAG = "ChatsPreviewActivity";
     //endregion
@@ -58,7 +62,7 @@ public class ChatsPreviewActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpUI();
-        initPresenter();
+        obserViewModel();
     }
 
     private void setUpUI() {
@@ -80,11 +84,11 @@ public class ChatsPreviewActivity extends AppCompatActivity
         menuNav.setGroupVisible(R.id.nav_group_accounts, false);
         menuCurrAccount = menuNav.findItem(R.id.nav_curr_account);
 
-        CircleImageView imageView = new CircleImageView(mContext);
+        CircleImageView imageView = new CircleImageView(context);
         imageView.setMinimumHeight(62);
         imageView.setMinimumWidth(62);
 
-        imageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.profile_default_male));
+        imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.profile_default_male));
         menuCurrAccount.setActionView(imageView);
 
         final View navHeaderView = navigationView.getHeaderView(0);
@@ -100,12 +104,38 @@ public class ChatsPreviewActivity extends AppCompatActivity
         txtPhoneNumber = navHeaderView.findViewById(R.id.text_phonenumber);
         //endregion
 
+        recycleView = findViewById(R.id.main_recycler_view_messages);
+        adapterRv = new MessagesGridRecycleViewAdapter(context);
+        recycleView.setAdapter(adapterRv);
+        recycleView.setLayoutManager(new LinearLayoutManager(context));
+        recycleView.setNestedScrollingEnabled(false);
     }
 
-    private void initPresenter() {
-        chatActionListener = new ChatPreviewPresenter(Injection.provideUserRepo(getApplication()), this);
-        chatActionListener.loadChats();
+    private void obserViewModel() {
+        ChatPreviewViewModel viewModel = ViewModelProviders.of(this).get(ChatPreviewViewModel.class);
+
+        viewModel.getCurrUser().observe(this, user -> {
+            Log.d(TAG, "onChanged: update user details: ");
+            if (user == null)
+                Log.e(TAG, "obserViewModel: user in NULL");
+
+            else {
+                updateUserDetail(user);
+            }
+        });
+
+
+        viewModel.getAllUserMsgs().observe(this, userMsgs -> {
+            if(userMsgs == null){
+                Log.e(TAG, "onChanged: userMsgs == null");
+            }
+            else {
+                Log.d(TAG, "obserViewModel: getAllUserMsgs() setItems");
+                adapterRv.setItem(viewModel.transformToMsgPreviews(userMsgs));
+            }
+        });
     }
+
 
     @Override
     public void onBackPressed() {
@@ -153,42 +183,39 @@ public class ChatsPreviewActivity extends AppCompatActivity
                 Log.d(TAG, "onNavigationItemSelected: press nav_settings");
 
                 drawer.closeDrawer(GravityCompat.START);
-                SettingsActivity.open(mContext);
+                SettingsActivity.open(context);
                 break;
 
             case R.id.nav_contacts:
                 Log.d(TAG, "onNavigationItemSelected: press nav_contacts");
                 drawer.closeDrawer(GravityCompat.START);
-                ContactsActivity.open(mContext);
+                ContactsActivity.open(context);
                 break;
         }
-
-
         return true;
     }
 
     //region Implements methods from ChatPreviewContract.View
-    @Override
+
     public void showChats(List<User> users) {
 
-        mRecycleView = findViewById(R.id.main_recycler_view_messages);
-        mRecycleView.setAdapter(new MessagesGridRecycleViewAdapter(mContext));
-        mRecycleView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecycleView.setNestedScrollingEnabled(false);
+        adapterRv = new MessagesGridRecycleViewAdapter(context);
+        recycleView.setAdapter(adapterRv);
+        recycleView.setLayoutManager(new LinearLayoutManager(context));
+        recycleView.setNestedScrollingEnabled(false);
 
-
-        DividerCustomPaddingItemDecoration itemCustomDecor = new DividerCustomPaddingItemDecoration(mContext,
+        DividerCustomPaddingItemDecoration itemCustomDecor = new DividerCustomPaddingItemDecoration(context,
                 DividerItemDecoration.VERTICAL,
-                Utils.dpToPx(getResources().getDimension(R.dimen.message_image_preview_scale), mContext) -
-                        Utils.dpToPx(9, mContext)
+                Utils.dpToPx(getResources().getDimension(R.dimen.message_image_preview_scale), context) -
+                        Utils.dpToPx(9, context)
         );
-        mRecycleView.addItemDecoration(itemCustomDecor);
+        recycleView.addItemDecoration(itemCustomDecor);
 
-        mRecycleView.addOnItemTouchListener(new RecyclerItemClickListener(mContext, mRecycleView, new RecyclerItemClickListener.OnItemClickListener() {
+        recycleView.addOnItemTouchListener(new RecyclerItemClickListener(context, recycleView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Log.d(TAG, "onItemClick: click on pos: " + position + "_  " + view.getId());
-                ContactChatActivity.open(mContext);
+                ContactChatActivity.open(context);
             }
 
             @Override
@@ -198,20 +225,19 @@ public class ChatsPreviewActivity extends AppCompatActivity
         }));
     }
 
-    @Override
     public void showNewMessage() {
 
     }
 
-    @Override
+
     public void showChatMessages(long idRecipient) {
 
     }
 
-    @Override
-    public void updateUserDetail(User user) {
 
-//        Log.d(TAG, "updateUserDetail: " + user.name);
+    private void updateUserDetail(User user) {
+
+        Log.d(TAG, "updateUserDetail: " + user.name);
         txtUsername.setText(user.name);
         txtPhoneNumber.setText(user.phoneNumber);
         menuCurrAccount.setTitle(user.name);

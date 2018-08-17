@@ -7,13 +7,14 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.shorka.telegramclone_ui.DefaultDataGenerator;
 
 /**
  * Created by Kyrylo Avramenko on 8/1/2018.
  */
-@Database(entities = {User.class}, version = 2, exportSchema = false)
+@Database(entities = {User.class, UserMsgs.class}, version = 4, exportSchema = true)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String TAG = "AppDatabase";
@@ -22,30 +23,37 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract UserDao userDao();
 
-//    public abstract UserMessagesDao userMessagesDao();
+    public abstract UserMsgDao userMsgDao();
 
-    public static AppDatabase getDatabase(final Context context, boolean memoryOnly) {
+    public static AppDatabase getDatabase(final Context context, final boolean inMemory) {
         Log.d(TAG, "getDatabase: ");
-        if (INSTANCE != null) {
-            return INSTANCE;
+
+        if (INSTANCE == null) {
+            synchronized (AppDatabase.class) {
+                if (INSTANCE == null) {
+                    Log.d(TAG, "getDatabase: INSTANCE == null");
+                    INSTANCE = buildDatabase(context, inMemory);
+                }
+            }
         }
+        return INSTANCE;
+    }
 
-        Log.d(TAG, "getDatabase: INSTANCE == null");
 
+    private static AppDatabase buildDatabase(final Context context, final boolean inMemory) {
         RoomDatabase.Builder<AppDatabase> appDB;
-        if (memoryOnly) {
-            appDB = Room.databaseBuilder(context.getApplicationContext(),
-                    AppDatabase.class, DB_NAME);
-        } else {
-            appDB = Room.inMemoryDatabaseBuilder(context.getApplicationContext(),
-                    AppDatabase.class);
+        //for testing
+        if (inMemory)
+            appDB = Room.inMemoryDatabaseBuilder(context.getApplicationContext(), AppDatabase.class);
+
+        else {
+            appDB = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class,
+                    DB_NAME);
         }
 
-        INSTANCE = appDB.addCallback(sRoomDatabaseCallback)
+        return appDB.addCallback(sRoomDatabaseCallback)
                 .fallbackToDestructiveMigration()
                 .build();
-
-        return INSTANCE;
     }
 
     private static RoomDatabase.Callback sRoomDatabaseCallback =
@@ -54,84 +62,42 @@ public abstract class AppDatabase extends RoomDatabase {
                 @Override
                 public void onCreate(@NonNull SupportSQLiteDatabase db) {
                     super.onCreate(db);
+
                     Log.d(TAG, "onCreate: populate database");
                     new PopulateDbAsync(INSTANCE).execute();
                 }
 
                 @Override
                 public void onOpen(@NonNull SupportSQLiteDatabase db) {
-                    Log.d(TAG, "onOpen: ");
+                    Log.d(TAG, "onOpen: DB");
                     super.onOpen(db);
                 }
-
-
             };
-
 
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
-        private final UserDao mDao;
-//        private final UserMessagesDao mUserMessagesDao;
-
+        private final UserDao dao;
+        private final UserMsgDao userMsgsDao;
         PopulateDbAsync(AppDatabase db) {
             Log.d(TAG, "PopulateDbAsync: ");
-            mDao = db.userDao();
-//            mUserMessagesDao = db.userMessagesDao();
+            dao = db.userDao();
+            userMsgsDao = db.userMsgDao();
         }
 
         @Override
         protected Void doInBackground(final Void... params) {
-//            mDao.deleteAll();
 
-            mDao.insert(createUserEntity(1, "Kyrylo", "I am android dev", "204-234- 6712",
-                    "mirecsy23"));
-//            mDao.insert(createUserEntity(2, "Bob", "", "204-234- 6712"));
-//            mDao.insert(createUserEntity(4, "Alex", "hahaha", "234-214- 6715"));
-//            mDao.insert(createUserEntity(5, "Ivan", "I live in NYC.", "904-124- 6413"));
-//            mDao.insert(createUserEntity(6, "Pavel Durov", null, "204-224- 3242"));
-//            mDao.insert(createUserEntity(7, "Lisa S", null, "204-224- 3242"));
-//            mDao.insert(createUserEntity(8, "Mr. Heisenberg", null, "204-224-0000"));
-//            mDao.insert(createUserEntity(9, "Jack Uni", null, "204-224- 3342"));
-//            mDao.insert(createUserEntity(10, "Anna Smith", null, "204-224- 6542"));
-//
-//            long userId = 1;
-//            mUserMessagesDao.insertUserMessages(createUserMessages(2, userId,
-//                    "Are you even lifting, bro?"));
-//            mUserMessagesDao.insertUserMessages(createUserMessages(4, userId,
-//                    "Are you even lifting, bro?"));
-//            mUserMessagesDao.insertUserMessages(createUserMessages(5, userId,
-//                    "Are you even lifting, bro?"));
-//            mUserMessagesDao.insertUserMessages(createUserMessages(6, userId,
-//                    "Are you even lifting, bro?"));
-//            mUserMessagesDao.insertUserMessages(createUserMessages(7, userId,
-//                    "Are you even lifting, bro?"));
-//            mUserMessagesDao.insertUserMessages(createUserMessages(8, userId,
-//                    "Are you even lifting, bro?"));
-//            mUserMessagesDao.insertUserMessages(createUserMessages(9, userId,
-//                    "Are you even lifting, bro?"));
-//            mUserMessagesDao.insertUserMessages(createUserMessages(10, userId,
-//                    "Are you even lifting, bro?"));
+            Log.d(TAG, "doInBackground: actually insert data of users");
+
+            for (User user : DefaultDataGenerator.generateUser()) {
+                dao.insert(user);
+            }
+
+            for (UserMsgs userMsgs : DefaultDataGenerator.generateUserMessages()) {
+                userMsgsDao.insertUserMessages(userMsgs);
+            }
 
             return null;
         }
-
-        private User createUserEntity(long id, String name, @Nullable String bio, String phoneNumber
-                , String username) {
-            User user = new User(id);
-            user.name = name;
-            user.bio = bio;
-            user.phoneNumber = phoneNumber;
-            user.username = username;
-            return user;
-        }
-
-        private UserMessages createUserMessages(long recipientId, long userId, String lastMessage) {
-            UserMessages userMessages = new UserMessages(recipientId, userId);
-            userMessages.lastMessage = lastMessage;
-            return userMessages;
-        }
-
-
     }
-
 }

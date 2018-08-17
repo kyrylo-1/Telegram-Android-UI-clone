@@ -5,10 +5,6 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
-import com.shorka.telegramclone_ui.models.Message;
-
-import java.util.List;
-
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 /**
@@ -18,31 +14,31 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 //@Entity(tableName = "user_messages",
 //        foreignKeys = @ForeignKey(entity = User.class,
 //        parentColumns = "id", childColumns = "user_id", onDelete = CASCADE))
-
 @Entity(tableName = "user_messages")
-public class UserMessages {
+public class UserMsgs {
 
     @PrimaryKey
     @ColumnInfo(name = "recipient_id")
-    private final long mRecipientId;
+    private long recipientId;
 
     @ColumnInfo(name = "user_id")
-    private final long mUserId;
+    private long userId;
 
     public String lastMessage;
 
     public long getRecipientId() {
-        return mRecipientId;
+        return recipientId;
     }
 
 
     public long getUserId() {
-        return mUserId;
+        return userId;
     }
 
-    public UserMessages(long recipientId, long userId) {
-        mRecipientId = recipientId;
-        mUserId = userId;
+    public UserMsgs(long recipientId, long userId) {
+        this.recipientId = recipientId;
+        this.userId = userId;
     }
+
 
 }

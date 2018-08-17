@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -14,14 +13,14 @@ import android.view.View;
 public class HeaderViewBehaviour extends CoordinatorLayout.Behavior<HeaderView> {
 
     private static final String TAG = "HeaderViewBehaviour";
-    private Context mContext;
+    private Context context;
 
-    private int mStartMarginLeft;
-    private int mEndMarginLeft;
+    private int startMarginLeft;
+    private int endMarginLeft;
     private int mMarginRight;
     private int mStartMarginBottom;
-    private float mTitleStartSize;
-    private float mTitleEndSize;
+    private float titleStartSize;
+    private float titleEndSize;
 
     private int mImageStartScale, mImageEndScale;
 
@@ -29,13 +28,13 @@ public class HeaderViewBehaviour extends CoordinatorLayout.Behavior<HeaderView> 
 
     public HeaderViewBehaviour(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
+        this.context = context;
         shouldInitProperties();
     }
 
     public HeaderViewBehaviour(Context context, AttributeSet attrs, Context mContext) {
         super(context, attrs);
-        this.mContext = mContext;
+        this.context = mContext;
         shouldInitProperties();
     }
 
@@ -68,7 +67,7 @@ public class HeaderViewBehaviour extends CoordinatorLayout.Behavior<HeaderView> 
         float childPosition = dependency.getHeight()
                 + dependency.getY()
                 - child.getHeight()
-                - (getToolbarHeight(mContext) - child.getHeight()) * percentage / 1;
+                - (getToolbarHeight(context) - child.getHeight()) * percentage / 1;
 
 //        Log.d(TAG, "onDependentViewChanged: "+
 //                "\n dependency.getY():" +  Math.abs(dependency.getY()) +
@@ -84,28 +83,28 @@ public class HeaderViewBehaviour extends CoordinatorLayout.Behavior<HeaderView> 
             float layoutPercentage = (Math.abs(dependency.getY()) - (maxScroll / 2)) / (maxScroll / 2);
 
 
-            int leftMargin = (int) (layoutPercentage * mEndMarginLeft) + mStartMarginLeft;
+            int leftMargin = (int) (layoutPercentage * endMarginLeft) + startMarginLeft;
             lp.leftMargin = leftMargin;
-            float textSize = getTranslationOffset(mTitleStartSize, mTitleEndSize, layoutPercentage);
+            float textSize = getTranslationOffset(titleStartSize, titleEndSize, layoutPercentage);
 
-            Log.d(TAG, "onDependentViewChanged:"
-                    + "\n leftMargin: " + leftMargin
-                    + "\n textSize: " + textSize
-                    + "\n layoutPercentage: " + layoutPercentage
-                    + "\n mTitleStartSize: " + mTitleStartSize
-                    + "\n mTitleEndSize: " + mTitleEndSize);
+//            Log.d(TAG, "onDependentViewChanged:"
+//                    + "\n leftMargin: " + leftMargin
+//                    + "\n textSize: " + textSize
+//                    + "\n layoutPercentage: " + layoutPercentage
+//                    + "\n titleStartSize: " + titleStartSize
+//                    + "\n titleEndSize: " + titleEndSize);
 
             child.setTextSize(textSize);
         } else {
-            lp.leftMargin = mStartMarginLeft;
+            lp.leftMargin = startMarginLeft;
         }
 
 //        float layoutPercentage = (Math.abs(dependency.getY()) - (maxScroll / 1)) / Math.abs(maxScroll / 1);
 //
 //        Log.d(TAG, "onDependentViewChanged: layoutPercentage: " + layoutPercentage);
 //
-//        lp.leftMargin = (int) (layoutPercentage * mEndMarginLeft) + mStartMarginLeft;
-//        child.setTextSize(getTranslationOffset(mTitleStartSize, mTitleEndSize, layoutPercentage));
+//        lp.leftMargin = (int) (layoutPercentage * endMarginLeft) + startMarginLeft;
+//        child.setTextSize(getTranslationOffset(titleStartSize, titleEndSize, layoutPercentage));
 
 
         lp.rightMargin = mMarginRight;
@@ -128,34 +127,34 @@ public class HeaderViewBehaviour extends CoordinatorLayout.Behavior<HeaderView> 
     }
 
     private void shouldInitProperties() {
-        if (mStartMarginLeft == 0) {
-            mStartMarginLeft = mContext.getResources().getDimensionPixelOffset(R.dimen.header_view_start_margin_left);
+        if (startMarginLeft == 0) {
+            startMarginLeft = context.getResources().getDimensionPixelOffset(R.dimen.header_view_start_margin_left);
         }
 
-        if (mEndMarginLeft == 0) {
-            mEndMarginLeft = mContext.getResources().getDimensionPixelOffset(R.dimen.header_view_end_margin_left);
+        if (endMarginLeft == 0) {
+            endMarginLeft = context.getResources().getDimensionPixelOffset(R.dimen.header_view_end_margin_left);
         }
 
         if (mStartMarginBottom == 0) {
-            mStartMarginBottom = mContext.getResources().getDimensionPixelOffset(R.dimen.header_view_start_margin_bottom);
+            mStartMarginBottom = context.getResources().getDimensionPixelOffset(R.dimen.header_view_start_margin_bottom);
         }
 
         if (mMarginRight == 0) {
-            mMarginRight = mContext.getResources().getDimensionPixelOffset(R.dimen.header_view_end_margin_right);
+            mMarginRight = context.getResources().getDimensionPixelOffset(R.dimen.header_view_end_margin_right);
         }
 
-        if (mTitleEndSize == 0) {
-            mTitleEndSize = mContext.getResources().getDimensionPixelSize(R.dimen.header_view_end_text_size);
+        if (titleEndSize == 0) {
+            titleEndSize = context.getResources().getDimensionPixelSize(R.dimen.header_view_end_text_size);
         }
 
-        if (mTitleStartSize == 0) {
-            mTitleStartSize = mContext.getResources().getDimensionPixelSize(R.dimen.header_view_start_text_size);
+        if (titleStartSize == 0) {
+            titleStartSize = context.getResources().getDimensionPixelSize(R.dimen.header_view_start_text_size);
         }
 
 //        if(mImageStartScale == 0)
-//            mImageStartScale = mContext.getResources().getDimensionPixelSize(R.dimen.image_scale);
+//            mImageStartScale = context.getResources().getDimensionPixelSize(R.dimen.image_scale);
 //
 //        if(mImageEndScale == 0)
-//            mImageEndScale = mContext.getResources().getDimensionPixelSize(R.dimen.image_scale_toolbar);
+//            mImageEndScale = context.getResources().getDimensionPixelSize(R.dimen.image_scale_toolbar);
     }
 }
