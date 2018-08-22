@@ -79,7 +79,7 @@ public abstract class AppDatabase extends RoomDatabase {
         private final UserDao userDao;
         private final MessageDao messageDao;
 
-        PopulateDbAsync(AppDatabase db) {
+        PopulateDbAsync(@NonNull AppDatabase db) {
             Log.d(TAG, "PopulateDbAsync: ");
             userDao = db.userDao();
             messageDao = db.messageDao();

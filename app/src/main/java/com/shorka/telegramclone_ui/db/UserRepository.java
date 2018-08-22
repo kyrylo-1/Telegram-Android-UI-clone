@@ -72,6 +72,7 @@ public class UserRepository {
     //</editor-fold>
 
 
+    //<editor-fold desc="Messages related methods">
     public LiveData<List<Message>> getRecentMessageByChat(){
         return messageDao.getMostRecentDateAndGrouById();
     }
@@ -88,18 +89,23 @@ public class UserRepository {
         return messageDao.getByRecipientId(id);
     }
 
+    public void insertMessage(Message message){
+        new insertMessageAsyncTask(messageDao).execute(message);
+    }
 
-    private static class updateAsyncTask extends AsyncTask<User, Void, Void> {
+    //</editor-fold>
 
-        private UserDao mAsyncTaskDao;
+    private static class insertMessageAsyncTask extends AsyncTask<Message, Void, Void> {
 
-        updateAsyncTask(UserDao dao) {
-            mAsyncTaskDao = dao;
+        private MessageDao messageDao;
+
+        insertMessageAsyncTask(MessageDao dao) {
+            messageDao = dao;
         }
 
         @Override
-        protected Void doInBackground(final User... params) {
-            mAsyncTaskDao.insert(params[0]);
+        protected Void doInBackground(final Message... params) {
+            messageDao.insert(params[0]);
             return null;
         }
     }

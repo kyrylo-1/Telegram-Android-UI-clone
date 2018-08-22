@@ -47,6 +47,7 @@ public class ContactChatActivity extends AppCompatActivity {
     private MessageListAdapter adapterRv;
     private FabHelper fabHelper;
     private ContactChatViewModel chatViewModel;
+    private long userId;
     //    //endregion
 
 
@@ -59,7 +60,7 @@ public class ContactChatActivity extends AppCompatActivity {
 //        setDefaultMessages();
         setUpUI();
         initEditText();
-        long userId = getIntent().getLongExtra(Config.USER_ID_EXTRA, 1);
+        userId = getIntent().getLongExtra(Config.USER_ID_EXTRA, 1);
         observeViewModel(userId);
         Log.d(TAG, "onCreate: String userId: " + userId);
         updateRecipientUI(chatViewModel.getUser(userId));
@@ -211,9 +212,7 @@ public class ContactChatActivity extends AppCompatActivity {
     }
 
     private void sendMessages() {
-
-//        listMsgs.add(new Message(editText.getText().toString(), 12));
-//        msgListAdapter.notifyItemInserted(listMsgs.size() - 1);
+        chatViewModel.sendMessage(userId, editText.getText().toString());
         editText.getText().clear();
     }
 
