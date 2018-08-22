@@ -9,6 +9,8 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 
+import java.util.List;
+
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 
@@ -19,11 +21,11 @@ import io.reactivex.Single;
 @Dao
 public interface UserDao {
 
-//    @Query("SELECT * from user")
-//    Flowable<List<User>> getAllUsers();
-
     @Query("SELECT * FROM user WHERE id = :id")
     LiveData<User> getById(long id);
+
+    @Query("SELECT * FROM user")
+    LiveData<List<User>> getAll();
 
     @Query("DELETE FROM user")
     void deleteAll();

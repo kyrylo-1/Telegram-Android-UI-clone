@@ -3,7 +3,7 @@
 //import android.support.annotation.NonNull;
 //import android.util.Log;
 //
-//import com.shorka.telegramclone_ui.db.UserMsgs;
+//import com.shorka.telegramclone_ui.db.UserMessages;
 //import com.shorka.telegramclone_ui.db.UserRepository;
 //
 //import java.util.List;
@@ -69,9 +69,9 @@
 ////        userRepo.getUserMsgsById(2)
 ////                .subscribeOn(Schedulers.io())
 ////                .observeOn(AndroidSchedulers.mainThread())
-////                .subscribe(new Consumer<UserMsgs>() {
+////                .subscribe(new Consumer<UserMessages>() {
 ////                    @Override
-////                    public void accept(UserMsgs userMsgs) throws Exception {
+////                    public void accept(UserMessages userMsgs) throws Exception {
 ////
 ////                    }
 ////                });

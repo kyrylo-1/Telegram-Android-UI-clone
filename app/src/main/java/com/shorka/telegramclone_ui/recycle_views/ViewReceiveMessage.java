@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.shorka.telegramclone_ui.R;
-import com.shorka.telegramclone_ui.models.Message;
+import com.shorka.telegramclone_ui.db.Message;
 
 /**
  * Created by Kyrylo Avramenko on 6/29/2018.
@@ -23,7 +23,7 @@ public class ViewReceiveMessage extends RecyclerView.ViewHolder {
 
     void bind(Message message){
 
-//        mTxtMessageBody.setText(message.getMessage());
-//        mTxtTime.setText((int) message.getCreatedAt());
+//        mTxtMessageBody.setText(text.getMessage());
+//        mTxtTime.setText((int) text.getCreatedAt());
     }
 }

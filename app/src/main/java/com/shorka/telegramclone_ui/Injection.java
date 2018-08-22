@@ -1,7 +1,10 @@
 package com.shorka.telegramclone_ui;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
+import com.shorka.telegramclone_ui.db.AppDatabase;
 import com.shorka.telegramclone_ui.db.UserRepository;
 
 /**
@@ -11,14 +14,10 @@ public class Injection {
 
     private static UserRepository userRepo;
 
-//    public static UserRepository getUserRepo() {
-//        return userRepo;
-//    }
-    public static UserRepository provideUserRepo(Application application){
+    public static UserRepository provideUserRepo(@NonNull Application application) {
 
-        if(userRepo == null){
+        if (userRepo == null)
             userRepo = new UserRepository(application);
-        }
 
         return userRepo;
     }

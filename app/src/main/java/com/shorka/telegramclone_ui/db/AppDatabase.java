@@ -14,7 +14,7 @@ import com.shorka.telegramclone_ui.DefaultDataGenerator;
 /**
  * Created by Kyrylo Avramenko on 8/1/2018.
  */
-@Database(entities = {User.class, UserMsgs.class}, version = 4, exportSchema = true)
+@Database(entities = {User.class, UserMessages.class, Message.class}, version = 5, exportSchema = true)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String TAG = "AppDatabase";
@@ -22,17 +22,17 @@ public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "user_database";
 
     public abstract UserDao userDao();
-
     public abstract UserMsgDao userMsgDao();
+    public abstract MessageDao messageDao();
 
-    public static AppDatabase getDatabase(final Context context, final boolean inMemory) {
-        Log.d(TAG, "getDatabase: ");
+    public static AppDatabase getInstance(final Context context, final boolean inMemory) {
+        Log.d(TAG, "getInstance: ");
 
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
-                    Log.d(TAG, "getDatabase: INSTANCE == null");
-                    INSTANCE = buildDatabase(context, inMemory);
+                    Log.d(TAG, "getInstance: INSTANCE == null");
+                    INSTANCE = buildDatabase(context.getApplicationContext(), inMemory);
                 }
             }
         }
@@ -44,10 +44,10 @@ public abstract class AppDatabase extends RoomDatabase {
         RoomDatabase.Builder<AppDatabase> appDB;
         //for testing
         if (inMemory)
-            appDB = Room.inMemoryDatabaseBuilder(context.getApplicationContext(), AppDatabase.class);
+            appDB = Room.inMemoryDatabaseBuilder(context, AppDatabase.class);
 
         else {
-            appDB = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class,
+            appDB = Room.databaseBuilder(context, AppDatabase.class,
                     DB_NAME);
         }
 
@@ -76,25 +76,52 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
-        private final UserDao dao;
-        private final UserMsgDao userMsgsDao;
+        private final UserDao userDao;
+        private final MessageDao messageDao;
+
         PopulateDbAsync(AppDatabase db) {
             Log.d(TAG, "PopulateDbAsync: ");
-            dao = db.userDao();
-            userMsgsDao = db.userMsgDao();
+            userDao = db.userDao();
+            messageDao = db.messageDao();
         }
+
+//        @Override
+//        protected Void doInBackground(final Void... params) {
+//
+//            Log.d(TAG, "doInBackground: actually insert data of users");
+//
+//            for (User user : DefaultDataGenerator.generateUsers()) {
+//                Log.d(TAG, "doInBackground: insert user with id: " + user.getIdMessage());
+//                userDao.insert(user);
+//            }
+//
+//            for (UserMessages userMessages : DefaultDataGenerator.generateLastUserMessages()) {
+//                Log.d(TAG, "doInBackground: insert userMessages with id:" + userMessages.getRecipientId());
+//                userMsgsDao.insertUserMessages(userMessages);
+//            }
+//
+//            return null;
+//        }
+//    }
 
         @Override
         protected Void doInBackground(final Void... params) {
 
             Log.d(TAG, "doInBackground: actually insert data of users");
 
-            for (User user : DefaultDataGenerator.generateUser()) {
-                dao.insert(user);
+            for (User user : DefaultDataGenerator.generateUsers()) {
+                Log.d(TAG, "doInBackground: insert user with id: " + user.getId());
+                userDao.insert(user);
             }
 
-            for (UserMsgs userMsgs : DefaultDataGenerator.generateUserMessages()) {
-                userMsgsDao.insertUserMessages(userMsgs);
+//            for (UserMessages userMessages : DefaultDataGenerator.generateLastUserMessages()) {
+//                Log.d(TAG, "doInBackground: insert userMessages with id:" + userMessages.getRecipientId());
+//                userMsgsDao.insertUserMessages(userMessages);
+//            }
+
+            for (Message message : DefaultDataGenerator.generateMessages()) {
+//                Log.d(TAG, "doInBackground: insert userMessages with id:" + message.recipientId);
+                messageDao.insert(message);
             }
 
             return null;

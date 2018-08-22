@@ -6,8 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.shorka.telegramclone_ui.R;
-import com.shorka.telegramclone_ui.Utils;
-import com.shorka.telegramclone_ui.models.Message;
+import com.shorka.telegramclone_ui.db.Message;
 
 /**
  * Created by Kyrylo Avramenko on 6/29/2018.
@@ -20,18 +19,16 @@ public class ViewSentMessage  extends RecyclerView.ViewHolder  {
     public ViewSentMessage(View itemView) {
         super(itemView);
 
-        Log.d(TAG, "ViewSentMessage: constructor init");
+//        Log.d(TAG, "ViewSentMessage: constructor init");
 
         mTxtMessageBody = itemView.findViewById(R.id.text_sent_message_body);
         mTxtTime = itemView.findViewById(R.id.text_sent_message_time);
     }
-    public void bind(Message message){
+    public void bind(String messageText, String date){
 
         Log.d(TAG, "bind: BIND");
-        mTxtMessageBody.setText(message.getMessage());
-//        mTxtTime.setText(message.getCreatedAt());
-
-        mTxtTime.setText("14:48");
+        mTxtMessageBody.setText(messageText);
+        mTxtTime.setText(date);
     }
 
 }

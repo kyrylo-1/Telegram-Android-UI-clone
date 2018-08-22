@@ -29,10 +29,10 @@
 
         <activity android:name=".settings_screen.SettingsActivity" />
         <activity
-            android:name=".activities.ContactChatActivity"
+            android:name=".contact_chat_screen.ContactChatActivity"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
 
-        <activity android:name=".activities.ContactsActivity" />
+        <activity android:name=".ContactsActivity" />
         <activity android:name=".settings_screen.ChangeNameActivity">
 
             <!--<intent-filter>-->

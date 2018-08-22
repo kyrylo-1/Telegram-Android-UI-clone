@@ -23,7 +23,7 @@ public class ChangeNamePresenter  {
 
         this.userRepo = userRepo;
         this.view = view;
-//        user = userRepo.getCurrUser();
+//        user = userRepo.getCurrLiveUser();
     }
 
 
@@ -42,7 +42,7 @@ public class ChangeNamePresenter  {
 
     public void loadName() {
 
-//        user = userRepo.getCurrUser();
+//        user = userRepo.getCurrLiveUser();
 //        Log.d(TAG, "loadName: user:" + user.name);
 //        view.showName(user.name, user.name);
     }

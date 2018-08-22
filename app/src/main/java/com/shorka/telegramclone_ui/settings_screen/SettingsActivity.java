@@ -11,6 +11,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,13 +34,11 @@ import com.shorka.telegramclone_ui.entities.SettingsTextEntity;
 
 import java.util.ArrayList;
 
-import me.imid.swipebacklayout.lib.SwipeBackLayout;
-import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
 /**
  * Created by Kyrylo Avramenko on 6/11/2018.
  */
-public class SettingsActivity extends SwipeBackActivity implements AppBarLayout.OnOffsetChangedListener
+public class SettingsActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener
         , SettingsContract.View {
 
     private static final String TAG = "SettingsActivity";
@@ -59,7 +58,6 @@ public class SettingsActivity extends SwipeBackActivity implements AppBarLayout.
         setContentView(R.layout.activity_settings);
         Log.d(TAG, "onCreate: ");
         setupUI();
-        getSwipeBackLayout().setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);
         initPresenter();
     }
 

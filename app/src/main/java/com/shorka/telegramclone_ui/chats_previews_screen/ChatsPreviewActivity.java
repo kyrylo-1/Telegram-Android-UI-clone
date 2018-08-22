@@ -1,22 +1,21 @@
 package com.shorka.telegramclone_ui.chats_previews_screen;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,18 +23,19 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.shorka.telegramclone_ui.Config;
 import com.shorka.telegramclone_ui.DividerCustomPaddingItemDecoration;
-import com.shorka.telegramclone_ui.FabScroll;
-import com.shorka.telegramclone_ui.Injection;
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.RecyclerItemClickListener;
 import com.shorka.telegramclone_ui.Utils;
-import com.shorka.telegramclone_ui.activities.ContactChatActivity;
-import com.shorka.telegramclone_ui.activities.ContactsActivity;
-import com.shorka.telegramclone_ui.db.User;
-import com.shorka.telegramclone_ui.db.UserMsgs;
-import com.shorka.telegramclone_ui.settings_screen.SettingsActivity;
+import com.shorka.telegramclone_ui.ViewModelFactory;
+import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatActivity;
+import com.shorka.telegramclone_ui.ContactsActivity;
 import com.shorka.telegramclone_ui.adapter.MessagesGridRecycleViewAdapter;
+import com.shorka.telegramclone_ui.db.Message;
+import com.shorka.telegramclone_ui.db.User;
+import com.shorka.telegramclone_ui.entities.MessagePreview;
+import com.shorka.telegramclone_ui.settings_screen.SettingsActivity;
 
 import java.util.List;
 
@@ -45,16 +45,14 @@ public class ChatsPreviewActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     //region Define global variables
+    private static final String TAG = "ChatsPreviewActivity";
     private final Context context = ChatsPreviewActivity.this;
+
     private RecyclerView recycleView;
     private MessagesGridRecycleViewAdapter adapterRv;
-    private RecyclerView.Adapter mAdapter;
-    private FloatingActionButton mFab;
-    private FabScroll mFabScroll;
     private TextView txtUsername, txtPhoneNumber;
     private MenuItem menuCurrAccount;
-
-    private static final String TAG = "ChatsPreviewActivity";
+    private ChatPreviewViewModel viewModel;
     //endregion
 
     @Override
@@ -62,7 +60,7 @@ public class ChatsPreviewActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpUI();
-        obserViewModel();
+        observeViewModel();
     }
 
     private void setUpUI() {
@@ -108,31 +106,66 @@ public class ChatsPreviewActivity extends AppCompatActivity
         adapterRv = new MessagesGridRecycleViewAdapter(context);
         recycleView.setAdapter(adapterRv);
         recycleView.setLayoutManager(new LinearLayoutManager(context));
+
+        final DividerCustomPaddingItemDecoration itemCustomDecor = new DividerCustomPaddingItemDecoration(context,
+                DividerItemDecoration.VERTICAL,
+                Utils.dpToPx(getResources().getDimension(R.dimen.message_image_preview_scale), context) -
+                        Utils.dpToPx(9, context)
+        );
+        recycleView.addItemDecoration(itemCustomDecor);
         recycleView.setNestedScrollingEnabled(false);
+        recycleView.addOnItemTouchListener(new RecyclerItemClickListener(context, recycleView, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                clickOnRecycleItem(view, position);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+            }
+        }));
     }
 
-    private void obserViewModel() {
-        ChatPreviewViewModel viewModel = ViewModelProviders.of(this).get(ChatPreviewViewModel.class);
+    private void observeViewModel() {
 
-        viewModel.getCurrUser().observe(this, user -> {
+        ViewModelFactory factory = ViewModelFactory.getInstance(getApplication());
+        viewModel = ViewModelProviders.of(this, factory).get(ChatPreviewViewModel.class);
+
+        viewModel.getLiveCurrUser().observe(this, user -> {
             Log.d(TAG, "onChanged: update user details: ");
             if (user == null)
-                Log.e(TAG, "obserViewModel: user in NULL");
+                Log.e(TAG, "observeViewModel: user in NULL");
 
             else {
+                viewModel.cacheUser(user);
                 updateUserDetail(user);
             }
         });
 
+        viewModel.getAllLiveUsers().observe(this, users -> {
+            Log.d(TAG, "observeViewModel: getAllLiveUsers().observe");
+            if (users == null) {
+                Log.e(TAG, "observeViewModel:getAllLiveUsers is null");
+            } else {
+                Log.d(TAG, "observeViewModel: getAllLiveUsers() setItems");
+                viewModel.setAllUsers(users);
+            }
+        });
 
-        viewModel.getAllUserMsgs().observe(this, userMsgs -> {
-            if(userMsgs == null){
-                Log.e(TAG, "onChanged: userMsgs == null");
+
+        viewModel.getRecentMessageByChat().observe(this, messages -> {
+
+            if (messages == null) {
+                Log.e(TAG, "messages == null");
+            } else {
+                Log.d(TAG, "observeViewModel: getRecentMessageByChat() setItems. QTY IS: " + messages.size());
+//                for (Message m : messages) {
+////                    Log.d(TAG, "chat text: " + m.text);
+////                }
+
+                adapterRv.setItems(viewModel.transformToMsgPreviews(messages));
             }
-            else {
-                Log.d(TAG, "obserViewModel: getAllUserMsgs() setItems");
-                adapterRv.setItem(viewModel.transformToMsgPreviews(userMsgs));
-            }
+
         });
     }
 
@@ -195,47 +228,7 @@ public class ChatsPreviewActivity extends AppCompatActivity
         return true;
     }
 
-    //region Implements methods from ChatPreviewContract.View
-
-    public void showChats(List<User> users) {
-
-        adapterRv = new MessagesGridRecycleViewAdapter(context);
-        recycleView.setAdapter(adapterRv);
-        recycleView.setLayoutManager(new LinearLayoutManager(context));
-        recycleView.setNestedScrollingEnabled(false);
-
-        DividerCustomPaddingItemDecoration itemCustomDecor = new DividerCustomPaddingItemDecoration(context,
-                DividerItemDecoration.VERTICAL,
-                Utils.dpToPx(getResources().getDimension(R.dimen.message_image_preview_scale), context) -
-                        Utils.dpToPx(9, context)
-        );
-        recycleView.addItemDecoration(itemCustomDecor);
-
-        recycleView.addOnItemTouchListener(new RecyclerItemClickListener(context, recycleView, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Log.d(TAG, "onItemClick: click on pos: " + position + "_  " + view.getId());
-                ContactChatActivity.open(context);
-            }
-
-            @Override
-            public void onItemLongClick(View view, int position) {
-
-            }
-        }));
-    }
-
-    public void showNewMessage() {
-
-    }
-
-
-    public void showChatMessages(long idRecipient) {
-
-    }
-
-
-    private void updateUserDetail(User user) {
+    private void updateUserDetail(@NonNull User user) {
 
         Log.d(TAG, "updateUserDetail: " + user.name);
         txtUsername.setText(user.name);
@@ -243,6 +236,14 @@ public class ChatsPreviewActivity extends AppCompatActivity
         menuCurrAccount.setTitle(user.name);
     }
 
+    private void clickOnRecycleItem(View view, int position) {
+        MessagePreview mp = adapterRv.getMessagePreview(position);
+        Log.d(TAG, "onItemClick: click on pos: " + position +
+                "_  and lastMessage: " + adapterRv.getMessagePreview(position).getLastMessage() +
+                " id: " + mp.getId());
 
-    //endregion
+        Intent intent = new Intent(context, ContactChatActivity.class);
+        intent.putExtra(Config.USER_ID_EXTRA, mp.getId());
+        startActivity(intent);
+    }
 }

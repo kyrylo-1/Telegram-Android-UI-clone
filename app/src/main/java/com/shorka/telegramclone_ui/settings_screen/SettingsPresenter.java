@@ -23,11 +23,11 @@ public class SettingsPresenter {
 
     public void loadUserInfo() {
 
-//        if(userRepo.getCurrUser()!= null){
-//            settView.showUserInfo(userRepo.getCurrUser());
+//        if(userRepo.getCurrLiveUser()!= null){
+//            settView.showUserInfo(userRepo.getCurrLiveUser());
 //        }
 //
-//        else Log.e(TAG, "loadUserInfo: getCurrUser() CAN NOT be NULL");
+//        else Log.e(TAG, "loadUserInfo: getCurrLiveUser() CAN NOT be NULL");
 
     }
 

@@ -1,14 +1,19 @@
 package com.shorka.telegramclone_ui.entities;
 
 import android.support.annotation.DrawableRes;
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
  * Created by Kyrylo Avramenko on 6/19/2018.
  */
-public class MessagePreviewEntity {
+public class MessagePreview {
 
-    private static final String TAG = "MessagePreviewEntity";
+    private static final String TAG = "MessagePreview";
+
+    public long getId() {
+        return id;
+    }
 
     public String getContactName() {
         return contactName;
@@ -34,7 +39,7 @@ public class MessagePreviewEntity {
         return imageResId;
     }
 
-    private final String id;
+    private long id;
     private String contactName;
     private String lastMessage;
     private boolean isPinned;
@@ -43,23 +48,21 @@ public class MessagePreviewEntity {
     @DrawableRes
     private int imageResId;
 
-    public MessagePreviewEntity(MessagePreviewBuilder messagePreviewBuilder) {
+    public MessagePreview(MessagePreviewBuilder messagePreviewBuilder) {
 
+        this.id = messagePreviewBuilder.id;
         this.contactName = messagePreviewBuilder.contactName;
         this.lastMessage = messagePreviewBuilder.lastMessage;
         this.isPinned = messagePreviewBuilder.isPinned;
         this.isReaded = messagePreviewBuilder.isReaded;
         this.date = messagePreviewBuilder.date;
         this.imageResId = messagePreviewBuilder.imageResId;
-        id = contactName + Math.random();
     }
 
-    public String getId() {
-        return id;
-    }
 
 
     public static class MessagePreviewBuilder {
+        private long id;
         private String contactName;
         private String lastMessage;
         private boolean isPinned;
@@ -69,6 +72,10 @@ public class MessagePreviewEntity {
         private int imageResId;
 
 
+        public MessagePreviewBuilder withId(long id){
+            this.id = id;
+            return this;
+        }
 
         public MessagePreviewBuilder withContactName(String contactName) {
             this.contactName = contactName;
@@ -100,10 +107,10 @@ public class MessagePreviewEntity {
             return this;
         }
 
-        public MessagePreviewEntity buildMesagePreview() {
+        public MessagePreview buildMesagePreview() {
 
             if (isValidateData())
-                return new MessagePreviewEntity(this);
+                return new MessagePreview(this);
 
             else {
                 Log.e(TAG, "buildMesagePreview: Data is NOT validated on build");
@@ -114,26 +121,26 @@ public class MessagePreviewEntity {
         private boolean isValidateData() {
             //Do some basic validations to check
 
-            if (contactName.isEmpty()) {
+            if (TextUtils.isEmpty(contactName)) {
                 Log.e(TAG, "isValidateData: contactName.isEmpty");
                 return false;
             }
 
-            if (lastMessage.isEmpty()) {
+            if (TextUtils.isEmpty(lastMessage)) {
                 Log.e(TAG, "isValidateData: lastMessage.isEmpty");
                 return false;
             }
 
 
-            if (date.isEmpty()) {
+            if (TextUtils.isEmpty(date)) {
                 Log.e(TAG, "isValidateData: date.isEmpty");
                 return false;
             }
 
-            if (imageResId == 0) {
-                Log.e(TAG, "isValidateData: imageResId == 0");
-                return false;
-            }
+//            if (imageResId == 0) {
+//                Log.e(TAG, "isValidateData: imageResId == 0");
+//                return false;
+//            }
 
             return true;
         }

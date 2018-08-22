@@ -1,4 +1,4 @@
-package com.shorka.telegramclone_ui.activities;
+package com.shorka.telegramclone_ui;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -16,9 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.shorka.telegramclone_ui.R;
-import com.shorka.telegramclone_ui.RecyclerItemClickListener;
-import com.shorka.telegramclone_ui.SmsHelper;
 import com.shorka.telegramclone_ui.adapter.ContactsRecyclerViewAdapter;
 import com.shorka.telegramclone_ui.models.ContactPhoneBook;
 
@@ -27,12 +25,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
 /**
  * Created by Kyrylo Avramenko on 7/17/2018.
  */
-public class ContactsActivity extends SwipeBackActivity {
+public class ContactsActivity extends AppCompatActivity {
 
     private static final String TAG = "ContactsActivity";
     private final Context context = ContactsActivity.this;

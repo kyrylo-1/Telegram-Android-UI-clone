@@ -5,14 +5,9 @@ import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.util.List;
+import com.shorka.telegramclone_ui.entities.MessagePreview;
 
-import io.reactivex.Flowable;
-import io.reactivex.Maybe;
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
+import java.util.List;
 
 
 /**
@@ -20,26 +15,79 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class UserRepository {
 
-    private UserDao userDao;
     private static final String TAG = "UserRepository";
-    private LiveData<User> currUser;
-    private LiveData<List<UserMsgs>> allUserMsgs;
 
-    public LiveData<List<UserMsgs>> getAllUserMsgs() {
-        return allUserMsgs;
-    }
+    private final UserDao userDao;
+    private final MessageDao messageDao;
+    private List<User> allUsers;
+    private User currUser;
+    private final AppDatabase appDB;
+    private List<MessagePreview> cachedMessagePreviews;
 
     public UserRepository(Application application) {
         Log.d(TAG, "UserRepository: constructor");
-        AppDatabase appDB = AppDatabase.getDatabase(application, true);
+        appDB = AppDatabase.getInstance(application, true);
         userDao = appDB.userDao();
-        currUser = userDao.getById(1);
-        allUserMsgs = appDB.userMsgDao().getAllUserMessages();
+        messageDao = appDB.messageDao();
     }
 
-    public LiveData<User> getCurrUser() {
+    //<editor-fold desc="User related methods">
+    public LiveData<User> getCurrLiveUser() {
+        return userDao.getById(1);
+    }
+
+    public LiveData<List<Message>> getAllLiveMessages(){
+        return appDB.messageDao().getAll();
+    }
+
+    public LiveData<List<User>> getAllLiveUsers() {
+        return userDao.getAll();
+    }
+
+    public List<User> getAllUsers() {
+        return allUsers;
+    }
+
+    public void setAllUsers(List<User> allUsers) {
+        this.allUsers = allUsers;
+    }
+    //TODO: optimize for search
+
+    public User getCachedUserById(long id) {
+
+        for (User user : allUsers) {
+            if (user.getId() == id)
+                return user;
+        }
+        return null;
+    }
+
+    public User getCurrUser() {
         return currUser;
     }
+
+    public void setCurrUser(User currUser) {
+        this.currUser = currUser;
+    }
+    //</editor-fold>
+
+
+    public LiveData<List<Message>> getRecentMessageByChat(){
+        return messageDao.getMostRecentDateAndGrouById();
+    }
+
+    public List<MessagePreview> getCachedMessagePreviews() {
+        return cachedMessagePreviews;
+    }
+
+    public void setCachedMessagePreviews(List<MessagePreview> cachedMessagePreviews) {
+        this.cachedMessagePreviews = cachedMessagePreviews;
+    }
+
+    public LiveData<List<Message>> getMessagesyRecipientId(long id){
+        return messageDao.getByRecipientId(id);
+    }
+
 
     private static class updateAsyncTask extends AsyncTask<User, Void, Void> {
 
