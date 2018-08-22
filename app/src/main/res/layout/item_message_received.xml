@@ -2,39 +2,61 @@
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/constaint_receive_message"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/colorBackGray"
-    android:paddingEnd="12dp"
-    android:paddingStart="6dp"
-    android:paddingTop="8dp">
+    style="@style/LayoutOfMessage">
 
 
     <TextView
         android:id="@+id/text_receive_message_body"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextViewMessage"
+
+        android:layout_marginEnd="8dp"
         android:background="@drawable/rounded_rectangle_receive"
-        android:gravity="center_vertical"
-        android:minWidth="70dp"
-        android:padding="8dp"
-        android:text="н"
-        android:textColor="@android:color/black"
+        android:text="Some text here"
+
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/marginSpacer_beforeMessage"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <TextView
         android:id="@+id/text_receive_message_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginEnd="22dp"
         android:text="11:40"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/text_receive_message_body" />
+
+    <android.support.v4.widget.Space
+        android:id="@+id/marginSpacer_beforeMessage"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="@dimen/spacer_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <ImageView
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginStart="4dp"
+        android:src="@drawable/arrow_message_received"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/marginSpacer_beforeMessage" />
+
+    <ImageView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginEnd="4dp"
+        android:src="@drawable/ic_check"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/text_receive_message_body" />
+
 
 </android.support.constraint.ConstraintLayout>

@@ -33,8 +33,6 @@
             android:id="@+id/test_convo_recycler_view_messages"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
             tools:listitem="@layout/item_message_sent" />
@@ -50,15 +48,12 @@
             android:layout_height="48dp"
             android:layout_gravity="bottom|end"
             android:layout_margin="12dp"
-            app:backgroundTint="@color/colorWhite"
             android:scaleType="center"
-            app:fabSize="normal"
-            android:src="@drawable/ic_arrow_scroll_down" />
+            android:src="@drawable/ic_arrow_scroll_down"
+            app:backgroundTint="@color/colorWhite"
+            app:fabSize="normal" />
 
     </FrameLayout>
-
-
-
 
     <View
         android:layout_width="match_parent"
