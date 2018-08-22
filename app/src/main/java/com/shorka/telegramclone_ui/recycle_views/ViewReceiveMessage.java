@@ -12,18 +12,18 @@ import com.shorka.telegramclone_ui.db.Message;
  */
 public class ViewReceiveMessage extends RecyclerView.ViewHolder {
 
-    private TextView mTxtMessageBody, mTxtTime;
+    private TextView txtMessageBody, txtTime;
 
     public ViewReceiveMessage(View itemView) {
         super(itemView);
 
-        mTxtMessageBody = (TextView) itemView.findViewById(R.id.text_receive_message_body);
-        mTxtTime = (TextView) itemView.findViewById(R.id.text_receive_message_time);
+        txtMessageBody = (TextView) itemView.findViewById(R.id.text_receive_message_body);
+        txtTime = (TextView) itemView.findViewById(R.id.text_receive_message_time);
     }
 
-    void bind(Message message){
+    public void bind(String messageText, String date){
 
-//        mTxtMessageBody.setText(text.getMessage());
-//        mTxtTime.setText((int) text.getCreatedAt());
+        txtMessageBody.setText(messageText);
+        txtTime.setText(date);
     }
 }

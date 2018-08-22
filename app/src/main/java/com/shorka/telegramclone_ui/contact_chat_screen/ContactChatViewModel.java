@@ -46,7 +46,8 @@ public class ContactChatViewModel extends AndroidViewModel {
         m.recipientId = recipientId;
         m.text = text;
         m.date = "66:66";
-
+        m.messageType = Message.SENT;
+        
         messagesToInsert.add(m);
         userRepo.insertMessage(m);
     }

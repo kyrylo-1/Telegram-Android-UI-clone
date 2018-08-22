@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.db.Message;
+import com.shorka.telegramclone_ui.recycle_views.ViewReceiveMessage;
 import com.shorka.telegramclone_ui.recycle_views.ViewSentMessage;
 
 import java.util.List;
@@ -20,8 +21,6 @@ import java.util.List;
 public class MessageListAdapter extends RecyclerView.Adapter {
 
     private static final String TAG = "MessageListAdapter";
-    private static final int VIEW_TYPE_MESSAGE_SENT = 1;
-    private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
 
     private List<Message> items;
 
@@ -37,19 +36,32 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message_sent, parent, false);
-        return new ViewSentMessage(view);
+        int res = (viewType == Message.RECEIVED) ? R.layout.item_message_received
+                : R.layout.item_message_sent;
+
+        View view = LayoutInflater.from(parent.getContext()).inflate(res, parent, false);
+        return (viewType == Message.RECEIVED) ? new ViewReceiveMessage(view) : new ViewSentMessage(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Message message = items.get(position);
 
-        if (message != null)
-            ((ViewSentMessage) holder).bind(message.text, message.date);
-
-        else
+        if (message == null) {
             Log.e(TAG, "onBindViewHolder: dont find item on position: " + position);
+            return;
+        }
+
+        switch (message.messageType) {
+            case Message.RECEIVED:
+                ((ViewReceiveMessage) holder).bind(message.text, message.date);
+                break;
+
+            case Message.SENT:
+                ((ViewSentMessage) holder).bind(message.text, message.date);
+                break;
+        }
+
     }
 
     @Override
@@ -60,7 +72,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
 
-        //Because it's only demo now
-        return VIEW_TYPE_MESSAGE_SENT;
+        Message msg = items.get(position);
+
+        return msg.messageType;
     }
 }

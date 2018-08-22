@@ -58,7 +58,6 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         setContentView(R.layout.activity_settings);
         Log.d(TAG, "onCreate: ");
         setupUI();
-        initPresenter();
     }
 
     @Override
@@ -160,11 +159,6 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         recyclerView.addItemDecoration(itemDecor);
     }
 
-    private void initPresenter() {
-//        settActionsListener =
-//        settActionsListener = new SettingsPresenter(Injection.provideUserRepo(getApplication()), this);
-//        settActionsListener.loadUserInfo();
-    }
 
     final int CAMERA_PIC_REQUEST = 1337;
     final int GALLERY_REQUEST = 1338;

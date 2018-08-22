@@ -42,27 +42,6 @@ public class DefaultDataGenerator {
     }
 
 
-//    public static List<UserMessages> generateLastUserMessages() {
-//        final List<UserMessages> list = new ArrayList<>();
-//        long userId = 1;
-//        list.add(createUserMessages(2, userId, "Are you even lifting, bro?"));
-//        list.add(createUserMessages(3, userId, "Okay"));
-//        list.add(createUserMessages(4, userId, "see you there"));
-//        list.add(createUserMessages(5, userId, "Do you know where is my keys?"));
-//        list.add(createUserMessages(6, userId, "sup"));
-//        list.add(createUserMessages(7, userId, "Dont skip my classes anymore"));
-//        list.add(createUserMessages(8, userId, "I need to think about this more carefully. See you"));
-//        list.add(createUserMessages(9, userId, "Really?"));
-//
-//        return list;
-//    }
-//
-//    private static UserMessages createUserMessages(long recipientId, long userId, String lastMessage) {
-//        UserMessages userMessages = new UserMessages(recipientId, userId);
-//        return userMessages;
-//    }
-
-
     public static List<Message> generateMessages() {
         final List<Message> list = new ArrayList<>();
         long recipientId = 2;
@@ -100,6 +79,7 @@ public class DefaultDataGenerator {
         message.recipientId = recipientId;
         message.text = text;
         message.date = time;
+        message.messageType = Message.RECEIVED;
         return message;
     }
 

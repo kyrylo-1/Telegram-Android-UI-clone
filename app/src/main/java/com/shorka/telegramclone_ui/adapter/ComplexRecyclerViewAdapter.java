@@ -22,7 +22,7 @@ import java.util.List;
 public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private final int PLAIN = 0, SUBTITLE = 1, OPTION = 2, TOGGLE = 3;
-    private List<Object> items = new ArrayList<>();
+    private List<Object> items;
 
     public ComplexRecyclerViewAdapter(ArrayList<Object> items) {
         this.items = items;
