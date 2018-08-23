@@ -11,9 +11,6 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
-import io.reactivex.Maybe;
-import io.reactivex.Single;
-
 /**
  * Created by Kyrylo Avramenko on 8/1/2018.
  */
@@ -38,4 +35,13 @@ public interface UserDao {
 
     @Delete
     void delete(User user);
+
+    @Query("SELECT * FROM contact_Phonebook")
+    LiveData<List<PhoneContact>> getPhoneContacts();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertPhoneContact(PhoneContact phoneContact);
+
+    @Update
+    void updatePhoneContact(PhoneContact phoneContact);
 }

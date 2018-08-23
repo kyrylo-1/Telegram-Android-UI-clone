@@ -1,9 +1,11 @@
-package com.shorka.telegramclone_ui;
+package com.shorka.telegramclone_ui.utils;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+
+import com.shorka.telegramclone_ui.R;
 
 /**
  * Created by Kyrylo Avramenko on 7/19/2018.

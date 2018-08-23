@@ -8,7 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.shorka.telegramclone_ui.R;
-import com.shorka.telegramclone_ui.models.ContactPhoneBook;
+import com.shorka.telegramclone_ui.db.Message;
+import com.shorka.telegramclone_ui.db.PhoneContact;
 
 import java.util.List;
 
@@ -17,10 +18,15 @@ import java.util.List;
  */
 public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<ContactsRecyclerViewAdapter.ViewHolder> {
 
-    private List<ContactPhoneBook> items;
+    private List<PhoneContact> items;
 
-    public ContactsRecyclerViewAdapter(List<ContactPhoneBook> items){
+    public ContactsRecyclerViewAdapter() {
+
+    }
+
+    public void setItems(List<PhoneContact> items) {
         this.items = items;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -34,13 +40,19 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<ContactsRe
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String strContact = items.get(position).getName();
-        holder.myTextView.setText(strContact);
+
+        if (items == null)
+            return;
+
+        PhoneContact phoneContact = items.get(position);
+        if (phoneContact != null) {
+            holder.myTextView.setText(phoneContact.getName());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return items == null ? 0 : items.size();
     }
 
     // stores and recycles views as they are scrolled off screen

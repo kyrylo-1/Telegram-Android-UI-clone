@@ -23,14 +23,14 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.shorka.telegramclone_ui.Config;
+import com.shorka.telegramclone_ui.utils.Config;
 import com.shorka.telegramclone_ui.DividerCustomPaddingItemDecoration;
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.RecyclerItemClickListener;
 import com.shorka.telegramclone_ui.Utils;
 import com.shorka.telegramclone_ui.ViewModelFactory;
 import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatActivity;
-import com.shorka.telegramclone_ui.ContactsActivity;
+import com.shorka.telegramclone_ui.contacts_screen.ContactsActivity;
 import com.shorka.telegramclone_ui.adapter.MessagesGridRecycleViewAdapter;
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.entities.MessagePreview;
@@ -169,16 +169,25 @@ public class ChatsPreviewActivity extends AppCompatActivity
                 Log.e(TAG, "messages == null");
             } else {
                 Log.d(TAG, "observeViewModel: getRecentMessageByChat() setItems. QTY IS: " + messages.size());
-//                for (Message m : messages) {
-////                    Log.d(TAG, "chat text: " + m.text);
-////                }
 
                 adapterRv.setItems(viewModel.transformToMsgPreviews(messages));
             }
 
         });
+
+        viewModel.loadPhoneContacts();
+//        viewModel.getLivePhoneContacts().observe(this, phoneContacts -> {
+//            if(phoneContacts!=null){
+//                viewModel.setCachedPhoneContacts(phoneContacts);
+//            }
+//        });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        viewModel.cancelLoadContacts();;
+    }
 
     @Override
     public void onBackPressed() {

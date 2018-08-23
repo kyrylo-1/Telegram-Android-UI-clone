@@ -8,9 +8,11 @@ import android.support.annotation.NonNull;
 
 import com.shorka.telegramclone_ui.chats_previews_screen.ChatPreviewViewModel;
 import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatViewModel;
+import com.shorka.telegramclone_ui.contacts_screen.ContactsViewModel;
 import com.shorka.telegramclone_ui.db.UserRepository;
 import com.shorka.telegramclone_ui.settings_screen.ChangeNameViewModel;
 import com.shorka.telegramclone_ui.settings_screen.SettingsViewModel;
+import com.shorka.telegramclone_ui.utils.Injection;
 
 /**
  * Created by Kyrylo Avramenko on 8/20/2018.
@@ -58,6 +60,10 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
         else if (modelClass.isAssignableFrom(ChangeNameViewModel.class)) {
             return (T) new ChangeNameViewModel(application, userRepo);
+        }
+
+        else if (modelClass.isAssignableFrom(ContactsViewModel.class)) {
+            return (T) new ContactsViewModel(application, userRepo);
         }
 
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());

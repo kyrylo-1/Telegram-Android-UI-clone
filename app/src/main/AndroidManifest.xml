@@ -32,7 +32,7 @@
             android:name=".contact_chat_screen.ContactChatActivity"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
 
-        <activity android:name=".ContactsActivity" />
+        <activity android:name=".contacts_screen.ContactsActivity" />
         <activity android:name=".settings_screen.ChangeNameActivity">
 
         </activity>

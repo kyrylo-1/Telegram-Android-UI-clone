@@ -3,10 +3,12 @@ package com.shorka.telegramclone_ui.chats_previews_screen;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.shorka.telegramclone_ui.R;
+import com.shorka.telegramclone_ui.db.PhoneContact;
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.db.UserRepository;
@@ -22,18 +24,15 @@ public class ChatPreviewViewModel extends AndroidViewModel {
 
     private static final String TAG = "ChatPreviewViewModel";
     private UserRepository userRepo;
-
+    private Context context;
     public ChatPreviewViewModel(@NonNull Application application, UserRepository userRepo) {
         super(application);
+        context = application;
         this.userRepo = userRepo;
     }
 
     public LiveData<User> getLiveCurrUser() {
         return userRepo.getCurrLiveUser();
-    }
-
-    public LiveData<List<Message>> getAllLiveMessages() {
-        return userRepo.getAllLiveMessages();
     }
 
 
@@ -91,6 +90,22 @@ public class ChatPreviewViewModel extends AndroidViewModel {
                 .withDate("66:66")
                 .withImageResId(R.drawable.kochek_withback)
                 .buildMesagePreview();
+    }
+
+    LiveData<List<PhoneContact>> getLivePhoneContacts(){
+        return userRepo.getLivePhoneContacts();
+    }
+    
+    void loadPhoneContacts(){
+        userRepo.loadContacts();;
+    }
+    void cancelLoadContacts(){
+        userRepo.cancelLoadContacts();
+    }
+    
+    void setCachedPhoneContacts(List<PhoneContact> list){
+//        userRepo.setCachedPhoneContacts(list);
+        Log.d(TAG, "setCachedPhoneContacts: ");
     }
 
     @Override

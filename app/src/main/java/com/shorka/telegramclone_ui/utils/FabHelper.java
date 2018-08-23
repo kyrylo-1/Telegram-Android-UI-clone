@@ -1,4 +1,4 @@
-package com.shorka.telegramclone_ui;
+package com.shorka.telegramclone_ui.utils;
 
 import android.support.annotation.IntDef;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
+
+import com.shorka.telegramclone_ui.RollingFabState;
 
 /**
  * Created by Kyrylo Avramenko on 7/13/2018.

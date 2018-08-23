@@ -21,10 +21,9 @@ import java.util.List;
 public class MessageListAdapter extends RecyclerView.Adapter {
 
     private static final String TAG = "MessageListAdapter";
-
     private List<Message> items;
 
-    public MessageListAdapter(Context context) {
+    public MessageListAdapter() {
     }
 
     public void setItems(List<Message> items) {

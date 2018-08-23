@@ -20,8 +20,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.shorka.telegramclone_ui.Config;
-import com.shorka.telegramclone_ui.FabHelper;
+import com.shorka.telegramclone_ui.utils.Config;
+import com.shorka.telegramclone_ui.utils.FabHelper;
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.ViewModelFactory;
 import com.shorka.telegramclone_ui.adapter.MessageListAdapter;
@@ -180,7 +180,7 @@ public class ContactChatActivity extends AppCompatActivity {
     }
 
     private MessageListAdapter createRecycleAdapter() {
-        final MessageListAdapter adapter = new MessageListAdapter(context);
+        final MessageListAdapter adapter = new MessageListAdapter();
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {

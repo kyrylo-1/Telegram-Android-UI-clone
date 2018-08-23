@@ -14,7 +14,7 @@ import com.shorka.telegramclone_ui.DefaultDataGenerator;
 /**
  * Created by Kyrylo Avramenko on 8/1/2018.
  */
-@Database(entities = {User.class, UserMessages.class, Message.class}, version = 5, exportSchema = true)
+@Database(entities = {User.class, UserMessages.class, Message.class, PhoneContact.class}, version = 6, exportSchema = true)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String TAG = "AppDatabase";
