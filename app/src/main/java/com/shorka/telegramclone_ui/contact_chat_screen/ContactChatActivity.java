@@ -28,7 +28,6 @@ import com.shorka.telegramclone_ui.adapter.MessageListAdapter;
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.db.Message;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +46,7 @@ public class ContactChatActivity extends AppCompatActivity {
     private MessageListAdapter adapterRv;
     private FabHelper fabHelper;
     private ContactChatViewModel chatViewModel;
-    private long userId;
+    private long recipientUserId;
     //    //endregion
 
 
@@ -57,13 +56,12 @@ public class ContactChatActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_contact_chat);
 
-//        setDefaultMessages();
         setUpUI();
         initEditText();
-        userId = getIntent().getLongExtra(Config.USER_ID_EXTRA, 1);
-        observeViewModel(userId);
-        Log.d(TAG, "onCreate: String userId: " + userId);
-        updateRecipientUI(chatViewModel.getUser(userId));
+        recipientUserId = getIntent().getLongExtra(Config.USER_ID_EXTRA, 1);
+        observeViewModel(recipientUserId);
+        Log.d(TAG, "onCreate: String recipientUserId: " + recipientUserId);
+        updateRecipientUI(chatViewModel.getUser(recipientUserId));
     }
 
     @Override
@@ -212,7 +210,7 @@ public class ContactChatActivity extends AppCompatActivity {
     }
 
     private void sendMessages() {
-        chatViewModel.sendMessage(userId, editText.getText().toString());
+        chatViewModel.sendMessage(recipientUserId, editText.getText().toString());
         editText.getText().clear();
     }
 

@@ -22,14 +22,12 @@ public class ContactChatViewModel extends AndroidViewModel {
     private static final String TAG = "ContactChatViewModel";
     private UserRepository userRepo;
     private Context context;
-    private final List<Message> messagesToInsert;
 
     public ContactChatViewModel(@NonNull Application application, UserRepository userRepo) {
         super(application);
         Log.d(TAG, "ContactChatViewModel: init");
         context = application;
         this.userRepo = userRepo;
-        messagesToInsert = new ArrayList<>();
     }
 
     public User getUser(long id) {
@@ -47,8 +45,7 @@ public class ContactChatViewModel extends AndroidViewModel {
         m.text = text;
         m.date = "66:66";
         m.messageType = Message.SENT;
-        
-        messagesToInsert.add(m);
+
         userRepo.insertMessage(m);
     }
 }

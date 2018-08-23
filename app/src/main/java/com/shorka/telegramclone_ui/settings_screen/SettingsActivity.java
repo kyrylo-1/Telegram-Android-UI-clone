@@ -1,7 +1,7 @@
 package com.shorka.telegramclone_ui.settings_screen;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.arch.lifecycle.ViewModelProviders;
+import android.arch.persistence.room.PrimaryKey;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,7 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.shorka.telegramclone_ui.Injection;
+import com.shorka.telegramclone_ui.ViewModelFactory;
 import com.shorka.telegramclone_ui.adapter.ComplexRecyclerViewAdapter;
 import com.shorka.telegramclone_ui.DividerCustomItemDecoration;
 import com.shorka.telegramclone_ui.HeaderView;
@@ -33,20 +32,21 @@ import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.entities.SettingsTextEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * Created by Kyrylo Avramenko on 6/11/2018.
  */
-public class SettingsActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener
-        , SettingsContract.View {
+public class SettingsActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
 
     private static final String TAG = "SettingsActivity";
-    private final Context mContext = SettingsActivity.this;
-    private HeaderView mToolbarHeaderView, mFloatHeaderView;
-    private SettingsContract.UserActionsListener settActionsListener;
+    private final Context context = SettingsActivity.this;
+    private HeaderView toolbarHeaderView, floatHeaderView;
     private DividerCustomItemDecoration itemCustomDecor;
+    private DividerItemDecoration itemDefaultDecor;
     private boolean isHideToolbarView = false;
+    private SettingsViewModel settViewModel;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, SettingsActivity.class));
@@ -58,6 +58,16 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         setContentView(R.layout.activity_settings);
         Log.d(TAG, "onCreate: ");
         setupUI();
+        setViewModel();
+        showSettingsRecycleView(settViewModel.getCachedUser());
+        initUserInfo(settViewModel.getCachedUser());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUserHeader(settViewModel.getCachedUser());
+        updateListOfUserInfo(settViewModel.getCachedUser());
     }
 
     @Override
@@ -66,13 +76,13 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
 
         if (percentage == 1f && isHideToolbarView) {
-            mToolbarHeaderView.setVisibility(View.VISIBLE);
-            CoordinatorLayout.LayoutParams lpFloat = (CoordinatorLayout.LayoutParams) mFloatHeaderView.getLayoutParams();
+            toolbarHeaderView.setVisibility(View.VISIBLE);
+            CoordinatorLayout.LayoutParams lpFloat = (CoordinatorLayout.LayoutParams) floatHeaderView.getLayoutParams();
 
             isHideToolbarView = !isHideToolbarView;
 
         } else if (percentage < 1f && !isHideToolbarView) {
-            mToolbarHeaderView.setVisibility(View.GONE);
+            toolbarHeaderView.setVisibility(View.GONE);
             isHideToolbarView = !isHideToolbarView;
         }
     }
@@ -102,14 +112,14 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
 
     private void setupUI() {
 
-        mToolbarHeaderView = (HeaderView) findViewById(R.id.header_view_top);
-        mFloatHeaderView = (HeaderView) findViewById(R.id.float_header_view);
+        toolbarHeaderView = (HeaderView) findViewById(R.id.header_view_top);
+        floatHeaderView = (HeaderView) findViewById(R.id.float_header_view);
 
-        mToolbarHeaderView.setTxtViewName((TextView) mToolbarHeaderView.findViewById(R.id.name));
-        mToolbarHeaderView.setTxtViewLastSeen((TextView) mToolbarHeaderView.findViewById(R.id.last_seen));
+        toolbarHeaderView.setTxtViewName((TextView) toolbarHeaderView.findViewById(R.id.name));
+        toolbarHeaderView.setTxtViewLastSeen((TextView) toolbarHeaderView.findViewById(R.id.last_seen));
 
-        mFloatHeaderView.setTxtViewName((TextView) mFloatHeaderView.findViewById(R.id.name_float));
-        mFloatHeaderView.setTxtViewLastSeen((TextView) mFloatHeaderView.findViewById(R.id.last_seen_float));
+        floatHeaderView.setTxtViewName((TextView) floatHeaderView.findViewById(R.id.name_float));
+        floatHeaderView.setTxtViewLastSeen((TextView) floatHeaderView.findViewById(R.id.last_seen_float));
 
         final AppBarLayout mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar_test);
         final Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -133,8 +143,8 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         setHeaderText(R.id.snippet_messages, "Messages");
         setHeaderText(R.id.snippet_txt_support, "Support");
 
-        itemCustomDecor = new DividerCustomItemDecoration(mContext, DividerItemDecoration.VERTICAL);
-        DividerItemDecoration itemDefaultDecor = new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL);
+        itemCustomDecor = new DividerCustomItemDecoration(context, DividerItemDecoration.VERTICAL);
+        itemDefaultDecor = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
     }
 
     private TextView setHeaderText(@IdRes int idSnippet, String text) {
@@ -160,8 +170,8 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
     }
 
 
-    final int CAMERA_PIC_REQUEST = 1337;
-    final int GALLERY_REQUEST = 1338;
+    private final int CAMERA_PIC_REQUEST = 1337;
+    private final int GALLERY_REQUEST = 1338;
 
     private void showDialog() {
         final ProfilePicDialogFragment dialog = new ProfilePicDialogFragment();
@@ -188,61 +198,63 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         });
     }
 
-    private ArrayList<Object> getSettingsArrayList() {
-        ArrayList<Object> items = new ArrayList<>();
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.PlainText, "Notifications and Sounds", ""));
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.PlainText, "Privacy and Security", ""));
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.PlainText, "Data and Storage", ""));
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.PlainText, "Chat BackGround", ""));
+    private void setViewModel() {
+        ViewModelFactory factory = ViewModelFactory.getInstance(getApplication());
+        settViewModel = ViewModelProviders.of(this, factory).get(SettingsViewModel.class);
 
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.TextWithSelect, "Theme", "Default"));
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.TextWithSelect, "Language", "English"));
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.TextWithToggle, "Enable Animations", ""));
-
-        return items;
     }
 
-    private ArrayList<Object> getMessagesArrayList() {
-        ArrayList<Object> items = new ArrayList<>();
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.TextWithToggle, "In-App Browser", ""));
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.TextWithSelect, "Stickers", "18"));
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.TextWithSelect, "Message Text Size", "16"));
+    private void showSettingsRecycleView(User user) {
 
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.TextWithToggle, "Raise to Speak", ""));
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.TextWithToggle, "Send by Enter", ""));
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.TextWithToggle, "Autoplay Gifs", ""));
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.TextWithToggle, "Save to gallery", ""));
+        setRecycleView(R.id.recycler_view_settings,
+                SettingsTextEntitiesGenerator.getSettingsList(), itemCustomDecor);
 
-        return items;
+        setRecycleView(R.id.main_recycler_view_messages,
+                SettingsTextEntitiesGenerator.getMessagesList(), itemCustomDecor);
+
+        setRecycleView(R.id.recycler_view_support,
+                SettingsTextEntitiesGenerator.getSupporList(), itemDefaultDecor);
     }
 
-    private ArrayList<Object> getSupporArrayList() {
-        ArrayList<Object> items = new ArrayList<>();
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.PlainText, "Ask a question", ""));
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.PlainText, "Telegram FAQ", ""));
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.PlainText, "Private Policy", ""));
+    private ArrayList<Object> listUserInfo;
 
-        return items;
+    private void initUserInfo(User user) {
+
+        updateUserHeader(user);
+        if (listUserInfo == null) {
+            listUserInfo = new ArrayList<>();
+            listUserInfo.add(new SettingsTextEntity(SettingsTextEntity.TextType.SubTitle, user.phoneNumber, "Phone"));
+            listUserInfo.add(new SettingsTextEntity(SettingsTextEntity.TextType.SubTitle, user.username, "Username"));
+            listUserInfo.add(new SettingsTextEntity(SettingsTextEntity.TextType.SubTitle, user.bio, "Bio"));
+            setRecycleView(R.id.recycler_view_info, listUserInfo, itemCustomDecor);
+        }
     }
-    //endregion
 
-    @Override
-    public void showUserInfo(User user) {
+    private void updateUserHeader(User user) {
         final String name = user.name;
         final String date = "Dec 14th";
-        mFloatHeaderView.bindTo(name, date);
-        mToolbarHeaderView.bindTo(name, date);
-
-        ArrayList<Object> items = new ArrayList<>();
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.SubTitle, user.phoneNumber, "Phone"));
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.SubTitle, user.username, "Username"));
-        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.SubTitle, user.bio, "Bio"));
-
-
-        setRecycleView(R.id.recycler_view_info, items, itemCustomDecor);
-        setRecycleView(R.id.recycler_view_settings, getSettingsArrayList(), itemCustomDecor);
-        setRecycleView(R.id.main_recycler_view_messages, getMessagesArrayList(), itemCustomDecor);
-//        setRecycleView(R.id.recycler_view_support, getSupporArrayList(), itemDefaultDecor);
+        floatHeaderView.bindTo(name, date);
+        toolbarHeaderView.bindTo(name, date);
     }
+
+    private void updateListOfUserInfo(User user) {
+
+        for (Object obj : listUserInfo) {
+
+            SettingsTextEntity ste = (SettingsTextEntity) obj;
+            if(ste.getSecondText().equals("Phone") && !ste.getMainText().equals(user.phoneNumber) ) {
+                ste.setMainText(user.phoneNumber);
+            }
+
+            if(ste.getSecondText().equals("Username") && !ste.getMainText().equals(user.username) ) {
+                ste.setMainText(user.username);
+            }
+
+            if(ste.getSecondText().equals("Bio") && !ste.getMainText().equals(user.bio) ) {
+                ste.setMainText(user.bio);
+            }
+        }
+    }
+
 
 }

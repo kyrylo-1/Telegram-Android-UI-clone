@@ -44,6 +44,10 @@ public class UserRepository {
         return userDao.getAll();
     }
 
+    public void updateUser(User user){
+        new updateUserAsyncTask(userDao).execute(user);
+    }
+
     public List<User> getAllUsers() {
         return allUsers;
     }
@@ -67,6 +71,7 @@ public class UserRepository {
     }
 
     public void setCurrUser(User currUser) {
+        Log.d(TAG, "setCurrUser: ");
         this.currUser = currUser;
     }
     //</editor-fold>
@@ -106,6 +111,21 @@ public class UserRepository {
         @Override
         protected Void doInBackground(final Message... params) {
             messageDao.insert(params[0]);
+            return null;
+        }
+    }
+
+    private static class updateUserAsyncTask extends AsyncTask<User, Void, Void> {
+
+        private UserDao dao;
+
+        updateUserAsyncTask(UserDao dao) {
+            this.dao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final User... params) {
+            dao.update(params[0]);
             return null;
         }
     }

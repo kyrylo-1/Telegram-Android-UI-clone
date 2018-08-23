@@ -1,5 +1,6 @@
 package com.shorka.telegramclone_ui.settings_screen;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,8 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
-import com.shorka.telegramclone_ui.Injection;
 import com.shorka.telegramclone_ui.R;
+import com.shorka.telegramclone_ui.ViewModelFactory;
 
 /**
  * Created by Kyrylo Avramenko on 8/13/2018.
@@ -22,8 +23,7 @@ public class ChangeNameActivity extends AppCompatActivity {
 
     private static final String TAG = "ChangeNameActivity";
     private EditText etFirstName, etLastName;
-    private ChangeNameContract.UserActionsListener actionsListener;
-    
+    private ChangeNameViewModel viewModel;
     public static void open(Context context) {
         context.startActivity(new Intent(context, ChangeNameActivity.class));
     }
@@ -36,7 +36,7 @@ public class ChangeNameActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: ");
         setUpToolbar();
         setupUI();
-        initPresenter();
+        observeViewModel();
     }
     
     private void setUpToolbar() {
@@ -55,11 +55,12 @@ public class ChangeNameActivity extends AppCompatActivity {
         etLastName = findViewById(R.id.edit_last_name);
     }
 
-    private void initPresenter() {
-        Log.d(TAG, "initPresenter: ");
-//        actionsListener = new ChangeNamePresenter(Injection.provideUserRepo(getApplication()), this);
-//        actionsListener.loadName();
+    private void observeViewModel(){
+        ViewModelFactory factory = ViewModelFactory.getInstance(getApplication());
+        viewModel = ViewModelProviders.of(this, factory).get(ChangeNameViewModel.class);
+        showName(viewModel.getUserName(),"");
     }
+
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -73,33 +74,29 @@ public class ChangeNameActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.check_change_name) {
             Log.d(TAG, "onOptionsItemSelected: check_change_name");
-            actionsListener.updateName(etFirstName.getText().toString(), etLastName.getText().toString());
+            updateUsername();
         }
         return super.onOptionsItemSelected(item);      
     }
 
+    private void updateUsername(){
 
-    public void returnToPreviousScreen() {
-        Log.d(TAG, "returnToPreviousScreen: ");
+        if(TextUtils.isEmpty(etFirstName.getText()))
+            return;
+
+        viewModel.updateUsername(etFirstName.getText().toString());
         onBackPressed();
     }
 
-    public void showName(String firsName, @Nullable String lastName) {
+
+    private void showName(String firsName, @Nullable String lastName) {
 
         if(!TextUtils.isEmpty(firsName)){
             etFirstName.setText(firsName);
             etFirstName.setSelection(firsName.length());
         }
-
-
     }
 
     //TODO: fix bug with backstack in SettingsActivity
 
-    @Override
-    public void onBackPressed() {
-        Log.d(TAG, "onBackPressed: ");
-        finish();
-        SettingsActivity.open(this);
-    }
 }

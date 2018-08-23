@@ -24,9 +24,6 @@ public class UserMessages {
 
     public String userFirstName;
 
-//    @Embedded
-//    public Message text;
-
     public long getRecipientId() {
         return recipientId;
     }

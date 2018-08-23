@@ -92,4 +92,10 @@ public class ChatPreviewViewModel extends AndroidViewModel {
                 .withImageResId(R.drawable.kochek_withback)
                 .buildMesagePreview();
     }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        Log.d(TAG, "onCleared: ");
+    }
 }

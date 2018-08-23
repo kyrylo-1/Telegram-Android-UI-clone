@@ -63,6 +63,19 @@ public class ChatsPreviewActivity extends AppCompatActivity
         observeViewModel();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+        updateUserDetail(viewModel.getCacheUser());
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart: ");
+    }
+
     private void setUpUI() {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -230,6 +243,8 @@ public class ChatsPreviewActivity extends AppCompatActivity
 
     private void updateUserDetail(@NonNull User user) {
 
+        if(user == null)
+            return;
         Log.d(TAG, "updateUserDetail: " + user.name);
         txtUsername.setText(user.name);
         txtPhoneNumber.setText(user.phoneNumber);
