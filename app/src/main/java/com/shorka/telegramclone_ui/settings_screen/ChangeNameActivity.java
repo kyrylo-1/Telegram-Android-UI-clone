@@ -41,7 +41,7 @@ public class ChangeNameActivity extends AppCompatActivity {
     
     private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.change_name_toolbar);
-        toolbar.setTitle("Edit name");
+        toolbar.setTitle("Edit firstName");
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -58,7 +58,7 @@ public class ChangeNameActivity extends AppCompatActivity {
     private void observeViewModel(){
         ViewModelFactory factory = ViewModelFactory.getInstance(getApplication());
         viewModel = ViewModelProviders.of(this, factory).get(ChangeNameViewModel.class);
-        showName(viewModel.getUserName(),"");
+        showName(viewModel.getUserFirstName(),viewModel.getUserLastName());
     }
 
     
@@ -84,7 +84,7 @@ public class ChangeNameActivity extends AppCompatActivity {
         if(TextUtils.isEmpty(etFirstName.getText()))
             return;
 
-        viewModel.updateUsername(etFirstName.getText().toString());
+        viewModel.updateUsername(etFirstName.getText().toString(), etLastName.getText().toString());
         onBackPressed();
     }
 
@@ -95,8 +95,9 @@ public class ChangeNameActivity extends AppCompatActivity {
             etFirstName.setText(firsName);
             etFirstName.setSelection(firsName.length());
         }
+
+        if(!TextUtils.isEmpty(lastName)){
+            etLastName.setText(lastName);
+        }
     }
-
-    //TODO: fix bug with backstack in SettingsActivity
-
 }

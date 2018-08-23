@@ -3,6 +3,7 @@ package com.shorka.telegramclone_ui.settings_screen;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.db.UserRepository;
@@ -19,13 +20,18 @@ public class ChangeNameViewModel extends AndroidViewModel {
         this.userRepo = userRepo;
     }
 
-    String getUserName(){
-        return userRepo.getCurrUser().name;
+    String getUserFirstName(){
+        return userRepo.getCurrUser().firstName;
     }
 
-    void updateUsername(String name){
+    String getUserLastName(){
+        return userRepo.getCurrUser().lastName;
+    }
+
+    void updateUsername(@NonNull String firstName, @Nullable String lastName){
         User currUser = userRepo.getCurrUser();
-        currUser.name = name;
+        currUser.firstName = firstName;
+        currUser.lastName = lastName;
         userRepo.updateUser(currUser);
     }
 }

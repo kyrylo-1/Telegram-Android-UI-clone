@@ -1,11 +1,11 @@
 package com.shorka.telegramclone_ui.settings_screen;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.arch.persistence.room.PrimaryKey;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -32,7 +32,6 @@ import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.entities.SettingsTextEntity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -230,14 +229,20 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         }
     }
 
-    private void updateUserHeader(User user) {
-        final String name = user.name;
+    private void updateUserHeader(@NonNull User user) {
+        if(user == null)
+            return;
+
+        final String name = user.getFullName();
         final String date = "Dec 14th";
         floatHeaderView.bindTo(name, date);
         toolbarHeaderView.bindTo(name, date);
     }
 
-    private void updateListOfUserInfo(User user) {
+    private void updateListOfUserInfo(@NonNull User user) {
+
+        if(user == null)
+            return;
 
         for (Object obj : listUserInfo) {
 

@@ -32,12 +32,9 @@ import com.shorka.telegramclone_ui.ViewModelFactory;
 import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatActivity;
 import com.shorka.telegramclone_ui.ContactsActivity;
 import com.shorka.telegramclone_ui.adapter.MessagesGridRecycleViewAdapter;
-import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.entities.MessagePreview;
 import com.shorka.telegramclone_ui.settings_screen.SettingsActivity;
-
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -50,7 +47,7 @@ public class ChatsPreviewActivity extends AppCompatActivity
 
     private RecyclerView recycleView;
     private MessagesGridRecycleViewAdapter adapterRv;
-    private TextView txtUsername, txtPhoneNumber;
+    private TextView txtUserFullname, txtPhoneNumber;
     private MenuItem menuCurrAccount;
     private ChatPreviewViewModel viewModel;
     //endregion
@@ -111,7 +108,7 @@ public class ChatsPreviewActivity extends AppCompatActivity
             }
         });
 
-        txtUsername = navHeaderView.findViewById(R.id.text_username);
+        txtUserFullname = navHeaderView.findViewById(R.id.text_user_fullname);
         txtPhoneNumber = navHeaderView.findViewById(R.id.text_phonenumber);
         //endregion
 
@@ -243,12 +240,12 @@ public class ChatsPreviewActivity extends AppCompatActivity
 
     private void updateUserDetail(@NonNull User user) {
 
-        if(user == null)
+        if (user == null)
             return;
-        Log.d(TAG, "updateUserDetail: " + user.name);
-        txtUsername.setText(user.name);
+        Log.d(TAG, "updateUserDetail: " + user.firstName);
+        txtUserFullname.setText(user.getFullName());
         txtPhoneNumber.setText(user.phoneNumber);
-        menuCurrAccount.setTitle(user.name);
+        menuCurrAccount.setTitle(user.firstName);
     }
 
     private void clickOnRecycleItem(View view, int position) {

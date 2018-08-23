@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.User;
-import com.shorka.telegramclone_ui.db.UserMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ public class DefaultDataGenerator {
     private static User createUserEntity(long id, String name, @Nullable String bio, String phoneNumber
             , String username) {
         User user = new User(id);
-        user.name = name;
+        user.firstName = name;
         user.bio = bio;
         user.phoneNumber = phoneNumber;
         user.username = username;

@@ -84,7 +84,7 @@ public class ChatPreviewViewModel extends AndroidViewModel {
 
         return new MessagePreview.MessagePreviewBuilder()
                 .withId(user.getId())
-                .withContactName(user.name)
+                .withContactName(user.firstName)
                 .withLastMessage(msg.text)
                 .withIsPinned(false)
                 .withIsReaded(true)

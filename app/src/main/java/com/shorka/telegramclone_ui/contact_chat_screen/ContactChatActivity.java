@@ -241,7 +241,7 @@ public class ContactChatActivity extends AppCompatActivity {
     }
 
     private void updateRecipientUI(User user) {
-        txtChatPersonName.setText(user.name);
+        txtChatPersonName.setText(user.firstName);
     }
 
     private void updateAdapter(List<Message> messages) {
