@@ -80,6 +80,5 @@ dependencies {
     // or, for Android:
     api 'com.google.guava:guava:26.0-android'
 
-    //to debug sqlLite
-//    debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
+
 }

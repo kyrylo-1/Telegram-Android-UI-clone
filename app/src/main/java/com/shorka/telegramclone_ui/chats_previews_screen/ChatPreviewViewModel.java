@@ -1,5 +1,6 @@
 package com.shorka.telegramclone_ui.chats_previews_screen;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
@@ -17,6 +18,10 @@ import com.shorka.telegramclone_ui.entities.MessagePreview;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * Created by Kyrylo Avramenko on 8/16/2018.
  */
@@ -25,10 +30,13 @@ public class ChatPreviewViewModel extends AndroidViewModel {
     private static final String TAG = "ChatPreviewViewModel";
     private UserRepository userRepo;
     private Context context;
+    private CompositeDisposable compDisposable;
+
     public ChatPreviewViewModel(@NonNull Application application, UserRepository userRepo) {
         super(application);
         context = application;
         this.userRepo = userRepo;
+        compDisposable = new CompositeDisposable();
     }
 
     public LiveData<User> getLiveCurrUser() {
@@ -71,7 +79,7 @@ public class ChatPreviewViewModel extends AndroidViewModel {
         return userRepo.getCurrUser();
     }
 
-    public LiveData<List<Message>> getRecentMessageByChat(){
+    public LiveData<List<Message>> getRecentMessageByChat() {
         return userRepo.getRecentMessageByChat();
     }
 
@@ -92,25 +100,29 @@ public class ChatPreviewViewModel extends AndroidViewModel {
                 .buildMesagePreview();
     }
 
-    LiveData<List<PhoneContact>> getLivePhoneContacts(){
+    LiveData<List<PhoneContact>> getLivePhoneContacts() {
         return userRepo.getLivePhoneContacts();
     }
-    
-    void loadPhoneContacts(){
-        userRepo.loadContacts();;
-    }
-    void cancelLoadContacts(){
-        userRepo.cancelLoadContacts();
-    }
-    
-    void setCachedPhoneContacts(List<PhoneContact> list){
-//        userRepo.setCachedPhoneContacts(list);
-        Log.d(TAG, "setCachedPhoneContacts: ");
+
+    @SuppressLint("CheckResult")
+    void loadPhoneContacts() {
+        Log.d(TAG, "loadPhoneContacts: ");
+
+        Disposable disposable = userRepo.loadPhoneContacts(context, true).subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe();
+
+        compDisposable.add(disposable);
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
         Log.d(TAG, "onCleared: ");
+    }
+
+    public void clearDisposables() {
+        if (compDisposable != null && compDisposable.isDisposed())
+            compDisposable.clear();
     }
 }

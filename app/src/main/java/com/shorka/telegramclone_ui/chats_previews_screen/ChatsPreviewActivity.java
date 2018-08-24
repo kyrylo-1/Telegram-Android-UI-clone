@@ -186,7 +186,19 @@ public class ChatsPreviewActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        viewModel.cancelLoadContacts();;
+//        viewModel.cancelLoadContacts();;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        viewModel.clearDisposables();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        viewModel.clearDisposables();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.shorka.telegramclone_ui.contacts_screen;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,12 @@ import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatViewModel;
 import com.shorka.telegramclone_ui.db.PhoneContact;
 import com.shorka.telegramclone_ui.utils.SmsHelper;
 
+import java.util.concurrent.Callable;
+
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Kyrylo Avramenko on 7/17/2018.
@@ -34,11 +41,10 @@ public class ContactsActivity extends AppCompatActivity {
     private ContactsViewModel viewModel;
     private RecyclerView rv;
     private ContactsRecyclerViewAdapter adapterRv;
-    
+
     public static void open(Context context) {
         context.startActivity(new Intent(context, ContactsActivity.class));
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +56,7 @@ public class ContactsActivity extends AppCompatActivity {
         observeViewModel();
     }
 
-    private void setUpToolBar(){
+    private void setUpToolBar() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.contacts_toolbar);
         toolbar.setTitle("Contacts");
 
@@ -65,8 +71,6 @@ public class ContactsActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
         rv.setLayoutManager(layoutManager);
-
-//        List<PhoneContact> listContacts = getAllContacts();
 
         adapterRv = new ContactsRecyclerViewAdapter();
         rv.setAdapter(adapterRv);
@@ -87,12 +91,19 @@ public class ContactsActivity extends AppCompatActivity {
         Log.d(TAG, "initRecyclerView: rvPos: ");
     }
 
-    private void observeViewModel(){
+    @SuppressLint("CheckResult")
+    private void observeViewModel() {
         Log.d(TAG, "observeViewModel: ");
         ViewModelFactory factory = ViewModelFactory.getInstance(getApplication());
         viewModel = ViewModelProviders.of(this, factory).get(ContactsViewModel.class);
-        adapterRv.setItems(viewModel.getPhoneContacts());
-        rv.scrollToPosition(0);
+
+        Completable.fromCallable((Callable<Void>) () -> {
+            adapterRv.setItems(viewModel.getPhoneContacts());
+            return null;
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(() -> rv.scrollToPosition(0))
+        .subscribe();
     }
 
     @Override
@@ -120,7 +131,7 @@ public class ContactsActivity extends AppCompatActivity {
         }
     }
 
-    private void clickOnRvItem(int position){
+    private void clickOnRvItem(int position) {
         PhoneContact phoneContact = viewModel.getPhoneContacts().get(position);
 //        Log.d(TAG, "onItemClick: phoneNumber: " + listContacts.get(position).getPhoneNumber());
         showInvitationDialog(phoneContact.getPhoneNumber());
@@ -132,7 +143,7 @@ public class ContactsActivity extends AppCompatActivity {
         builder = new AlertDialog.Builder(context, R.style.CustomDialog);
         builder.setTitle("Telegram")
                 .setMessage("This user does not have Telegram yet, send an invitation?")
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> SmsHelper.sendSms(context,phoneNumber))
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> SmsHelper.sendSms(context, phoneNumber))
                 .setNegativeButton(android.R.string.no, (dialog, which) -> {
 
                 })

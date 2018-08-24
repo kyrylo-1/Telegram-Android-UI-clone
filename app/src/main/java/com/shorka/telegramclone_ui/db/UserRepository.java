@@ -8,14 +8,20 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.shorka.telegramclone_ui.ContactsFetcher;
+import com.shorka.telegramclone_ui.chats_previews_screen.ChatPreviewViewModel;
 import com.shorka.telegramclone_ui.entities.MessagePreview;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -56,7 +62,9 @@ public class UserRepository {
     }
 
     public void updateUser(User user) {
-        new updateUserAsyncTask(userDao).execute(user);
+
+        if (user != null)
+            userDao.update(user);
     }
 
     public List<User> getAllUsers() {
@@ -106,135 +114,35 @@ public class UserRepository {
     }
 
     public void insertMessage(Message message) {
-        new insertMessageAsyncTask(messageDao).execute(message);
+        Log.d(TAG, "insertMessage: ");
+        if (message != null)
+            messageDao.insert(message);
     }
-
     //</editor-fold>
 
     public LiveData<List<PhoneContact>> getLivePhoneContacts() {
         return userDao.getPhoneContacts();
     }
 
-    private FetchContactsAsync fetchContactsAsync;
+    public Flowable<List<PhoneContact>> loadPhoneContacts(@NonNull Context context, boolean doRefresh) {
 
-    public void loadContacts() {
+        if (cachedPhoneContacts != null && !doRefresh)
+            return Flowable.just(cachedPhoneContacts);
 
-        if (fetchContactsAsync == null)
-            fetchContactsAsync = new FetchContactsAsync(context);
-
-        fetchContactsAsync.execute();
+        return Flowable.fromCallable(() -> {
+            Log.d(TAG, "RXjava call method to fetch contacts: ");
+            List<PhoneContact> list = ContactsFetcher.fetch(context);
+            cachedPhoneContacts = list;
+            return list;
+        });
     }
 
-    public void cancelLoadContacts() {
-        if (!fetchContactsAsync.isCancelled())
-            fetchContactsAsync.cancel(true);
-    }
 
     public List<PhoneContact> getCachedPhoneContacts() {
         return cachedPhoneContacts;
     }
 
-
-    private static class insertMessageAsyncTask extends AsyncTask<Message, Void, Void> {
-
-        private MessageDao messageDao;
-
-        insertMessageAsyncTask(MessageDao dao) {
-            messageDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final Message... params) {
-            messageDao.insert(params[0]);
-            return null;
-        }
-    }
-
-    private static class updateUserAsyncTask extends AsyncTask<User, Void, Void> {
-
-        private UserDao dao;
-
-        updateUserAsyncTask(UserDao dao) {
-            this.dao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final User... params) {
-            dao.update(params[0]);
-            return null;
-        }
-    }
-
-    //TODO: still can cause leaks, becase class is non-static. Need to fix it
-    private class FetchContactsAsync extends AsyncTask<Void, Void, ArrayList<PhoneContact>> {
-
-        private final String DISPLAY_NAME = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
-                ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME;
-
-        private final String FILTER = DISPLAY_NAME + " NOT LIKE '%@%'";
-        private final String ORDER = String.format("%1$s COLLATE NOCASE", DISPLAY_NAME);
-
-        private final String[] PROJECTION = {
-                ContactsContract.Contacts._ID,
-                DISPLAY_NAME,
-                ContactsContract.Contacts.HAS_PHONE_NUMBER
-        };
-
-        private WeakReference<Context> contextRef;
-        public FetchContactsAsync(Context context) {
-            contextRef = new WeakReference<>(context);
-        }
-
-        @Override
-        protected ArrayList<PhoneContact> doInBackground(Void... voids) {
-            try {
-                ArrayList<PhoneContact> contacts = new ArrayList<>();
-
-                ContentResolver cr = contextRef.get().getContentResolver();
-                Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, PROJECTION, FILTER, null, ORDER);
-                if (cursor != null && cursor.moveToFirst()) {
-
-                    do {
-                        // get the contact's information
-                        String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                        String name = cursor.getString(cursor.getColumnIndex(DISPLAY_NAME));
-                        Integer hasPhone = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-
-                        // get the user's phone number
-                        String phone = null;
-                        if (hasPhone > 0) {
-                            Cursor cp = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
-                            if (cp != null && cp.moveToFirst()) {
-                                phone = cp.getString(cp.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                                cp.close();
-                            }
-                        }
-
-                        if (!TextUtils.isEmpty(phone)) {
-                            contacts.add(new PhoneContact(0, phone, name));
-                        }
-
-                    } while (cursor.moveToNext());
-
-                    // clean up cursor
-                    cursor.close();
-                }
-
-                return contacts;
-            } catch (Exception ex) {
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<PhoneContact> list) {
-            if (list != null) {
-                cachedPhoneContacts = list;
-                Log.d(TAG, "onPostExecute: Success");
-            } else {
-                Log.e(TAG, "onPostExecute: FAILURE. phoneContacts IS NULL");
-            }
-        }
+    public void setCachedPhoneContacts(List<PhoneContact> cachedPhoneContacts) {
+        this.cachedPhoneContacts = cachedPhoneContacts;
     }
 }

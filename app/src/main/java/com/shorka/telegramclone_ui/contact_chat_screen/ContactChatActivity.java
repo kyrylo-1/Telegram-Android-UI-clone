@@ -47,7 +47,7 @@ public class ContactChatActivity extends AppCompatActivity {
     private FabHelper fabHelper;
     private ContactChatViewModel chatViewModel;
     private long recipientUserId;
-    //    //endregion
+    //endregion
 
 
     @Override
@@ -175,7 +175,7 @@ public class ContactChatActivity extends AppCompatActivity {
         ViewModelFactory factory = ViewModelFactory.getInstance(getApplication());
         chatViewModel = ViewModelProviders.of(this, factory).get(ContactChatViewModel.class);
         chatViewModel.getListMessages(userId).observe(this, messages -> {
-            updateAdapter(messages);
+            adapterRv.setItems(messages);
         });
     }
 
@@ -203,10 +203,7 @@ public class ContactChatActivity extends AppCompatActivity {
     }
 
     private void enableBtnSend(boolean doEnable) {
-
         btnSend.setVisibility(doEnable ? View.VISIBLE : View.GONE);
-//        mBtnAttachments.setVisibility(doEnable ? View.GONE : View.VISIBLE);
-//        recyclerView.
     }
 
     private void sendMessages() {
@@ -244,9 +241,4 @@ public class ContactChatActivity extends AppCompatActivity {
         txtChatPersonName.setText(user.firstName);
     }
 
-    private void updateAdapter(List<Message> messages) {
-//        List<Message> lists = messages;
-//        lists.add(new Message(chatViewModel.getLastMessage(), 12));
-        adapterRv.setItems(messages);
-    }
 }
