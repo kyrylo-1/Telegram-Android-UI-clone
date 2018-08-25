@@ -2,50 +2,35 @@ package com.shorka.telegramclone_ui.db;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.database.Cursor;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.util.Log;
 
-import com.shorka.telegramclone_ui.ContactsFetcher;
-import com.shorka.telegramclone_ui.chats_previews_screen.ChatPreviewViewModel;
+import com.shorka.telegramclone_ui.utils.ContactsFetcher;
 import com.shorka.telegramclone_ui.entities.MessagePreview;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
 
 
 /**
  * Created by Kyrylo Avramenko on 8/1/2018.
  */
-public class UserRepository {
+public class UserRepository extends BaseRepository{
 
     private static final String TAG = "UserRepository";
 
     private final UserDao userDao;
-    private final MessageDao messageDao;
     private List<User> allUsers;
     private User currUser;
-    private final AppDatabase appDB;
-    private List<MessagePreview> cachedMessagePreviews;
     private List<PhoneContact> cachedPhoneContacts;
-    private Context context;
 
     public UserRepository(Application application) {
+        super(application);
+
         Log.d(TAG, "UserRepository: constructor");
-        context = application;
-        appDB = AppDatabase.getInstance(application, true);
         userDao = appDB.userDao();
-        messageDao = appDB.messageDao();
     }
 
     //<editor-fold desc="User related methods">
@@ -74,8 +59,8 @@ public class UserRepository {
     public void setAllUsers(List<User> allUsers) {
         this.allUsers = allUsers;
     }
-    //TODO: optimize for search
 
+    //TODO: optimize for search
     public User getCachedUserById(long id) {
 
         for (User user : allUsers) {
@@ -92,31 +77,6 @@ public class UserRepository {
     public void setCurrUser(User currUser) {
         Log.d(TAG, "setCurrUser: ");
         this.currUser = currUser;
-    }
-    //</editor-fold>
-
-
-    //<editor-fold desc="Messages related methods">
-    public LiveData<List<Message>> getRecentMessageByChat() {
-        return messageDao.getMostRecentDateAndGrouById();
-    }
-
-    public List<MessagePreview> getCachedMessagePreviews() {
-        return cachedMessagePreviews;
-    }
-
-    public void setCachedMessagePreviews(List<MessagePreview> cachedMessagePreviews) {
-        this.cachedMessagePreviews = cachedMessagePreviews;
-    }
-
-    public LiveData<List<Message>> getMessagesyRecipientId(long id) {
-        return messageDao.getByRecipientId(id);
-    }
-
-    public void insertMessage(Message message) {
-        Log.d(TAG, "insertMessage: ");
-        if (message != null)
-            messageDao.insert(message);
     }
     //</editor-fold>
 

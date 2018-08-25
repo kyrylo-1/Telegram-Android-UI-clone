@@ -21,6 +21,8 @@ public class Message {
 
     public long recipientId;
     public String text;
+
+    //TODO: save real date
     public String date;
     public int messageType;
 

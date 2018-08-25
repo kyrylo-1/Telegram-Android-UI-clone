@@ -2,11 +2,10 @@ package com.shorka.telegramclone_ui.settings_screen;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.shorka.telegramclone_ui.db.Message;
+import com.shorka.telegramclone_ui.UserRepoViewModel;
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.db.UserRepository;
 
@@ -17,13 +16,10 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by Kyrylo Avramenko on 8/22/2018.
  */
-public class ChangeNameViewModel extends AndroidViewModel {
-
-    private UserRepository userRepo;
+public class ChangeNameViewModel extends UserRepoViewModel {
 
     public ChangeNameViewModel(@NonNull Application application, UserRepository userRepo) {
-        super(application);
-        this.userRepo = userRepo;
+        super(application,userRepo);
     }
 
     String getUserFirstName(){

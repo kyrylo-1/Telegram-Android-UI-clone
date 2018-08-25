@@ -1,4 +1,4 @@
-package com.shorka.telegramclone_ui;
+package com.shorka.telegramclone_ui.utils;
 
 import android.content.ContentResolver;
 import android.content.Context;

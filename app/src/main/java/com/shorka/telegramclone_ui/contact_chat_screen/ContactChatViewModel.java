@@ -4,30 +4,17 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.shorka.telegramclone_ui.db.LocalDatabase;
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.User;
-import com.shorka.telegramclone_ui.db.UserRepository;
 
-import org.reactivestreams.Subscriber;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.FlowableSubscriber;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -37,23 +24,21 @@ import io.reactivex.schedulers.Schedulers;
 public class ContactChatViewModel extends AndroidViewModel {
 
     private static final String TAG = "ContactChatViewModel";
-    private UserRepository userRepo;
-    private Context context;
-    private final CompositeDisposable disposables = new CompositeDisposable();
 
-    public ContactChatViewModel(@NonNull Application application, UserRepository userRepo) {
+    private final CompositeDisposable disposables = new CompositeDisposable();
+    private final LocalDatabase localDb;
+    public ContactChatViewModel(@NonNull Application application, LocalDatabase localDb) {
         super(application);
         Log.d(TAG, "ContactChatViewModel: init");
-        context = application;
-        this.userRepo = userRepo;
+        this.localDb = localDb;
     }
 
     public User getUser(long id) {
-        return userRepo.getCachedUserById(id);
+        return localDb.getUserRepo().getCachedUserById(id);
     }
 
     public LiveData<List<Message>> getListMessages(long recipientId) {
-        return userRepo.getMessagesyRecipientId(recipientId);
+        return localDb.getMessageRepo().getMessagesyRecipientId(recipientId);
     }
 
     @SuppressLint("CheckResult")
@@ -65,7 +50,7 @@ public class ContactChatViewModel extends AndroidViewModel {
         m.date = "66:66";
         m.messageType = Message.SENT;
 
-        Consumer<Message> consumer = message -> userRepo.insertMessage(message);
+        Consumer<Message> consumer = localDb.getMessageRepo()::insertMessage;
         Flowable.just(m)
                 .subscribeOn(Schedulers.io())
                 .subscribe(consumer, Throwable::printStackTrace);

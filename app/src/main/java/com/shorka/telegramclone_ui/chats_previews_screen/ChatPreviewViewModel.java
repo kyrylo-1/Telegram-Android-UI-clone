@@ -9,8 +9,10 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.shorka.telegramclone_ui.R;
-import com.shorka.telegramclone_ui.db.PhoneContact;
+import com.shorka.telegramclone_ui.UserRepoViewModel;
+import com.shorka.telegramclone_ui.db.LocalDatabase;
 import com.shorka.telegramclone_ui.db.Message;
+import com.shorka.telegramclone_ui.db.PhoneContact;
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.db.UserRepository;
 import com.shorka.telegramclone_ui.entities.MessagePreview;
@@ -28,32 +30,32 @@ import io.reactivex.schedulers.Schedulers;
 public class ChatPreviewViewModel extends AndroidViewModel {
 
     private static final String TAG = "ChatPreviewViewModel";
-    private UserRepository userRepo;
     private Context context;
+    private final LocalDatabase localDb;
     private CompositeDisposable compDisposable;
 
-    public ChatPreviewViewModel(@NonNull Application application, UserRepository userRepo) {
+    public ChatPreviewViewModel(@NonNull Application application, LocalDatabase localDb) {
         super(application);
         context = application;
-        this.userRepo = userRepo;
+        this.localDb = localDb;
         compDisposable = new CompositeDisposable();
     }
 
     public LiveData<User> getLiveCurrUser() {
-        return userRepo.getCurrLiveUser();
+        return localDb.getUserRepo().getCurrLiveUser();
     }
 
 
     public LiveData<List<User>> getAllLiveUsers() {
-        return userRepo.getAllLiveUsers();
+        return localDb.getUserRepo().getAllLiveUsers();
     }
 
     List<User> allUsers() {
-        return userRepo.getAllUsers();
+        return localDb.getUserRepo().getAllUsers();
     }
 
     void setAllUsers(List<User> allUsers) {
-        userRepo.setAllUsers(allUsers);
+        localDb.getUserRepo().setAllUsers(allUsers);
     }
 
     public List<MessagePreview> transformToMsgPreviews(List<Message> listMessages) {
@@ -72,20 +74,20 @@ public class ChatPreviewViewModel extends AndroidViewModel {
     }
 
     void cacheUser(User user) {
-        userRepo.setCurrUser(user);
+        localDb.getUserRepo().setCurrUser(user);
     }
 
     User getCacheUser() {
-        return userRepo.getCurrUser();
+        return localDb.getUserRepo().getCurrUser();
     }
 
     public LiveData<List<Message>> getRecentMessageByChat() {
-        return userRepo.getRecentMessageByChat();
+        return localDb.getMessageRepo().getRecentMessageByChat();
     }
 
     private MessagePreview transformToMsgPreview(Message msg) {
 
-        User user = userRepo.getCachedUserById(msg.recipientId);
+        User user = localDb.getUserRepo().getCachedUserById(msg.recipientId);
         if (user == null)
             return null;
 
@@ -101,14 +103,14 @@ public class ChatPreviewViewModel extends AndroidViewModel {
     }
 
     LiveData<List<PhoneContact>> getLivePhoneContacts() {
-        return userRepo.getLivePhoneContacts();
+        return localDb.getUserRepo().getLivePhoneContacts();
     }
 
     @SuppressLint("CheckResult")
     void loadPhoneContacts() {
         Log.d(TAG, "loadPhoneContacts: ");
 
-        Disposable disposable = userRepo.loadPhoneContacts(context, true).subscribeOn(Schedulers.io())
+        Disposable disposable = localDb.getUserRepo().loadPhoneContacts(context, true).subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe();
 

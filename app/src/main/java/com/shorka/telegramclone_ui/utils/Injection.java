@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.shorka.telegramclone_ui.db.AppDatabase;
+import com.shorka.telegramclone_ui.db.LocalDatabase;
 import com.shorka.telegramclone_ui.db.UserRepository;
 
 /**
@@ -12,14 +13,14 @@ import com.shorka.telegramclone_ui.db.UserRepository;
  */
 public class Injection {
 
-    private static UserRepository userRepo;
+    private static LocalDatabase localDb;
 
-    public static UserRepository provideUserRepo(@NonNull Application application) {
+    public static LocalDatabase provideUserRepo(@NonNull Application application) {
 
-        if (userRepo == null)
-            userRepo = new UserRepository(application);
+        if (localDb == null)
+            localDb = new LocalDatabase(application);
 
-        return userRepo;
+        return localDb;
     }
 
 }
