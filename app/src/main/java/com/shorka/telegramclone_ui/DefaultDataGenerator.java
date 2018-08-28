@@ -1,11 +1,17 @@
 package com.shorka.telegramclone_ui;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.User;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -13,6 +19,7 @@ import java.util.List;
  */
 public class DefaultDataGenerator {
 
+    private static final String TAG = "DefaultDataGenerator";
     public static List<User> generateUsers() {
 
         final List<User> list = new ArrayList<>();
@@ -44,40 +51,59 @@ public class DefaultDataGenerator {
     public static List<Message> generateMessages() {
         final List<Message> list = new ArrayList<>();
         long recipientId = 2;
-        list.add(createMessage(recipientId,"Hi, bruv. Today I did not see you at the gym", "12:34"));
-        list.add(createMessage(recipientId,"Are you even lifting bro", "12:35"));
+
+        Calendar c1 = GregorianCalendar.getInstance();
+        c1.set(2018, Calendar.AUGUST, 21,12,33);
+
+//        Log.d(TAG, "generateMessages: " +c1.getTime());
+//        Date d = dateFormat.parse(oldDateString);
+
+        list.add(createMessage(recipientId,"Hi, bruv. Today I did not see you at the gym", c1.getTime()));
+        c1.set(2018, Calendar.AUGUST, 21,12,35);
+        list.add(createMessage(recipientId,"Are you even lifting bro", c1.getTime()));
 
         recipientId = 3;
-        list.add(createMessage(recipientId,"So, at 1pm at coffee shop?", "11:00"));
-        list.add(createMessage(recipientId,"see you there", "11:10"));
+
+        c1.set(2018, Calendar.AUGUST, 17,11,0);
+        list.add(createMessage(recipientId,"So, at 1pm at coffee shop?", c1.getTime()));
+        c1.set(2018, Calendar.AUGUST, 17,11,1);
+        list.add(createMessage(recipientId,"see you there", c1.getTime()));
 
         recipientId = 4;
-        list.add(createMessage(recipientId,"I am already at that spot", "16:13"));
-        list.add(createMessage(recipientId,"see you there", "16:13"));
+        c1.set(2018, Calendar.AUGUST, 20,16,13);
+        list.add(createMessage(recipientId,"I am already at that spot", c1.getTime()));
+        c1.set(2018, Calendar.AUGUST, 20,16,25);
+        list.add(createMessage(recipientId,"where are you? at?", c1.getTime()));
 
         recipientId = 5;
-        list.add(createMessage(recipientId,"Do you know where is my keys?", "21:55"));
+        c1.set(2018, Calendar.MAY, 4,21,33);
+        list.add(createMessage(recipientId,"Do you know where is my keys?", c1.getTime()));
 
         recipientId = 6;
-        list.add(createMessage(recipientId,"sup", "15:13"));
+        c1.set(2018, Calendar.JULY, 30,17,41);
+        list.add(createMessage(recipientId,"sup", c1.getTime()));
 
         recipientId = 7;
-        list.add(createMessage(recipientId,"Dont skip my classes anymore", "11:13"));
+        c1.set(2018, Calendar.JUNE, 25,12,49);
+        list.add(createMessage(recipientId,"Dont skip my classes anymore", c1.getTime()));
 
         recipientId = 8;
-        list.add(createMessage(recipientId," need to think about this more carefully", "9:13"));
+        c1.set(2018, Calendar.AUGUST, 15,13,0);
+        list.add(createMessage(recipientId," need to think about this more carefully", c1.getTime()));
 
         recipientId = 9;
-        list.add(createMessage(recipientId,"Really?", "16:13"));
+        c1.set(2018, Calendar.AUGUST, 5,9,9);
+        list.add(createMessage(recipientId,"Really?", c1.getTime()));
 
         return list;
     }
 
-    private static Message createMessage(long recipientId, String text, String time) {
+    private static Message createMessage(long recipientId, String text, Date date) {
         Message message = new Message(0);
         message.recipientId = recipientId;
         message.text = text;
-        message.date = time;
+        message.realDate = date;
+//        message.realDate = date;
         message.messageType = Message.RECEIVED;
         return message;
     }

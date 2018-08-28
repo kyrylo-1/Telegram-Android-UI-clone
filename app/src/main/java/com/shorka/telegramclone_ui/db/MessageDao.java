@@ -25,7 +25,7 @@ public interface MessageDao {
 
 
     //TODO: improve query, so it can SELECT *
-    @Query("SELECT m.idMessage, m.recipientId, m.text, MAX(m.date),m.messageType " +
+    @Query("SELECT m.idMessage, m.recipientId, m.text, MAX(m.realDate),m.messageType " +
             "FROM message as m " +
             "GROUP BY m.recipientId")
     LiveData<List<Message>> getMostRecentDateAndGrouById();

@@ -11,6 +11,8 @@ import com.shorka.telegramclone_ui.db.LocalDatabase;
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.User;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -47,8 +49,9 @@ public class ContactChatViewModel extends AndroidViewModel {
         Message m = new Message(0);
         m.recipientId = recipientId;
         m.text = text;
-        m.date = "66:66";
         m.messageType = Message.SENT;
+        Date d = Calendar.getInstance().getTime();
+        m.realDate = d;
 
         Consumer<Message> consumer = localDb.getMessageRepo()::insertMessage;
         Flowable.just(m)

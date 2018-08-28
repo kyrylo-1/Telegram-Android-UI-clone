@@ -29,6 +29,7 @@ import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.db.Message;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Kyrylo Avramenko on 6/22/2018.
@@ -49,7 +50,6 @@ public class ContactChatActivity extends AppCompatActivity {
     private long recipientUserId;
     //endregion
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,8 +68,8 @@ public class ContactChatActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         editText.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getSystemService(context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        Objects.requireNonNull(imm).hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 
     @Override
@@ -94,15 +94,10 @@ public class ContactChatActivity extends AppCompatActivity {
         enableBtnSend(false);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         btnSend.setOnClickListener(v -> sendMessages());
 

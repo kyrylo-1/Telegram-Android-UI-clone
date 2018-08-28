@@ -4,6 +4,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.Date;
+
 /**
  * Created by Kyrylo Avramenko on 6/29/2018.
  */
@@ -20,10 +22,11 @@ public class Message {
     private long idMessage;
 
     public long recipientId;
+
     public String text;
 
-    //TODO: save real date
-    public String date;
+    public Date realDate;
+
     public int messageType;
 
 

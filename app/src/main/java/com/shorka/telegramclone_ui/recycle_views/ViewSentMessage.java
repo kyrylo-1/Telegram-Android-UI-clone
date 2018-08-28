@@ -6,6 +6,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.shorka.telegramclone_ui.R;
+import com.shorka.telegramclone_ui.db.Converters;
+
+import java.util.Date;
+
 
 /**
  * Created by Kyrylo Avramenko on 6/29/2018.
@@ -23,11 +27,12 @@ public class ViewSentMessage  extends RecyclerView.ViewHolder  {
         txtMessageBody = itemView.findViewById(R.id.text_sent_message_body);
         txtTime = itemView.findViewById(R.id.text_sent_message_time);
     }
-    public void bind(String messageText, String date){
+    public void bind(String messageText, Date realDate){
 
-        Log.d(TAG, "bind: BIND");
+        Log.d(TAG, "bind:");
         txtMessageBody.setText(messageText);
-        txtTime.setText(date);
+        txtTime.setText(Converters.dateToHourAndMinute(realDate));
+//        Log.d(TAG, "bind: realDate: " + realDate + "\nLong: " + Converters.dateToHourAndMinute(realDate));
     }
 
 }

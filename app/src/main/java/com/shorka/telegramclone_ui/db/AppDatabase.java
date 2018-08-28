@@ -4,6 +4,7 @@ import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import com.shorka.telegramclone_ui.DefaultDataGenerator;
  * Created by Kyrylo Avramenko on 8/1/2018.
  */
 @Database(entities = {User.class, UserMessages.class, Message.class, PhoneContact.class}, version = 6, exportSchema = true)
+@TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String TAG = "AppDatabase";
@@ -110,7 +112,7 @@ public abstract class AppDatabase extends RoomDatabase {
             Log.d(TAG, "doInBackground: actually insert data of users");
 
             for (User user : DefaultDataGenerator.generateUsers()) {
-                Log.d(TAG, "doInBackground: insert user with id: " + user.getId());
+//                Log.d(TAG, "doInBackground: insert user with id: " + user.getId());
                 userDao.insert(user);
             }
 

@@ -386,7 +386,7 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         }
     }
 
-    private static class Sections {
+    static class Sections {
         static final int BASIC_INFO = 0;
         static final int SETTINGS = 1;
         static final int MESSAGES = 2;

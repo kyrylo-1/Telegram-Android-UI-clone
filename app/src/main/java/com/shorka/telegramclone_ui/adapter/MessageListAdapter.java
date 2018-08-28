@@ -53,11 +53,11 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         switch (message.messageType) {
             case Message.RECEIVED:
-                ((ViewReceiveMessage) holder).bind(message.text, message.date);
+                ((ViewReceiveMessage) holder).bind(message.text, message.realDate);
                 break;
 
             case Message.SENT:
-                ((ViewSentMessage) holder).bind(message.text, message.date);
+                ((ViewSentMessage) holder).bind(message.text, message.realDate);
                 break;
         }
 

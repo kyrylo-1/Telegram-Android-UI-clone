@@ -5,7 +5,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.shorka.telegramclone_ui.R;
+import com.shorka.telegramclone_ui.db.Converters;
 import com.shorka.telegramclone_ui.db.Message;
+
+import java.util.Date;
 
 /**
  * Created by Kyrylo Avramenko on 6/29/2018.
@@ -21,9 +24,9 @@ public class ViewReceiveMessage extends RecyclerView.ViewHolder {
         txtTime = (TextView) itemView.findViewById(R.id.text_receive_message_time);
     }
 
-    public void bind(String messageText, String date){
+    public void bind(String messageText, Date date){
 
         txtMessageBody.setText(messageText);
-        txtTime.setText(date);
+        txtTime.setText(Converters.dateToHourAndMinute(date));
     }
 }
