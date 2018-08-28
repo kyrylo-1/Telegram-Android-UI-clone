@@ -14,7 +14,7 @@ import java.util.Date;
 /**
  * Created by Kyrylo Avramenko on 6/29/2018.
  */
-public class ViewSentMessage  extends RecyclerView.ViewHolder  {
+public class ViewSentMessage extends RecyclerView.ViewHolder implements MessageBindable {
 
     private static final String TAG = "ViewSentMessage";
     private TextView txtMessageBody, txtTime;
@@ -27,7 +27,8 @@ public class ViewSentMessage  extends RecyclerView.ViewHolder  {
         txtMessageBody = itemView.findViewById(R.id.text_sent_message_body);
         txtTime = itemView.findViewById(R.id.text_sent_message_time);
     }
-    public void bind(String messageText, Date realDate){
+
+    public void bind(String messageText, Date realDate) {
 
         Log.d(TAG, "bind:");
         txtMessageBody.setText(messageText);

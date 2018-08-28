@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.db.Message;
+import com.shorka.telegramclone_ui.recycle_views.MessageBindable;
 import com.shorka.telegramclone_ui.recycle_views.ViewReceiveMessage;
 import com.shorka.telegramclone_ui.recycle_views.ViewSentMessage;
 
@@ -51,16 +52,10 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             return;
         }
 
-        switch (message.messageType) {
-            case Message.RECEIVED:
-                ((ViewReceiveMessage) holder).bind(message.text, message.realDate);
-                break;
+        MessageBindable mb = message.messageType == Message.RECEIVED ?
+                (ViewReceiveMessage) holder : (ViewSentMessage) holder;
 
-            case Message.SENT:
-                ((ViewSentMessage) holder).bind(message.text, message.realDate);
-                break;
-        }
-
+        mb.bind(message.text, message.realDate);
     }
 
     @Override

@@ -6,14 +6,13 @@ import android.widget.TextView;
 
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.db.Converters;
-import com.shorka.telegramclone_ui.db.Message;
 
 import java.util.Date;
 
 /**
  * Created by Kyrylo Avramenko on 6/29/2018.
  */
-public class ViewReceiveMessage extends RecyclerView.ViewHolder {
+public class ViewReceiveMessage extends RecyclerView.ViewHolder implements MessageBindable {
 
     private TextView txtMessageBody, txtTime;
 
