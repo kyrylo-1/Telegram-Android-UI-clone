@@ -72,6 +72,7 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
             case OPTION:
                 ViewHolderTextWithOption vh1 = (ViewHolderTextWithOption) viewHolder;
+
                 configureViewTextWithOption(vh1, position);
                 break;
             case TOGGLE:
@@ -105,35 +106,44 @@ public class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             return SUBTITLE;
     }
 
-    private void configureViewSwitch(ViewHolderToggle vh1, int position) {
+    public void setItems(List<Object> items) {
+        this.items = items;
+        notifyDataSetChanged();
+    }
 
-        SettingsTextEntity entity = (SettingsTextEntity) items.get(position);
-        if(entity != null){
-            vh1.getTitle().setText(entity.getMainText());
-            vh1.getToggle().setChecked(true);
+    private void configureViewSwitch(ViewHolderToggle vh, int position) {
+
+        SettingsTextEntity ste = (SettingsTextEntity) items.get(position);
+        if(ste != null){
+            vh.getTitle().setText(ste.getMainText());
+            vh.getToggle().setChecked(true);
+            vh.setIdRes(ste.getIdRes());
         }
     }
 
-    private void configureViewTextWithOption(ViewHolderTextWithOption vh1, int position) {
+    private void configureViewTextWithOption(ViewHolderTextWithOption vh, int position) {
 
-        SettingsTextEntity entity = (SettingsTextEntity) items.get(position);
-        if(entity != null){
-            vh1.getTitle().setText(entity.getMainText());
-            vh1.getOption().setText(entity.getSecondText());
+        SettingsTextEntity ste = (SettingsTextEntity) items.get(position);
+        if(ste != null){
+            vh.getTitle().setText(ste.getMainText());
+            vh.getOption().setText(ste.getDescription());
+            vh.setIdRes(ste.getIdRes());
         }
     }
 
     private void configureSubTitle(ViewHolderSubTitle vh, int position) {
 
-        SettingsTextEntity settingsTextEntity = (SettingsTextEntity) items.get(position);
+        SettingsTextEntity ste = (SettingsTextEntity) items.get(position);
 
-        vh.getTitle().setText(settingsTextEntity.getMainText());
-        vh.getSubTitle().setText(settingsTextEntity.getSecondText());
+        vh.getTitle().setText(ste.getMainText());
+        vh.getSubTitle().setText(ste.getDescription());
+        vh.setIdRes(ste.getIdRes());
     }
 
     private void configurePlainText(ViewPlainText vh, int position) {
 
-        SettingsTextEntity settingsTextEntity = (SettingsTextEntity) items.get(position);
-        vh.getTitle().setText(settingsTextEntity.getMainText());
+        SettingsTextEntity ste = (SettingsTextEntity) items.get(position);
+        vh.getTitle().setText(ste.getMainText());
+        vh.setIdRes(ste.getIdRes());
     }
 }

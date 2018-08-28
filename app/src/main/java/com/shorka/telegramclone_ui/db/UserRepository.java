@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.shorka.telegramclone_ui.utils.ContactsFetcher;
-import com.shorka.telegramclone_ui.entities.MessagePreview;
 
 import java.util.List;
 

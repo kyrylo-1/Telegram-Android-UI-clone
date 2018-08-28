@@ -18,4 +18,6 @@
 
     <string name="invitation_text">Hey, I\'m using Telegram to chat. Join me! Download it here: https://telegram.org/dl</string>
 
+    <string name="bio_description">You can add a few lines about yourself. Anyone who opens your profile will see this text</string>
+
 </resources>

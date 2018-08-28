@@ -1,18 +1,26 @@
 package com.shorka.telegramclone_ui.entities;
 
+import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.View;
+
 /**
  * Created by Kyrylo Avramenko on 6/12/2018.
  */
 public class SettingsTextEntity {
 
+    @IdRes
+    private final int idRes;
     private TextType textType;
     private String mainText;
-    private String secondText;
+    private String description;
 
-    public SettingsTextEntity(TextType textType, String mainText, String secondText) {
+    public SettingsTextEntity(TextType textType, String mainText, String description) {
+        this.idRes = View.generateViewId();
         this.textType = textType;
         this.mainText = mainText;
-        this.secondText = secondText;
+        this.description = description;
     }
 
     public TextType getTextType() {
@@ -31,15 +39,19 @@ public class SettingsTextEntity {
         this.mainText = mainText;
     }
 
-    public String getSecondText() {
-        return secondText;
+    public String getDescription() {
+        return description;
     }
 
-    public void setSecondText(String secondText) {
-        this.secondText = secondText;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public enum TextType{
+    public int getIdRes() {
+        return idRes;
+    }
+
+    public enum TextType {
         PlainText, SubTitle, TextWithSelect, TextWithToggle
     }
 

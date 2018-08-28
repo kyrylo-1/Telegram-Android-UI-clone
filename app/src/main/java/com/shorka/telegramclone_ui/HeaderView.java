@@ -28,7 +28,7 @@ public class HeaderView extends LinearLayout {
     }
 
     public void bindTo(String name, String lastSeen) {
-        Log.d(TAG, "bindTo: firstName: " + name + "\n lastSeen: " + lastSeen);
+//        Log.d(TAG, "bindTo: firstName: " + name + "\n lastSeen: " + lastSeen);
         this.txtName.setText(name);
         int whiteCol = getResources().getColor(R.color.colorWhite);
         this.txtName.setTextColor(whiteCol);

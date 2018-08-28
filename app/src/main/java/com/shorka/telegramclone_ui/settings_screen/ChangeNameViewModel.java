@@ -36,9 +36,6 @@ public class ChangeNameViewModel extends UserRepoViewModel {
         currUser.firstName = firstName;
         currUser.lastName = lastName;
 
-        Consumer<User> consumer = user -> userRepo.updateUser(user);
-        Flowable.just(currUser)
-                .subscribeOn(Schedulers.io())
-                .subscribe(consumer, Throwable::printStackTrace);
+        updateUser(currUser);
     }
 }

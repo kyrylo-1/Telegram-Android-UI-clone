@@ -1,5 +1,8 @@
 package com.shorka.telegramclone_ui.settings_screen;
 
+import android.text.TextUtils;
+import android.view.View;
+
 import com.shorka.telegramclone_ui.entities.SettingsTextEntity;
 
 import java.util.ArrayList;
@@ -8,6 +11,18 @@ import java.util.ArrayList;
  * Created by Kyrylo Avramenko on 8/22/2018.
  */
 public class SettingsTextEntitiesGenerator {
+
+
+    public static ArrayList<Object> getUserInfoList() {
+
+        ArrayList<Object> items = new ArrayList<>();
+
+        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.SubTitle, "", "Phone"));
+        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.SubTitle, "", "Username"));
+        items.add(new SettingsTextEntity(SettingsTextEntity.TextType.SubTitle, "", "Bio"));
+
+        return items;
+    }
 
     public static ArrayList<Object> getSettingsList() {
         ArrayList<Object> items = new ArrayList<>();

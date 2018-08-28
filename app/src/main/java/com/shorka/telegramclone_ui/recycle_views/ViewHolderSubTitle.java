@@ -1,5 +1,6 @@
 package com.shorka.telegramclone_ui.recycle_views;
 
+import android.support.annotation.IdRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -9,9 +10,9 @@ import com.shorka.telegramclone_ui.R;
 /**
  * Created by Kyrylo Avramenko on 6/12/2018.
  */
-public class ViewHolderSubTitle extends RecyclerView.ViewHolder{
+public class ViewHolderSubTitle extends BasicViewHolder {
 
-    private TextView title, subTitle;
+    private final TextView title, subTitle;
 
     public ViewHolderSubTitle(View itemView) {
         super(itemView);
@@ -24,16 +25,9 @@ public class ViewHolderSubTitle extends RecyclerView.ViewHolder{
         return title;
     }
 
-//    public void setTitle(TextView title) {
-//        this.title = title;
-//    }
-
     public TextView getSubTitle() {
         return subTitle;
     }
 
-//    public void setSubTitle(TextView subTitle) {
-//        this.subTitle = subTitle;
-//    }
 
 }

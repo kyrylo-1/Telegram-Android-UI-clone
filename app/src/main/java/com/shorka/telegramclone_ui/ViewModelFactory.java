@@ -11,6 +11,7 @@ import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatViewModel;
 import com.shorka.telegramclone_ui.contacts_screen.ContactsViewModel;
 import com.shorka.telegramclone_ui.db.LocalDatabase;
 import com.shorka.telegramclone_ui.db.UserRepository;
+import com.shorka.telegramclone_ui.settings_screen.ChangeBioViewModel;
 import com.shorka.telegramclone_ui.settings_screen.ChangeNameViewModel;
 import com.shorka.telegramclone_ui.settings_screen.SettingsViewModel;
 import com.shorka.telegramclone_ui.utils.Injection;
@@ -65,6 +66,10 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
         else if (modelClass.isAssignableFrom(ContactsViewModel.class)) {
             return (T) new ContactsViewModel(application, localDb.getUserRepo());
+        }
+
+        else if (modelClass.isAssignableFrom(ChangeBioViewModel.class)) {
+            return (T) new ChangeBioViewModel(application, localDb.getUserRepo());
         }
 
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());

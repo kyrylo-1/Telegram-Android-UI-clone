@@ -10,7 +10,7 @@ import com.shorka.telegramclone_ui.R;
 /**
  * Created by Kyrylo Avramenko on 6/12/2018.
  */
-public class ViewHolderToggle extends RecyclerView.ViewHolder{
+public class ViewHolderToggle extends BasicViewHolder {
 
     private TextView title;
     private SwitchCompat toggle;

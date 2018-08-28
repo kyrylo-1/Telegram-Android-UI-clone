@@ -80,5 +80,7 @@ dependencies {
     // or, for Android:
     api 'com.google.guava:guava:26.0-android'
 
+    implementation "com.android.support:support-annotations:$supportLibraryVersion"
+
 
 }

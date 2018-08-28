@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    tools:context=".settings_screen.ChangeBioActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/bio_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/bio_editText"
+        style="@style/BasicEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:hint="Bio"
+        android:paddingEnd="30dp"
+        android:paddingStart="10dp"
+        android:paddingBottom="15dp"
+        android:textSize="15sp"
+        app:layout_constraintTop_toBottomOf="@id/bio_toolbar"
+        android:backgroundTint="@color/colorBrightBlue"
+
+        android:inputType="textMultiLine"
+/>
+
+
+    <TextView
+        android:id="@+id/bio_text_limit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="7dp"
+        android:maxLines="1"
+        android:text="70"
+        android:textSize="13sp"
+        app:layout_constraintTop_toTopOf="@id/bio_editText"
+        app:layout_constraintEnd_toEndOf="@id/bio_editText"
+        />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:paddingEnd="15dp"
+        android:paddingStart="15dp"
+        android:text="@string/bio_description"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bio_editText" />
+
+
+</android.support.constraint.ConstraintLayout>
