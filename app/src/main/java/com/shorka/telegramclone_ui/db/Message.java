@@ -1,5 +1,6 @@
 package com.shorka.telegramclone_ui.db;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
@@ -25,7 +26,8 @@ public class Message {
 
     public String text;
 
-    public Date realDate;
+    @ColumnInfo(name = "message_date")
+    public long date;
 
     public int messageType;
 
@@ -36,6 +38,19 @@ public class Message {
 
     public long getIdMessage() {
         return idMessage;
+    }
+
+    public Date getRealDate(){
+        return Converters.fromTimestamp(date);
+    }
+
+    public String getStringDate(){
+        return  Converters.dateToHourAndMinute(date);
+    }
+
+
+    public void setDate(Date date){
+        this.date = Converters.dateToTimestamp(date);
     }
 }
 

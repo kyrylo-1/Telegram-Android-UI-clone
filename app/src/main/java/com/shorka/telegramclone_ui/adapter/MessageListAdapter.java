@@ -1,6 +1,5 @@
 package com.shorka.telegramclone_ui.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -55,7 +54,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         MessageBindable mb = message.messageType == Message.RECEIVED ?
                 (ViewReceiveMessage) holder : (ViewSentMessage) holder;
 
-        mb.bind(message.text, message.realDate);
+        mb.bind(message.text, message.getRealDate());
     }
 
     @Override

@@ -48,7 +48,7 @@ public class MessagePreview {
     @DrawableRes
     private int imageResId;
 
-    public MessagePreview(MessagePreviewBuilder messagePreviewBuilder) {
+    MessagePreview(MessagePreviewBuilder messagePreviewBuilder) {
 
         this.id = messagePreviewBuilder.id;
         this.contactName = messagePreviewBuilder.contactName;
@@ -58,8 +58,6 @@ public class MessagePreview {
         this.date = messagePreviewBuilder.date;
         this.imageResId = messagePreviewBuilder.imageResId;
     }
-
-
 
     public static class MessagePreviewBuilder {
         private long id;

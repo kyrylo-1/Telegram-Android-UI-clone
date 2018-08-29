@@ -1,13 +1,10 @@
 package com.shorka.telegramclone_ui;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.User;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -102,8 +99,8 @@ public class DefaultDataGenerator {
         Message message = new Message(0);
         message.recipientId = recipientId;
         message.text = text;
-        message.realDate = date;
-//        message.realDate = date;
+        message.setDate(date);
+//        message.date = date;
         message.messageType = Message.RECEIVED;
         return message;
     }

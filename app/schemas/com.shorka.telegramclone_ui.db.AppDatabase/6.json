@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "b92170d3fd8cecb5ae24ccd389d99082",
+    "identityHash": "dbbc9a1eced7fcbb7d341419b9ff0356",
     "entities": [
       {
         "tableName": "user",
@@ -88,7 +88,7 @@
       },
       {
         "tableName": "message",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idMessage` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `recipientId` INTEGER NOT NULL, `text` TEXT, `realDate` INTEGER, `messageType` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idMessage` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `recipientId` INTEGER NOT NULL, `text` TEXT, `message_date` INTEGER NOT NULL, `messageType` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "idMessage",
@@ -109,10 +109,10 @@
             "notNull": false
           },
           {
-            "fieldPath": "realDate",
-            "columnName": "realDate",
+            "fieldPath": "date",
+            "columnName": "message_date",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "messageType",
@@ -165,7 +165,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"b92170d3fd8cecb5ae24ccd389d99082\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"dbbc9a1eced7fcbb7d341419b9ff0356\")"
     ]
   }
 }

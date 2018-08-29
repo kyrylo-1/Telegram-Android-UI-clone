@@ -85,7 +85,7 @@ public class FabHelper {
         ViewCompat.postOnAnimation(fab, new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "run: postRollFabInCompletely");
+//                Log.d(TAG, "run: postRollFabInCompletely");
                 ViewCompat.animate(fab).translationY(0f).
                         setDuration(duration)
                         .setInterpolator(LINEAR_INTERPOLATOR)

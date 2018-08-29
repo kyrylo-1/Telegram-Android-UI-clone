@@ -33,7 +33,7 @@ public class ViewSentMessage extends RecyclerView.ViewHolder implements MessageB
         Log.d(TAG, "bind:");
         txtMessageBody.setText(messageText);
         txtTime.setText(Converters.dateToHourAndMinute(realDate));
-//        Log.d(TAG, "bind: realDate: " + realDate + "\nLong: " + Converters.dateToHourAndMinute(realDate));
+//        Log.d(TAG, "bind: date: " + date + "\nLong: " + Converters.dateToHourAndMinute(date));
     }
 
 }

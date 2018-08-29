@@ -9,15 +9,15 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.shorka.telegramclone_ui.R;
-import com.shorka.telegramclone_ui.UserRepoViewModel;
+import com.shorka.telegramclone_ui.db.Converters;
 import com.shorka.telegramclone_ui.db.LocalDatabase;
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.PhoneContact;
 import com.shorka.telegramclone_ui.db.User;
-import com.shorka.telegramclone_ui.db.UserRepository;
 import com.shorka.telegramclone_ui.entities.MessagePreview;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -62,15 +62,37 @@ public class ChatPreviewViewModel extends AndroidViewModel {
 
         Log.d(TAG, "transformToMsgPreviews: ");
         List<MessagePreview> listPreview = new ArrayList<>();
+
         for (Message msg : listMessages) {
-            if (msg != null)
+            if (msg != null){
                 listPreview.add(transformToMsgPreview(msg));
+            }
+
 
             else
                 Log.e(TAG, "transformToMsgPreviews: userMsg is NULL");
         }
 
         return listPreview;
+    }
+
+    private MessagePreview transformToMsgPreview(Message msg) {
+
+        User recipientUser = localDb.getUserRepo().getCachedUserById(msg.recipientId);
+        if (recipientUser == null)
+            return null;
+
+        Log.d(TAG, "transformToMsgPreview: recUserId: " + recipientUser.getId() + " _lastMessage: " + msg.text
+                + " _date: " + msg.getStringDate());
+        return new MessagePreview.MessagePreviewBuilder()
+                .withId(recipientUser.getId())
+                .withContactName(recipientUser.firstName)
+                .withLastMessage(msg.text)
+                .withIsPinned(false)
+                .withIsReaded(true)
+                .withDate(msg.getStringDate())
+                .withImageResId(R.drawable.kochek_withback)
+                .buildMesagePreview();
     }
 
     void cacheUser(User user) {
@@ -83,23 +105,6 @@ public class ChatPreviewViewModel extends AndroidViewModel {
 
     public LiveData<List<Message>> getRecentMessageByChat() {
         return localDb.getMessageRepo().getRecentMessageByChat();
-    }
-
-    private MessagePreview transformToMsgPreview(Message msg) {
-
-        User user = localDb.getUserRepo().getCachedUserById(msg.recipientId);
-        if (user == null)
-            return null;
-
-        return new MessagePreview.MessagePreviewBuilder()
-                .withId(user.getId())
-                .withContactName(user.firstName)
-                .withLastMessage(msg.text)
-                .withIsPinned(false)
-                .withIsReaded(true)
-                .withDate("66:66")
-                .withImageResId(R.drawable.kochek_withback)
-                .buildMesagePreview();
     }
 
     LiveData<List<PhoneContact>> getLivePhoneContacts() {
@@ -117,11 +122,7 @@ public class ChatPreviewViewModel extends AndroidViewModel {
         compDisposable.add(disposable);
     }
 
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        Log.d(TAG, "onCleared: ");
-    }
+
 
     public void clearDisposables() {
         if (compDisposable != null && compDisposable.isDisposed())

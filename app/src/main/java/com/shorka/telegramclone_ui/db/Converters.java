@@ -22,13 +22,15 @@ public class Converters {
     }
 
 
-//    private static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     private static DateFormat df = DateFormat.getTimeInstance(DateFormat.SHORT);
 
     public static String dateToHourAndMinute(Date date) {
-
         return date == null ? null : df.format(date);
-
     }
+
+    public static String dateToHourAndMinute(long date) {
+        return  df.format(date);
+    }
+
+
 }

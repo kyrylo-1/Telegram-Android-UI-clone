@@ -50,8 +50,7 @@ public class ContactChatViewModel extends AndroidViewModel {
         m.recipientId = recipientId;
         m.text = text;
         m.messageType = Message.SENT;
-        Date d = Calendar.getInstance().getTime();
-        m.realDate = d;
+        m.setDate(Calendar.getInstance().getTime());
 
         Consumer<Message> consumer = localDb.getMessageRepo()::insertMessage;
         Flowable.just(m)

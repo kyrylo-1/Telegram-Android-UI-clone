@@ -33,6 +33,7 @@ public class MessagesGridRecycleViewAdapter extends RecyclerView.Adapter<Recycle
 
     public void setItems(List<MessagePreview> items) {
         this.items = items;
+        Log.d(TAG, "setItems with size: " + items.size());
         notifyDataSetChanged();
     }
 
