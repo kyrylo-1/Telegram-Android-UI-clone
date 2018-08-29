@@ -2,7 +2,6 @@
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     style="@style/LayoutOfMessage">
 
     <TextView
@@ -10,7 +9,7 @@
         style="@style/TextViewMessage"
         android:layout_marginStart="8dp"
         android:background="@drawable/rounded_rectangle_send"
-        android:text="Some text here"
+        android:text="Some PLACEHOLDER text here"
         app:layout_constrainedWidth="true"
 
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,8 +25,8 @@
     android:layout_marginBottom="3dp"
     android:layout_marginEnd="22dp"
 
-    android:text="11:40"
-    android:textSize="10sp"
+    android:text="66:67"
+    android:textSize="12sp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="@+id/text_sent_message_body" />
 

@@ -20,20 +20,22 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.shorka.telegramclone_ui.utils.Config;
-import com.shorka.telegramclone_ui.utils.FabHelper;
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.ViewModelFactory;
 import com.shorka.telegramclone_ui.adapter.MessageListAdapter;
 import com.shorka.telegramclone_ui.db.User;
-import com.shorka.telegramclone_ui.db.Message;
+import com.shorka.telegramclone_ui.utils.Config;
+import com.shorka.telegramclone_ui.utils.FabHelper;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
  * Created by Kyrylo Avramenko on 6/22/2018.
  */
+//TODO [Polishing] 1) make adjecent sent/received messages closer to each other than to opposite type of messages. Padding can be changed in style file -> 'LayoutOfMessage';
+//TODO [Polishing] 2) Make bigger paddingTop value in top message. Its needed to have space from toolbar
+
+
 public class ContactChatActivity extends AppCompatActivity {
 
     //region properties
