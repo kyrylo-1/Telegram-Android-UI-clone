@@ -106,7 +106,8 @@ public class ContactChatActivity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        adapterRv = createRecycleAdapter();
+//        adapterRv = createRecycleAdapter();
+        adapterRv = new MessageListAdapter();
         recyclerView.setAdapter(adapterRv);
 
         final FloatingActionButton fabScrollDown = (FloatingActionButton) findViewById(R.id.fab_sroll_down);
@@ -144,7 +145,6 @@ public class ContactChatActivity extends AppCompatActivity {
 
     private void initEditText() {
         editText = (EditText) findViewById(R.id.convo_message_edittext);
-
         editText.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -159,7 +159,6 @@ public class ContactChatActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
 //                Log.d(TAG, "afterTextChanged: " + editText.getText().toString());
-
                 enableBtnSend(!s.toString().isEmpty());
             }
         });
@@ -170,31 +169,10 @@ public class ContactChatActivity extends AppCompatActivity {
         ViewModelFactory factory = ViewModelFactory.getInstance(getApplication());
         chatViewModel = ViewModelProviders.of(this, factory).get(ContactChatViewModel.class);
         chatViewModel.getListMessages(userId).observe(this, messages -> {
+            Log.d(TAG, "observeViewModel: obsert list of messages with size: " + Objects.requireNonNull(messages).size());
             adapterRv.setItems(messages);
+            recyclerView.scrollToPosition(adapterRv.getItemCount() - 1);
         });
-    }
-
-    private MessageListAdapter createRecycleAdapter() {
-        final MessageListAdapter adapter = new MessageListAdapter();
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                super.onItemRangeInserted(positionStart, itemCount);
-
-                Log.d(TAG, "onItemRangeInserted: positionStart: " + positionStart + " itemCount: " + itemCount);
-
-                if (positionStart > 0) {
-                    adapter.notifyItemChanged(positionStart - 1);
-                }
-
-                int lastVisiblePosition = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-                if (positionStart >= adapter.getItemCount() - 1 && lastVisiblePosition == positionStart - 1) {
-                    recyclerView.scrollToPosition(positionStart);
-                }
-            }
-        });
-
-        return adapter;
     }
 
     private void enableBtnSend(boolean doEnable) {
@@ -207,10 +185,10 @@ public class ContactChatActivity extends AppCompatActivity {
     }
 
     private void scrollButton(FloatingActionButton fab, int dy) {
-        Log.d(TAG, "onScrolled: dy: " + dy + "; RollingState: " + fabHelper.getRollingState());
+//        Log.d(TAG, "onScrolled: dy: " + dy + "; RollingState: " + fabHelper.getRollingState());
 
         int lastVisible = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-        Log.d(TAG, "onScrolled: lastVisible: " + lastVisible);
+//        Log.d(TAG, "onScrolled: lastVisible: " + lastVisible);
         //hide fab when user scrolls to the f
 //        if (lastVisible >= listMsgs.size() - 2) {
 //            Log.d(TAG, "scrollButton: scroll to FirstCompletelyVisibleItem");

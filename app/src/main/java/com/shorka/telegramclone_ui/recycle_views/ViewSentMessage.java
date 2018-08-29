@@ -30,7 +30,7 @@ public class ViewSentMessage extends RecyclerView.ViewHolder implements MessageB
 
     public void bind(String messageText, Date realDate) {
 
-        Log.d(TAG, "bind:");
+//        Log.d(TAG, "bind:");
         txtMessageBody.setText(messageText);
         txtTime.setText(Converters.dateToHourAndMinute(realDate));
 //        Log.d(TAG, "bind: date: " + date + "\nLong: " + Converters.dateToHourAndMinute(date));

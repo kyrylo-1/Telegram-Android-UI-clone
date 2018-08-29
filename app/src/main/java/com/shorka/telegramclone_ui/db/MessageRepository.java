@@ -32,8 +32,8 @@ public class MessageRepository extends BaseRepository {
     }
 
     public void insertMessage(Message message) {
-        Log.d(TAG, "insertMessage: ");
         if (message != null)
             messageDao.insert(message);
+//        Log.d(TAG, "insertMessage: " + m);
     }
 }
