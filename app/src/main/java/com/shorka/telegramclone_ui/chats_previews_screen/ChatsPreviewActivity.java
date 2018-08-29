@@ -176,11 +176,6 @@ public class ChatsPreviewActivity extends AppCompatActivity
         });
 
         viewModel.loadPhoneContacts();
-//        viewModel.getLivePhoneContacts().observe(this, phoneContacts -> {
-//            if(phoneContacts!=null){
-//                viewModel.setCachedPhoneContacts(phoneContacts);
-//            }
-//        });
     }
 
     @Override

@@ -58,6 +58,6 @@ public class ViewMessageGridPreview extends RecyclerView.ViewHolder {
     }
 
     public void setPinImage(boolean isPinned){
-        pinImage.setVisibility(isPinned ? View.VISIBLE : View.GONE);
+        pinImage.setVisibility(isPinned ? View.VISIBLE : View.INVISIBLE);
     }
 }

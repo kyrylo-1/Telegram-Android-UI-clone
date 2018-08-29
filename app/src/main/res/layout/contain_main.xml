@@ -26,11 +26,9 @@
                 android:id="@+id/main_recycler_view_messages"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:listitem="@layout/layout_message_preview"
-                />
+                tools:listitem="@layout/layout_message_preview" />
 
         </android.support.v4.widget.NestedScrollView>
-
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/main_write_fab"
@@ -38,10 +36,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
+            android:clickable="true"
             app:backgroundTint="@color/colorPrimary"
             app:layout_behavior=".FabScrollInListBehavior"
-            android:clickable="true"
-            app:srcCompat="@drawable/ic_write" />
+            app:srcCompat="@drawable/ic_write"
+            android:focusable="true" />
 
     </android.support.design.widget.CoordinatorLayout>
 

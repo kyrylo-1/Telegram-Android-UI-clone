@@ -1,84 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/message_prev_layout"
     android:layout_width="match_parent"
     android:layout_height="75dp"
-    android:paddingLeft="9dp"
-    android:clickable="true"
     android:background="?android:selectableItemBackground"
-    android:id="@+id/message_prev_rel_layout"
-    android:paddingEnd="7dp">
+    android:paddingEnd="7dp"
+    android:clickable="true"
+    android:paddingStart="0dp"
+    android:focusable="true">
+
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/img_chat_contact"
         android:layout_width="@dimen/message_image_preview_scale"
         android:layout_height="@dimen/message_image_preview_scale"
-        android:layout_centerVertical="true"
-        android:src="@drawable/kochek_withback" />
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/profile_default_male"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/layout_texts"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="12dp"
-        android:layout_toEndOf="@id/img_chat_contact"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:paddingEnd="40dp">
+    <TextView
+        android:id="@+id/message_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="NAME PLACEHOLDER MORE Text"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
 
-        <TextView
-            android:id="@+id/message_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:maxLines="1"
-            android:paddingEnd="25dp"
-            android:text="Bob PLACEHOLDER"
-            android:textColor="@android:color/black"
-            android:gravity="center_vertical"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/message_check_sign"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/img_chat_contact"
+        app:layout_constraintTop_toTopOf="@id/img_chat_contact" />
 
-        <TextView
-            android:id="@+id/message_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="top"
-            android:maxLines="1"
-            android:text="is this PLACEHOLDER?"
-            android:textSize="14sp" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/message_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="is this PLACEHOLDER?"
+        android:textSize="14sp"
+        app:layout_constrainedWidth="true"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintBottom_toBottomOf="@id/img_chat_contact"
+        app:layout_constraintEnd_toStartOf="@id/pin_image"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/message_title" />
 
     <ImageView
         android:id="@+id/message_check_sign"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="40dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/ic_check" />
+
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/ic_check"
+        app:layout_constraintEnd_toStartOf="@id/message_sent_time"
+        app:layout_constraintTop_toTopOf="@id/img_chat_contact" />
 
     <TextView
         android:id="@+id/message_sent_time"
-        android:layout_width="35dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginEnd="12dp"
         android:text="06:66"
-        android:textSize="13sp" />
-
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/img_chat_contact" />
 
     <ImageView
         android:id="@+id/pin_image"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_pin"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintBottom_toBottomOf="@id/img_chat_contact"
         android:layout_marginBottom="4dp"
-        android:src="@drawable/ic_pin" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible"
+        />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

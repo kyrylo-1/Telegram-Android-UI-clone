@@ -30,13 +30,11 @@ import io.reactivex.schedulers.Schedulers;
 public class ChatPreviewViewModel extends AndroidViewModel {
 
     private static final String TAG = "ChatPreviewViewModel";
-    private Context context;
     private final LocalDatabase localDb;
     private CompositeDisposable compDisposable;
 
     public ChatPreviewViewModel(@NonNull Application application, LocalDatabase localDb) {
         super(application);
-        context = application;
         this.localDb = localDb;
         compDisposable = new CompositeDisposable();
     }
@@ -115,7 +113,7 @@ public class ChatPreviewViewModel extends AndroidViewModel {
     void loadPhoneContacts() {
         Log.d(TAG, "loadPhoneContacts: ");
 
-        Disposable disposable = localDb.getUserRepo().loadPhoneContacts(context, true).subscribeOn(Schedulers.io())
+        Disposable disposable = localDb.getUserRepo().loadPhoneContacts(getApplication(), true).subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe();
 
