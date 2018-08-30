@@ -88,7 +88,7 @@ public class ChatPreviewViewModel extends AndroidViewModel {
                 .withLastMessage(msg.text)
                 .withIsPinned(false)
                 .withIsReaded(true)
-                .withDate(msg.getStringDate())
+                .withDate(msg.getRealDate())
                 .withImageResId(R.drawable.kochek_withback)
                 .buildMesagePreview();
     }

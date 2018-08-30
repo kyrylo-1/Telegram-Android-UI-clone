@@ -55,24 +55,35 @@ public class DefaultDataGenerator {
 //        Log.d(TAG, "generateMessages: " +c1.getTime());
 //        Date d = dateFormat.parse(oldDateString);
 
-        list.add(createMessage(recipientId,"Hi, bruv. Today I did not see you at the gym", c1.getTime()));
-        c1.set(2018, Calendar.AUGUST, 21,12,35);
-        list.add(createMessage(recipientId,"Are you even lifting bro", c1.getTime()));
-        c1.set(2018, Calendar.AUGUST, 21,12,36);
-        list.add(createMessage(recipientId,"I do \n THIS \n EVERY \n DAY", c1.getTime()));
-        c1.set(2018, Calendar.AUGUST, 21,12,37);
-        list.add(createMessage(recipientId,"you should too", c1.getTime()));
-        c1.set(2018, Calendar.AUGUST, 21,12,38);
-        list.add(createMessage(recipientId,"promise me", c1.getTime()));
-        list.add(createMessage(recipientId,"Not tommorow", c1.getTime()));
-        list.add(createMessage(recipientId,"NOW!", c1.getTime()));
-        list.add(createMessage(recipientId,"REMEMBER! \nI  \ndo \n THIS \n EVERY \n DAY", c1.getTime()));
-        c1.set(2018, Calendar.AUGUST, 21,12,39);
+        //Immitate todays date
+        final Calendar c2 =  Calendar.getInstance();
+        c2.setTime(c2.getTime());
+        c2.add(Calendar.HOUR,-3);
+        c2.add(Calendar.MINUTE,-10);
+        list.add(createMessage(recipientId,"Hi, bruv. Today I did not see you at the gym", c2.getTime()));
+        c2.add(Calendar.MINUTE,2);
+
+        list.add(createMessage(recipientId,"Are you even lifting bro", c2.getTime()));
+
+        c2.add(Calendar.MINUTE,1);
+        list.add(createMessage(recipientId,"I do \n THIS \n EVERY \n DAY", c2.getTime()));
+
+        c2.add(Calendar.MINUTE,1);
+        list.add(createMessage(recipientId,"you should too", c2.getTime()));
+
+
+        list.add(createMessage(recipientId,"promise me", c2.getTime()));
+        list.add(createMessage(recipientId,"Not tommorow", c2.getTime()));
+        list.add(createMessage(recipientId,"NOW!", c2.getTime()));
+        list.add(createMessage(recipientId,"REMEMBER! \nI  \ndo \n THIS \n EVERY \n DAY", c2.getTime()));
+
+        c2.add(Calendar.MINUTE,2);
         list.add(createMessage(recipientId,"ALRIGHT THEN" +
-                "\n MORE TEXT \n AND EVEN more text", c1.getTime()));
-        c1.set(2018, Calendar.AUGUST, 21,12,39);
+                "\n MORE TEXT \n AND EVEN more text", c2.getTime()));
+
+        c2.add(Calendar.MINUTE,1);
         list.add(createMessage(recipientId,"Hahahahaha-\bahahaha hahah hahahah hahahah " +
-                "hahahahahaha\n hahahaha\nhahah\nhaha", c1.getTime()));
+                "hahahahahaha\n hahahaha\nhahah\nhaha", c2.getTime()));
 
         recipientId = 3;
 
@@ -100,8 +111,10 @@ public class DefaultDataGenerator {
         list.add(createMessage(recipientId,"Dont skip my classes anymore", c1.getTime()));
 
         recipientId = 8;
-        c1.set(2018, Calendar.AUGUST, 15,13,0);
-        list.add(createMessage(recipientId," need to think about this more carefully", c1.getTime()));
+        //will show message like it was written 2 days ago
+        final Calendar c8 = Calendar.getInstance();
+        c8.add(Calendar.DAY_OF_MONTH,-5);
+        list.add(createMessage(recipientId," need to think about this more carefully", c8.getTime()));
 
         recipientId = 9;
         c1.set(2018, Calendar.AUGUST, 5,9,9);

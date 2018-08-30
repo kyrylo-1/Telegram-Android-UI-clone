@@ -4,6 +4,8 @@ import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.util.Date;
+
 /**
  * Created by Kyrylo Avramenko on 6/19/2018.
  */
@@ -31,7 +33,7 @@ public class MessagePreview {
         return isReaded;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -44,7 +46,7 @@ public class MessagePreview {
     private String lastMessage;
     private boolean isPinned;
     private boolean isReaded;
-    private String date;
+    private Date date;
     @DrawableRes
     private int imageResId;
 
@@ -65,7 +67,7 @@ public class MessagePreview {
         private String lastMessage;
         private boolean isPinned;
         private boolean isReaded;
-        private String date;
+        private Date date;
         @DrawableRes
         private int imageResId;
 
@@ -95,7 +97,7 @@ public class MessagePreview {
             return this;
         }
 
-        public MessagePreviewBuilder withDate(String date) {
+        public MessagePreviewBuilder withDate(Date date) {
             this.date = date;
             return this;
         }
@@ -130,10 +132,10 @@ public class MessagePreview {
             }
 
 
-            if (TextUtils.isEmpty(date)) {
-                Log.e(TAG, "isValidateData: date.isEmpty");
-                return false;
-            }
+//            if (TextUtils.isEmpty(date)) {
+//                Log.e(TAG, "isValidateData: date.isEmpty");
+//                return false;
+//            }
 
 //            if (imageResId == 0) {
 //                Log.e(TAG, "isValidateData: imageResId == 0");
