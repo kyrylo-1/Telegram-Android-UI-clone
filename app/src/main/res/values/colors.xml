@@ -10,4 +10,13 @@
 
     <color name="colorBackGray">#eaeaea</color>
 
+    <color name="gray65">#ff595959</color>
+    <color name="action_mode_status_bar">@color/gray65</color>
+
+
+    <color name="blue2">#882090ea</color>
+
+    <color name="primary_alpha">#552090ea</color>
+    <color name="primary_alpha_focus">#882090ea</color>
+
 </resources>

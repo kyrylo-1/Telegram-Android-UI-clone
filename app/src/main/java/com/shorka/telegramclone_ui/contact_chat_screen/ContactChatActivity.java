@@ -1,7 +1,10 @@
 package com.shorka.telegramclone_ui.contact_chat_screen;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -12,22 +15,29 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.shorka.telegramclone_ui.R;
+import com.shorka.telegramclone_ui.RecyclerItemClickListener;
 import com.shorka.telegramclone_ui.ViewModelFactory;
 import com.shorka.telegramclone_ui.adapter.MessageListAdapter;
+import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.utils.Config;
 import com.shorka.telegramclone_ui.utils.FabHelper;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Created by Kyrylo Avramenko on 6/22/2018.
@@ -49,7 +59,9 @@ public class ContactChatActivity extends AppCompatActivity {
     private MessageListAdapter adapterRv;
     private FabHelper fabHelper;
     private ContactChatViewModel chatViewModel;
+    private ActionMode actionMode;
     private long recipientUserId;
+    private Toolbar toolbar;
     //endregion
 
     @Override
@@ -58,6 +70,7 @@ public class ContactChatActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_contact_chat);
 
+        setUpToolBar();
         setUpUI();
         initEditText();
         recipientUserId = getIntent().getLongExtra(Config.USER_ID_EXTRA, 1);
@@ -83,8 +96,17 @@ public class ContactChatActivity extends AppCompatActivity {
 
     private LinearLayoutManager linearLayoutManager;
 
+    private void setUpToolBar() {
+        toolbar = (Toolbar) findViewById(R.id.convo_toolbar);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+    }
+
     private void setUpUI() {
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.convo_toolbar);
+
         final View viewConvoTop = findViewById(R.id.convo_header_view_top);
         txtChatPersonName = viewConvoTop.findViewById(R.id.name);
         txtLastSeen = viewConvoTop.findViewById(R.id.last_seen);
@@ -94,12 +116,6 @@ public class ContactChatActivity extends AppCompatActivity {
 
         btnSend = (ImageButton) findViewById(R.id.convo_send_btn);
         enableBtnSend(false);
-
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         btnSend.setOnClickListener(v -> sendMessages());
 
@@ -143,6 +159,18 @@ public class ContactChatActivity extends AppCompatActivity {
         //TODO  When user exits from certain chat,remember position of item in recyclerView and save it.
         // When user reopens chat, scroll to saved position
         recyclerView.scrollToPosition(adapterRv.getItemCount() - 1);
+
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(context, recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                clickOnMessage(adapterRv.getItem(position));
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+                longClickOnMessage(adapterRv.getItem(position));
+            }
+        }));
     }
 
     private void initEditText() {
@@ -216,4 +244,79 @@ public class ContactChatActivity extends AppCompatActivity {
         txtChatPersonName.setText(user.firstName);
     }
 
+    private void clickOnMessage(Message message) {
+        Log.d(TAG, "clickOnMessage: ");
+        if (actionMode == null) return;
+
+        adapterRv.toggleSelection(message);
+
+        if (adapterRv.getSizeOfSelectedItems() == 0) {
+            actionMode.finish();
+        } else {
+            actionMode.setTitle(String.valueOf(adapterRv.getSizeOfSelectedItems()));
+        }
+
+    }
+
+    private void longClickOnMessage(Message message) {
+        Log.d(TAG, "longClickOnMessage: ");
+
+        if (actionMode == null && adapterRv.getSizeOfSelectedItems() == 0) {
+            adapterRv.toggleSelection(message);
+            actionMode = startActionMode(callback);
+        } else {
+            actionMode.finish();
+        }
+    }
+
+
+    private ActionMode.Callback callback = new ActionMode.Callback() {
+
+        private int statusBarColor;
+        private MenuInflater inflater;
+
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+
+            inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.menu_message_context, menu);
+
+            mode.setTitle(String.valueOf(adapterRv.getSizeOfSelectedItems()));
+            Window window = getWindow();
+            statusBarColor = window.getStatusBarColor();
+            window.setStatusBarColor(getResources().getColor(R.color.action_mode_status_bar));
+
+            return true;
+        }
+
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            Log.d(TAG, "onActionItemClicked " + item.getTitle());
+
+            switch (item.getItemId()) {
+
+                case R.id.menu_msg_copy:
+                    chatViewModel.handleCopyMessage(adapterRv.getSelectedItems());
+                    actionMode.finish();
+                    return true;
+
+                case R.id.menu_msg_delete:
+                    actionMode.finish();
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        public void onDestroyActionMode(ActionMode mode) {
+            Log.d(TAG, "destroy");
+
+            adapterRv.clearSelectedItems();
+            actionMode = null;
+        }
+
+    };
 }

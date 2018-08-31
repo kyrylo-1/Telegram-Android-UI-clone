@@ -13,7 +13,9 @@ import com.shorka.telegramclone_ui.recycle_views.MessageBindable;
 import com.shorka.telegramclone_ui.recycle_views.ViewReceiveMessage;
 import com.shorka.telegramclone_ui.recycle_views.ViewSentMessage;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Kyrylo Avramenko on 6/29/2018.
@@ -22,6 +24,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     private static final String TAG = "MessageListAdapter";
     private List<Message> items;
+    private Set<Message> itemsSelected;
 
     public MessageListAdapter() {
     }
@@ -30,6 +33,40 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         this.items = items;
         notifyDataSetChanged();
     }
+
+    public void toggleSelection(Message message) {
+
+        if (itemsSelected == null) {
+            itemsSelected = new HashSet<>();
+        }
+
+        itemsSelected.add(message);
+    }
+
+    public void clearSelectedItems() {
+
+        if (itemsSelected == null) return;
+
+        for (Message m: itemsSelected) {
+
+        }
+
+        itemsSelected.clear();
+    }
+
+    public Set<Message> getSelectedItems() {
+        return itemsSelected;
+    }
+
+    public int getSizeOfSelectedItems() {
+
+        return itemsSelected == null ? 0 : itemsSelected.size();
+    }
+
+    public Message getItem(int position) {
+        return items.get(position);
+    }
+
 
     @NonNull
     @Override
@@ -69,4 +106,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         return msg.messageType;
     }
+
+
 }

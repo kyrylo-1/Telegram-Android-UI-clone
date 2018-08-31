@@ -11,8 +11,11 @@
         <item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayout</item>
         <item name="cardViewStyle">@style/CardView</item>
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_close_gray</item>
 
     </style>
+
+
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
@@ -53,14 +56,13 @@
         <item name="android:textColor">@android:color/black</item>
     </style>
 
-
-
     <style name="LayoutOfMessage">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
         <item name="android:paddingTop">5dp</item>
         <item name="android:paddingBottom">5dp</item>
+        <item name="android:focusable">true</item>
     </style>
 
 </resources>

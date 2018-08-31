@@ -2,5 +2,5 @@
 <resources>
 
     <dimen name="spacer_margin">5dp</dimen>
-
+    <dimen name="message_radius">10dp</dimen>
 </resources>
