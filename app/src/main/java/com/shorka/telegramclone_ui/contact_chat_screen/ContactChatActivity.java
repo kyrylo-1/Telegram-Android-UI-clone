@@ -1,11 +1,9 @@
 package com.shorka.telegramclone_ui.contact_chat_screen;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
-import android.nfc.Tag;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -35,9 +33,7 @@ import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.utils.Config;
 import com.shorka.telegramclone_ui.utils.FabHelper;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Created by Kyrylo Avramenko on 6/22/2018.
@@ -200,7 +196,7 @@ public class ContactChatActivity extends AppCompatActivity {
         chatViewModel = ViewModelProviders.of(this, factory).get(ContactChatViewModel.class);
         chatViewModel.getListMessages(userId).observe(this, messages -> {
             Log.d(TAG, "observeViewModel: obsert list of messages with size: " + Objects.requireNonNull(messages).size());
-            adapterRv.setItems(messages);
+            adapterRv.setItemsMesssages(messages);
             recyclerView.scrollToPosition(adapterRv.getItemCount() - 1);
         });
     }
@@ -244,31 +240,31 @@ public class ContactChatActivity extends AppCompatActivity {
         txtChatPersonName.setText(user.firstName);
     }
 
-    private void clickOnMessage(Message message) {
-        Log.d(TAG, "clickOnMessage: ");
+    private void clickOnMessage(@NonNull Message message) {
         if (actionMode == null) return;
 
-        adapterRv.toggleSelection(message);
+        Log.d(TAG, "clickOnMessage: ");
 
+        toggleMessage(message);
+    }
+
+    private void longClickOnMessage(@NonNull Message message) {
+        Log.d(TAG, "longClickOnMessage: ");
+
+        if (actionMode == null) {
+            actionMode = startActionMode(callback);
+        }
+        toggleMessage(message);
+    }
+
+    private void toggleMessage(@NonNull Message message) {
+        adapterRv.toggleSelection(message);
         if (adapterRv.getSizeOfSelectedItems() == 0) {
             actionMode.finish();
         } else {
             actionMode.setTitle(String.valueOf(adapterRv.getSizeOfSelectedItems()));
         }
-
     }
-
-    private void longClickOnMessage(Message message) {
-        Log.d(TAG, "longClickOnMessage: ");
-
-        if (actionMode == null && adapterRv.getSizeOfSelectedItems() == 0) {
-            adapterRv.toggleSelection(message);
-            actionMode = startActionMode(callback);
-        } else {
-            actionMode.finish();
-        }
-    }
-
 
     private ActionMode.Callback callback = new ActionMode.Callback() {
 

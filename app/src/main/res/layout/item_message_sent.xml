@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.shorka.telegramclone_ui.ConversationItem xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/LayoutOfMessage">
+    android:id="@+id/message_layout_sent"
+    style="@style/LayoutOfMessage"
+    android:background="@drawable/conversation_item_background">
 
     <TextView
-        android:id="@+id/text_sent_message_body"
+        android:id="@+id/text_message_body"
         style="@style/TextViewMessage"
         android:layout_marginStart="8dp"
-        android:background="@drawable/rounded_rectangle_send"
+        android:background="@drawable/msg_send_selector"
         android:text="Some PLACEHOLDER text here"
         app:layout_constrainedWidth="true"
 
@@ -19,16 +21,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-    android:id="@+id/text_sent_message_time"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="3dp"
-    android:layout_marginEnd="22dp"
+        android:id="@+id/text_message_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:layout_marginEnd="22dp"
 
-    android:text="66:67"
-    android:textSize="12sp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="@+id/text_sent_message_body" />
+        android:text="66:67"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/text_message_body" />
 
     <android.support.v4.widget.Space
         android:id="@+id/marginSpacer_beforeMessage"
@@ -39,20 +41,21 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
-    android:layout_width="14dp"
-    android:layout_height="14dp"
-    android:src="@drawable/arrow_message_sent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    android:layout_marginEnd="4dp"
-    app:layout_constraintEnd_toEndOf="@id/marginSpacer_beforeMessage" />
+        android:id="@+id/message_arrow"
+        android:layout_width="@dimen/message_arrow_size"
+        android:layout_height="@dimen/message_arrow_size"
+        android:layout_marginEnd="4dp"
+        android:src="@drawable/arrow_message_sent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/marginSpacer_beforeMessage" />
 
     <ImageView
-    android:layout_width="15dp"
-    android:layout_height="15dp"
-    android:layout_marginBottom="2dp"
-    android:layout_marginEnd="4dp"
-    android:src="@drawable/ic_check"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="@+id/text_sent_message_body" />
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginEnd="4dp"
+        android:src="@drawable/ic_check"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/text_message_body" />
 
-</android.support.constraint.ConstraintLayout>
+</com.shorka.telegramclone_ui.ConversationItem>

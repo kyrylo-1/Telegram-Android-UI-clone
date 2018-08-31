@@ -157,7 +157,7 @@ public class ChatsPreviewActivity extends AppCompatActivity
             if (users == null) {
                 Log.e(TAG, "observeViewModel:getAllLiveUsers is null");
             } else {
-                Log.d(TAG, "observeViewModel: getAllLiveUsers() setItems");
+                Log.d(TAG, "observeViewModel: getAllLiveUsers() setItemsMesssages");
                 viewModel.setAllUsers(users);
             }
         });
@@ -168,7 +168,7 @@ public class ChatsPreviewActivity extends AppCompatActivity
             if (messages == null) {
                 Log.e(TAG, "messages == null");
             } else {
-                Log.d(TAG, "observeViewModel: getRecentMessageByChat() setItems. QTY IS: " + messages.size());
+                Log.d(TAG, "observeViewModel: getRecentMessageByChat() setItemsMesssages. QTY IS: " + messages.size());
 
                 adapterRv.setItems(viewModel.transformToMsgPreviews(messages));
             }

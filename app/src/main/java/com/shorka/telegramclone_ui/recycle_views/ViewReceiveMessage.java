@@ -1,31 +1,25 @@
 package com.shorka.telegramclone_ui.recycle_views;
 
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
+import com.shorka.telegramclone_ui.ConversationItem;
 import com.shorka.telegramclone_ui.R;
-import com.shorka.telegramclone_ui.db.Converters;
-
-import java.util.Date;
 
 /**
  * Created by Kyrylo Avramenko on 6/29/2018.
  */
-public class ViewReceiveMessage extends RecyclerView.ViewHolder implements MessageBindable {
+public class ViewReceiveMessage extends BasicViewMessage {
 
-    private TextView txtMessageBody, txtTime;
-
+    private static final String TAG = "ViewReceiveMessage";
     public ViewReceiveMessage(View itemView) {
         super(itemView);
 
-        txtMessageBody = (TextView) itemView.findViewById(R.id.text_receive_message_body);
-        txtTime = (TextView) itemView.findViewById(R.id.text_receive_message_time);
-    }
+        ConversationItem convoItem = itemView.findViewById(R.id.message_layout);
+        if (convoItem == null) {
+            Log.e(TAG, "ViewSentMessage: convoItem == null");
+        }
+        setConvoItem(convoItem);
 
-    public void bind(String messageText, Date date){
-
-        txtMessageBody.setText(messageText);
-        txtTime.setText(Converters.dateToHourAndMinute(date));
     }
 }

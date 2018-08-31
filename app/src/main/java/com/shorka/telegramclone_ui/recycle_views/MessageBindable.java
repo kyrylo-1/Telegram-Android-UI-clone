@@ -7,8 +7,8 @@ import java.util.Date;
 /**
  * Created by Kyrylo Avramenko on 8/28/2018.
  */
-public interface MessageBindable {
-
-    void bind(String messageText, Date date);
-
-}
+//public interface MessageBindable {
+//
+//    void bind(String messageText, Date date);
+//
+//}

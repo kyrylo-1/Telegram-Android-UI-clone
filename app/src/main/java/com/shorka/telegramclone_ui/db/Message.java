@@ -4,8 +4,13 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.util.Log;
+
+import com.shorka.telegramclone_ui.ClearSelectionCallBack;
 
 import java.util.Date;
+
+import static android.support.constraint.Constraints.TAG;
 
 /**
  * Created by Kyrylo Avramenko on 6/29/2018.
@@ -52,6 +57,6 @@ public class Message {
     public void setDate(Date date){
         this.date = Converters.dateToTimestamp(date);
     }
-}
 
+}
 

@@ -3,4 +3,5 @@
 
     <dimen name="spacer_margin">5dp</dimen>
     <dimen name="message_radius">10dp</dimen>
+    <dimen name="message_arrow_size">14dp</dimen>
 </resources>

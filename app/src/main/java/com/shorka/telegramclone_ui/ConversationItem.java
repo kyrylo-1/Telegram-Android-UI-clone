@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -13,23 +13,26 @@ import android.widget.TextView;
 public class ConversationItem extends ConstraintLayout {
 
     private static final String TAG = "ConversationItem";
-    private final Context context;
-    
+
     private TextView txtBody;
     private TextView txtTime;
-    private ConstraintLayout constraintLayout;
-    private boolean isSelected;
+    private ImageView imgArrow;
+
+    public TextView getTxtBody() {
+        return txtBody;
+    }
+
+    public TextView getTxtTime() {
+        return txtTime;
+    }
+
     public ConversationItem(Context context) {
         super(context);
-        this.context = context;
-        isSelected =false;
+
     }
 
     public ConversationItem(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Log.d(TAG, "ConversationItem: 2");
-        this.context = context;
-        isSelected = false;
     }
 
 
@@ -37,35 +40,17 @@ public class ConversationItem extends ConstraintLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-
-        txtBody = findViewById(R.id.text_receive_message_body);
-        txtTime  = findViewById(R.id.text_receive_message_time);
-
-//        this.setOnClickListener(v -> click());
-        this.setOnLongClickListener(v -> longClick());
+        txtBody = findViewById(R.id.text_message_body);
+        txtTime  = findViewById(R.id.text_message_time);
+        imgArrow = findViewById(R.id.message_arrow);
     }
 
 
-//    private void click(){
-//        Log.d(TAG, "onClick: ");
-//    }
-
-    private boolean longClick(){
-        Log.d(TAG, "longClick: ");
-//        if (txtBody.hasSelection()) {
-//
-//            Log.d(TAG, "longClick: hasSelection");
-//            return false;
-//        }
-        
-        setSelected(true);
-        txtBody.setSelected(true);
-        performClick();
-        return true;
+    public void selectView(boolean doSelect){
+        Log.d(TAG, "selectView: Make select? " + txtBody.getText() + doSelect);
+        setSelected(doSelect);
+        txtBody.setSelected(doSelect);
+        imgArrow.setSelected(doSelect);
     }
-
-//    public void unSelected(){
-//        setSelected(false);
-//    }
 
 }
