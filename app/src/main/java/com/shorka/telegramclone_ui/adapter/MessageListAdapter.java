@@ -108,6 +108,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             Log.d(TAG, "onBindViewHolder: Message " + "__ " + message.toString() + " ___ is NOT SELECTED with id: ");
             message.clearSelection();
         }
+
     }
 
     @Override

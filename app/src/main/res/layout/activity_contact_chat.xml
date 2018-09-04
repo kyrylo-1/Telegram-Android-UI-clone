@@ -23,34 +23,11 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <FrameLayout
+    <FrameLayout android:id="@+id/fragment_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/test_convo_recycler_view_messages"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/item_message_sent" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:background="@drawable/ab_shadow" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_sroll_down"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="12dp"
-            android:scaleType="center"
-            android:src="@drawable/ic_arrow_scroll_down"
-            app:backgroundTint="@color/colorWhite"
-            app:fabSize="normal" />
-
-    </FrameLayout>
 
     <View
         android:layout_width="match_parent"
