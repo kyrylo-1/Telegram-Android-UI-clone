@@ -26,8 +26,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     private static final String TAG = "MessageListAdapter";
     private List<Message> itemsMessages;
-    //        private SparseArray batchSelected = new SparseArray();
-//    private Set<Message> batchSelected = new HashSet<>();
     private HashMap<Long, Message> batchSelected = new HashMap();
 
     public MessageListAdapter() {
@@ -52,33 +50,16 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             batchSelected.put(key, message);
             message.makeSelection();
         }
-
-//        if (!batchSelected.remove(message)) {
-//
-//            message.makeSelection();
-//            batchSelected.add(message);
-//        } else {
-//            Log.d(TAG, "toggleSelection: clear messsage: " + message.text);
-//            message.clearSelection();
-//        }
-
     }
 
     public void clearSelectedItems() {
         Log.d(TAG, "clearSelectedItems: ");
-//        for (Message m : batchSelected) {
-//            m.clearSelection();
-//        }
-//
-//        batchSelected.clear();
-
 
         for (Long key : batchSelected.keySet()) {
             batchSelected.get(key).clearSelection();
         }
 
         batchSelected.clear();
-
     }
 
     public int getSizeOfSelectedItems() {
@@ -127,30 +108,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             Log.d(TAG, "onBindViewHolder: Message " + "__ " + message.toString() + " ___ is NOT SELECTED with id: ");
             message.clearSelection();
         }
-
-
-//        for (Message m : batchSelected) {
-//            if (message.getIdMessage() == message.getIdMessage()) {
-//                m = message;
-//                break;
-//            }
-//        }
-//        batchSelected.
-//
-//                Log.d(TAG, "onBindViewHolder: size of Selected messages: " + batchSelected.size());
-//        for (Message m : batchSelected) {
-//            Log.d(TAG, "onBindViewHolder: batchSelected is: " + m.toString());
-//        }
-//
-//
-//        if (batchSelected.contains(message)) {
-//            message.makeSelection();
-//            Log.d(TAG, "onBindViewHolder: Message " + "__ " + message.text + " ___ is SELECTED");
-//        } else {
-//            Log.d(TAG, "onBindViewHolder: Message " + "__ " + message.toString() + " ___ is NOT SELECTED with id: ");
-//            message.clearSelection();
-//        }
-
     }
 
     @Override
