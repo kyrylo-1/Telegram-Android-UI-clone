@@ -136,7 +136,7 @@ public class ContactChatActivity extends AppCompatActivity {
                 if (fabHelper == null && Math.abs(dy) > 1) {
                     fabHelper = new FabHelper(fabScrollDown, 200L);
                     fabScrollDown.setTranslationY(fabHelper.getOffscreenTranslation());
-                    Log.d(TAG, "onScrolled: create FabHelper: height: " + fabScrollDown.getHeight());
+//                    Log.d(TAG, "onScrolled: create FabHelper: height: " + fabScrollDown.getHeight());
                 }
 
                 if (fabHelper != null) {
@@ -195,7 +195,7 @@ public class ContactChatActivity extends AppCompatActivity {
         ViewModelFactory factory = ViewModelFactory.getInstance(getApplication());
         chatViewModel = ViewModelProviders.of(this, factory).get(ContactChatViewModel.class);
         chatViewModel.getListMessages(userId).observe(this, messages -> {
-            Log.d(TAG, "observeViewModel: obsert list of messages with size: " + Objects.requireNonNull(messages).size());
+            Log.d(TAG, "observeViewModel: observe list of messages with size: " + Objects.requireNonNull(messages).size());
             adapterRv.setItemsMessages(messages);
             recyclerView.scrollToPosition(adapterRv.getItemCount() - 1);
         });
@@ -315,6 +315,5 @@ public class ContactChatActivity extends AppCompatActivity {
             adapterRv.clearSelectedItems();
             actionMode = null;
         }
-
     };
 }

@@ -1,5 +1,6 @@
 package com.shorka.telegramclone_ui.recycle_views;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -21,12 +22,14 @@ public class BasicViewMessage extends RecyclerView.ViewHolder {
 
     public BasicViewMessage(View itemView) {
         super(itemView);
+//        Log.d(TAG, "BasicViewMessage: ");
         convoItem = itemView.findViewById(R.id.message_layout);
 //        convoItem = itemView.findViewById(messageType == Message.RECEIVED ? R.id.message_layout : R.id.message_layout_sent);
 
     }
 
-    public void bind(Message message) {
+    public Message bind(@NonNull final Message message) {
+        Log.d(TAG, "bind: message: " + message.text);
         idMessage = message.getIdMessage();
         if(convoItem != null){
             convoItem.getTxtBody().setText(message.text);
@@ -40,17 +43,22 @@ public class BasicViewMessage extends RecyclerView.ViewHolder {
         message.setSelectionCallback(new Message.SelectionCallBack() {
             @Override
             public void onClear() {
+                Log.d(TAG, "onClear: " + message.text);
                 selectMessage(false);
             }
 
             @Override
             public void onSelect() {
+                Log.d(TAG, "onSelect: " + message.text);
                 selectMessage(true);
             }
         });
+
+        return message;
     }
 
     private void selectMessage(boolean isSelected) {
+
         convoItem.selectView(isSelected);
     }
 

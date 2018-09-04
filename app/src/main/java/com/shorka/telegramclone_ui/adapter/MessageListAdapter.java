@@ -3,6 +3,7 @@ package com.shorka.telegramclone_ui.adapter;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,11 @@ import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.recycle_views.BasicViewMessage;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -22,7 +26,9 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     private static final String TAG = "MessageListAdapter";
     private List<Message> itemsMessages;
-    private Set<Message> batchSelected = new HashSet<>();
+    //        private SparseArray batchSelected = new SparseArray();
+//    private Set<Message> batchSelected = new HashSet<>();
+    private HashMap<Long, Message> batchSelected = new HashMap();
 
     public MessageListAdapter() {
 
@@ -33,35 +39,54 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+
     public void toggleSelection(Message message) {
 
-        if (!batchSelected.remove(message)){
+        final Long key = Long.valueOf(message.getIdMessage());
+        if (batchSelected.containsKey(key)) {
+            Log.d(TAG, "toggleSelection: clear messsage: " + message.text);
+            batchSelected.remove(key);
+            message.clearSelection();
+        } else {
             Log.d(TAG, "toggleSelection: add batchSelected message: " + message.text);
-            batchSelected.add(message);
+            batchSelected.put(key, message);
             message.makeSelection();
         }
-        else {
-            message.clearSelection();
-        }
+
+//        if (!batchSelected.remove(message)) {
+//
+//            message.makeSelection();
+//            batchSelected.add(message);
+//        } else {
+//            Log.d(TAG, "toggleSelection: clear messsage: " + message.text);
+//            message.clearSelection();
+//        }
 
     }
 
     public void clearSelectedItems() {
+        Log.d(TAG, "clearSelectedItems: ");
+//        for (Message m : batchSelected) {
+//            m.clearSelection();
+//        }
+//
+//        batchSelected.clear();
 
-        for (Message m : batchSelected) {
-                m.clearSelection();
+
+        for (Long key : batchSelected.keySet()) {
+            batchSelected.get(key).clearSelection();
         }
 
         batchSelected.clear();
-        Log.d(TAG, "clearSelectedItems: ");
+
     }
 
     public int getSizeOfSelectedItems() {
-        return batchSelected == null ? 0: batchSelected.size();
+        return batchSelected == null ? 0 : batchSelected.size();
     }
 
-    public Set<Message> getSelectedItems(){
-        return batchSelected;
+    public Set<Message> getSelectedItems() {
+        return new HashSet<>(batchSelected.values());
     }
 
     public Message getItem(int position) {
@@ -92,7 +117,40 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         BasicViewMessage bvm = (BasicViewMessage) holder;
 
-        bvm.bind(message);
+
+        message = bvm.bind(message);
+        if (batchSelected.containsKey(message.getIdMessage())) {
+            batchSelected.put(message.getIdMessage(), message);
+            message.makeSelection();
+            Log.d(TAG, "onBindViewHolder: Message " + "__ " + message.text + " ___ is SELECTED");
+        } else {
+            Log.d(TAG, "onBindViewHolder: Message " + "__ " + message.toString() + " ___ is NOT SELECTED with id: ");
+            message.clearSelection();
+        }
+
+
+//        for (Message m : batchSelected) {
+//            if (message.getIdMessage() == message.getIdMessage()) {
+//                m = message;
+//                break;
+//            }
+//        }
+//        batchSelected.
+//
+//                Log.d(TAG, "onBindViewHolder: size of Selected messages: " + batchSelected.size());
+//        for (Message m : batchSelected) {
+//            Log.d(TAG, "onBindViewHolder: batchSelected is: " + m.toString());
+//        }
+//
+//
+//        if (batchSelected.contains(message)) {
+//            message.makeSelection();
+//            Log.d(TAG, "onBindViewHolder: Message " + "__ " + message.text + " ___ is SELECTED");
+//        } else {
+//            Log.d(TAG, "onBindViewHolder: Message " + "__ " + message.toString() + " ___ is NOT SELECTED with id: ");
+//            message.clearSelection();
+//        }
+
     }
 
     @Override
@@ -104,29 +162,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
 
         Message msg = itemsMessages.get(position);
-
         return msg.messageType;
     }
 
 
-    //TODO optimize retrieval of BasicMessage item using binary sort. So, list should be sorted in 1st place
-//    @Nullable
-//    private BasicViewMessage getViewMessageById(long messageId) {
-//        for (BasicViewMessage bvm : listViewsMsgs) {
-//            if (bvm.getIdMessage() == messageId)
-//                return bvm;
-//        }
-//        return null;
-//    }
-
-//    private class MessageWithView{
-//
-//        private final Message m;
-//        private final BasicViewMessage bvm;
-//
-//        MessageWithView(Message m, BasicViewMessage bvm){
-//            this.m = m;
-//            this.bvm = bvm;
-//        }
-//    }
 }

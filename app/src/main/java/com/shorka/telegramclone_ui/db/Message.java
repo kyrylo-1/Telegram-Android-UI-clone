@@ -18,6 +18,18 @@ public class Message {
 
     private static final String TAG = "Message";
 
+    @Override
+    public String toString() {
+        return "Message{" +
+                "idMessage=" + idMessage +
+                ", recipientId=" + recipientId +
+                ", text='" + text + '\'' +
+                ", date=" + date +
+                ", messageType=" + messageType +
+                ", listenerSelection=" + listenerSelection +
+                '}';
+    }
+
     public interface SelectionCallBack {
         void onClear();
 
@@ -75,13 +87,15 @@ public class Message {
     }
 
     public void clearSelection(){
-        Log.d(TAG, "clearSelection: ");
+        Log.d(TAG, "clearSelection: " + text);
         listenerSelection.onClear();
     }
 
     public void makeSelection(){
+        Log.d(TAG, "makeSelection: "+text);
         listenerSelection.onSelect();
     }
+
 
 }
 
