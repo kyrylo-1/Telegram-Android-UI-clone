@@ -17,10 +17,15 @@ import com.shorka.telegramclone_ui.db.LocalDatabase;
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.User;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -75,21 +80,17 @@ public class ContactChatViewModel extends AndroidViewModel {
         String nameOfRecipient = null;
         Message prevMsg = null;
         String nameOfSender = null;
-        for (Message m : messages) {
+
+        //Sort messages by date
+        List<Message> listMsgs = new ArrayList<>(messages);
+        Collections.sort(listMsgs, (o1, o2) -> Long.compare(o1.date, o2.date));
+
+        for (Message m : listMsgs) {
 
             if (prevMsg == null || prevMsg.messageType != m.messageType || nameOfSender == null) {
                 nameOfSender = getNameOfSender(m.messageType, nameOfCurrUser, nameOfRecipient, m.recipientId);
-                if(TextUtils.isEmpty(nameOfRecipient))
+                if (TextUtils.isEmpty(nameOfRecipient))
                     nameOfRecipient = nameOfSender;
-
-//                if (m.messageType == Message.SENT) {
-//                    nameOfSender = nameOfCurrUser;
-//                } else {
-//                    if (TextUtils.isEmpty(nameOfRecipient)) {
-//                        nameOfRecipient = localDb.getUserRepo().getCachedUserById(m.recipientId).getFullName();
-//                    }
-//                    nameOfSender = nameOfRecipient;
-//                }
 
                 textBuilder.append(nameOfSender).append(":").append('\n');
             }
@@ -121,15 +122,15 @@ public class ContactChatViewModel extends AndroidViewModel {
     }
 
     private String getNameOfSender(int messageType, String nameOfCurrUser, String nameOfRecipient,
-                                   long recipientId){
-        if (messageType == Message.SENT) {
+                                   long recipientId) {
+
+        if (messageType == Message.SENT)
             return nameOfCurrUser;
-        } else {
-            if (TextUtils.isEmpty(nameOfRecipient)) {
-                nameOfRecipient = localDb.getUserRepo().getCachedUserById(recipientId).getFullName();
-            }
-            return nameOfRecipient;
-        }
+
+        if (TextUtils.isEmpty(nameOfRecipient))
+            nameOfRecipient = localDb.getUserRepo().getCachedUserById(recipientId).getFullName();
+
+        return nameOfRecipient;
     }
 
 

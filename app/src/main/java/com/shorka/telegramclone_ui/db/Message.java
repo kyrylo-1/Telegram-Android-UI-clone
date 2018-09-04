@@ -36,6 +36,8 @@ public class Message {
 
     public String text;
 
+
+
     @ColumnInfo(name = "message_date")
     public long date;
 
@@ -52,6 +54,8 @@ public class Message {
         return idMessage;
     }
 
+
+    //<editor-fold desc="Date properties">
     public Date getRealDate(){
         return Converters.fromTimestamp(date);
     }
@@ -64,6 +68,7 @@ public class Message {
     public void setDate(Date date){
         this.date = Converters.dateToTimestamp(date);
     }
+    //</editor-fold>
 
     public void setSelectionCallback(SelectionCallBack listener){
         listenerSelection = listener;
