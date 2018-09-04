@@ -6,11 +6,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.util.Log;
 
-import com.shorka.telegramclone_ui.ClearSelectionCallBack;
-
 import java.util.Date;
-
-import static android.support.constraint.Constraints.TAG;
 
 /**
  * Created by Kyrylo Avramenko on 6/29/2018.
@@ -18,6 +14,15 @@ import static android.support.constraint.Constraints.TAG;
 
 @Entity(tableName = "message")
 public class Message {
+
+
+    private static final String TAG = "Message";
+
+    public interface SelectionCallBack {
+        void onClear();
+
+        void onSelect();
+    }
 
     @Ignore
     public static final int SENT = 0;
@@ -36,6 +41,8 @@ public class Message {
 
     public int messageType;
 
+    @Ignore
+    private SelectionCallBack listenerSelection;
 
     public Message(long idMessage) {
         this.idMessage = idMessage;
@@ -56,6 +63,19 @@ public class Message {
 
     public void setDate(Date date){
         this.date = Converters.dateToTimestamp(date);
+    }
+
+    public void setSelectionCallback(SelectionCallBack listener){
+        listenerSelection = listener;
+    }
+
+    public void clearSelection(){
+        Log.d(TAG, "clearSelection: ");
+        listenerSelection.onClear();
+    }
+
+    public void makeSelection(){
+        listenerSelection.onSelect();
     }
 
 }

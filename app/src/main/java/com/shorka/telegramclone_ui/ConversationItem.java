@@ -3,7 +3,6 @@ package com.shorka.telegramclone_ui;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,31 +25,23 @@ public class ConversationItem extends ConstraintLayout {
         return txtTime;
     }
 
-    public ConversationItem(Context context) {
-        super(context);
-
-    }
-
     public ConversationItem(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
         txtBody = findViewById(R.id.text_message_body);
-        txtTime  = findViewById(R.id.text_message_time);
+        txtTime = findViewById(R.id.text_message_time);
         imgArrow = findViewById(R.id.message_arrow);
     }
 
-
-    public void selectView(boolean doSelect){
-        Log.d(TAG, "selectView: Make select? " + txtBody.getText() + doSelect);
+    public void selectView(boolean doSelect) {
+//        Log.d(TAG, "selectView: Make makeSelection? " + txtBody.getText() + doSelect);
         setSelected(doSelect);
         txtBody.setSelected(doSelect);
         imgArrow.setSelected(doSelect);
     }
-
 }

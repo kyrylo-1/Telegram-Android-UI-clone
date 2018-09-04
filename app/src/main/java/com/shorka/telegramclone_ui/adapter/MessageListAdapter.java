@@ -1,7 +1,6 @@
 package com.shorka.telegramclone_ui.adapter;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,14 +10,9 @@ import android.view.ViewGroup;
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.recycle_views.BasicViewMessage;
-import com.shorka.telegramclone_ui.recycle_views.ViewReceiveMessage;
-import com.shorka.telegramclone_ui.recycle_views.ViewSentMessage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -27,60 +21,51 @@ import java.util.Set;
 public class MessageListAdapter extends RecyclerView.Adapter {
 
     private static final String TAG = "MessageListAdapter";
-    private List<Message> itemsMesssages;
-    private final Set<BasicViewMessage> listViewsMsgs;
-    private HashMap<Message, BasicViewMessage> itemsSelected;
+    private List<Message> itemsMessages;
+    private Set<Message> batchSelected = new HashSet<>();
 
     public MessageListAdapter() {
-        listViewsMsgs = new HashSet<>();
+
     }
 
-    public void setItemsMesssages(List<Message> itemsMesssages) {
-        this.itemsMesssages = itemsMesssages;
+    public void setItemsMessages(List<Message> itemsMessages) {
+        this.itemsMessages = itemsMessages;
         notifyDataSetChanged();
     }
 
     public void toggleSelection(Message message) {
 
-        if (itemsSelected == null) {
-            itemsSelected = new HashMap<>();
+        if (!batchSelected.remove(message)){
+            Log.d(TAG, "toggleSelection: add batchSelected message: " + message.text);
+            batchSelected.add(message);
+            message.makeSelection();
+        }
+        else {
+            message.clearSelection();
         }
 
-        if (itemsSelected.containsKey(message)) {
-            itemsSelected.get(message).selectMessage(false);
-            itemsSelected.remove(message);
-        } else {
-            BasicViewMessage bvm = getViewMessageById(message.getIdMessage());
-            assert bvm != null;
-            bvm.selectMessage(true);
-            itemsSelected.put(message, bvm);
-        }
     }
 
     public void clearSelectedItems() {
 
-        Log.d(TAG, "clearSelectedItems: ");
-        if (itemsSelected == null || itemsSelected.size() == 0)
-            return;
-
-        for (Map.Entry<Message, BasicViewMessage> entry : itemsSelected.entrySet()) {
-            entry.getValue().selectMessage(false);
+        for (Message m : batchSelected) {
+                m.clearSelection();
         }
 
-        itemsSelected.clear();
-    }
-
-    public Set<Message> getSelectedItems() {
-        return itemsSelected.keySet();
+        batchSelected.clear();
+        Log.d(TAG, "clearSelectedItems: ");
     }
 
     public int getSizeOfSelectedItems() {
+        return batchSelected == null ? 0: batchSelected.size();
+    }
 
-        return itemsSelected == null ? 0 : itemsSelected.size();
+    public Set<Message> getSelectedItems(){
+        return batchSelected;
     }
 
     public Message getItem(int position) {
-        return itemsMesssages.get(position);
+        return itemsMessages.get(position);
     }
 
 
@@ -90,59 +75,49 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         //get proper id of resource layout
         Log.d(TAG, "onCreateViewHolder: ");
-        final boolean isReceived = viewType == Message.RECEIVED;
-        int res = isReceived ? R.layout.item_message_received
-                : R.layout.item_message_sent;
+        int res = viewType == Message.RECEIVED ? R.layout.item_message_received : R.layout.item_message_sent;
 
         View view = LayoutInflater.from(parent.getContext()).inflate(res, parent, false);
-//        return new BasicViewMessage(view);
-        return isReceived ? new ViewReceiveMessage(view) : new ViewSentMessage(view);
+        return new BasicViewMessage(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Message message = itemsMesssages.get(position);
+        Message message = itemsMessages.get(position);
 
         if (message == null) {
             Log.e(TAG, "onBindViewHolder: dont find item on position: " + position);
             return;
         }
 
-        BasicViewMessage bvm = message.messageType == Message.RECEIVED ?
-                (ViewReceiveMessage) holder : (ViewSentMessage) holder;
-
+        BasicViewMessage bvm = (BasicViewMessage) holder;
 
         bvm.bind(message);
-
-        if (itemsMesssages.contains(message))
-            listViewsMsgs.add(bvm);
-
-        Log.d(TAG, "onBindViewHolder: bind message: " + message.text + " SIZE: " + listViewsMsgs.size());
     }
 
     @Override
     public int getItemCount() {
-        return itemsMesssages == null ? 0 : itemsMesssages.size();
+        return itemsMessages == null ? 0 : itemsMessages.size();
     }
 
     @Override
     public int getItemViewType(int position) {
 
-        Message msg = itemsMesssages.get(position);
+        Message msg = itemsMessages.get(position);
 
         return msg.messageType;
     }
 
 
     //TODO optimize retrieval of BasicMessage item using binary sort. So, list should be sorted in 1st place
-    @Nullable
-    private BasicViewMessage getViewMessageById(long messageId) {
-        for (BasicViewMessage bvm : listViewsMsgs) {
-            if (bvm.getIdMessage() == messageId)
-                return bvm;
-        }
-        return null;
-    }
+//    @Nullable
+//    private BasicViewMessage getViewMessageById(long messageId) {
+//        for (BasicViewMessage bvm : listViewsMsgs) {
+//            if (bvm.getIdMessage() == messageId)
+//                return bvm;
+//        }
+//        return null;
+//    }
 
 //    private class MessageWithView{
 //

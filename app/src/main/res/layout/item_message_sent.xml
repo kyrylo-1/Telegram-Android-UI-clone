@@ -2,7 +2,7 @@
 
 <com.shorka.telegramclone_ui.ConversationItem xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/message_layout_sent"
+    android:id="@+id/message_layout"
     style="@style/LayoutOfMessage"
     android:background="@drawable/conversation_item_background">
 

@@ -196,7 +196,7 @@ public class ContactChatActivity extends AppCompatActivity {
         chatViewModel = ViewModelProviders.of(this, factory).get(ContactChatViewModel.class);
         chatViewModel.getListMessages(userId).observe(this, messages -> {
             Log.d(TAG, "observeViewModel: obsert list of messages with size: " + Objects.requireNonNull(messages).size());
-            adapterRv.setItemsMesssages(messages);
+            adapterRv.setItemsMessages(messages);
             recyclerView.scrollToPosition(adapterRv.getItemCount() - 1);
         });
     }
@@ -241,7 +241,8 @@ public class ContactChatActivity extends AppCompatActivity {
     }
 
     private void clickOnMessage(@NonNull Message message) {
-        if (actionMode == null) return;
+        if (actionMode == null)
+            return;
 
         Log.d(TAG, "clickOnMessage: ");
 
@@ -251,6 +252,7 @@ public class ContactChatActivity extends AppCompatActivity {
     private void longClickOnMessage(@NonNull Message message) {
         Log.d(TAG, "longClickOnMessage: ");
 
+        //create Action mode only on long click
         if (actionMode == null) {
             actionMode = startActionMode(callback);
         }

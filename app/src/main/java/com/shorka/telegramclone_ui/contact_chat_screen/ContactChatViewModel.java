@@ -71,23 +71,66 @@ public class ContactChatViewModel extends AndroidViewModel {
 
         final StringBuilder textBuilder = new StringBuilder();
 
+        final String nameOfCurrUser = localDb.getUserRepo().getCurrUser().getFullName();
+        String nameOfRecipient = null;
+        Message prevMsg = null;
+        String nameOfSender = null;
         for (Message m : messages) {
+
+            if (prevMsg == null || prevMsg.messageType != m.messageType || nameOfSender == null) {
+                nameOfSender = getNameOfSender(m.messageType, nameOfCurrUser, nameOfRecipient, m.recipientId);
+                if(TextUtils.isEmpty(nameOfRecipient))
+                    nameOfRecipient = nameOfSender;
+
+//                if (m.messageType == Message.SENT) {
+//                    nameOfSender = nameOfCurrUser;
+//                } else {
+//                    if (TextUtils.isEmpty(nameOfRecipient)) {
+//                        nameOfRecipient = localDb.getUserRepo().getCachedUserById(m.recipientId).getFullName();
+//                    }
+//                    nameOfSender = nameOfRecipient;
+//                }
+
+                textBuilder.append(nameOfSender).append(":").append('\n');
+            }
+
             String text = m.text;
-            if(!TextUtils.isEmpty(text)) textBuilder.append(text).append('\n');
+            if (!TextUtils.isEmpty(text))
+                textBuilder.append(text).append('\n').append('\n');
+
+            prevMsg = m;
         }
 
         //because we dont need last 'new line' character
-        if (textBuilder.length() > 0 && textBuilder.charAt(textBuilder.length() - 1) == '\n')
-            textBuilder.deleteCharAt(textBuilder.length() - 1);
+        //Do it in cycle, because we have 2 'new line'
+        for (int i = 0; i < 2; i++) {
+            if (textBuilder.length() > 0 && textBuilder.charAt(textBuilder.length() - 1) == '\n')
+                textBuilder.deleteCharAt(textBuilder.length() - 1);
+        }
+
 
         String result = textBuilder.toString();
 
         ClipboardManager clipboard = (ClipboardManager) getApplication().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("simple_text", result);
 
-        if (!TextUtils.isEmpty(result)) {
+        if (!TextUtils.isEmpty(result) && clipboard != null) {
             clipboard.setPrimaryClip(clip);
             Toast.makeText(getApplication(), R.string.copy_to_clipboard, Toast.LENGTH_SHORT).show();
         }
     }
+
+    private String getNameOfSender(int messageType, String nameOfCurrUser, String nameOfRecipient,
+                                   long recipientId){
+        if (messageType == Message.SENT) {
+            return nameOfCurrUser;
+        } else {
+            if (TextUtils.isEmpty(nameOfRecipient)) {
+                nameOfRecipient = localDb.getUserRepo().getCachedUserById(recipientId).getFullName();
+            }
+            return nameOfRecipient;
+        }
+    }
+
+
 }
