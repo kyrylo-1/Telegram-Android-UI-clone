@@ -40,7 +40,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     public void toggleSelection(Message message) {
 
-        final Long key = Long.valueOf(message.getIdMessage());
+        final Long key = message.getIdMessage();
         if (batchSelected.containsKey(key)) {
             Log.d(TAG, "toggleSelection: clear messsage: " + message.text);
             batchSelected.remove(key);

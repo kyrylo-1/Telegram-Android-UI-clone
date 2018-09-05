@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.WindowCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -51,6 +53,7 @@ public class ContactChatActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.activity_contact_chat);
 
         setUpToolBar();
@@ -88,8 +91,14 @@ public class ContactChatActivity extends AppCompatActivity {
     private void setUpToolBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.convo_toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar == null) throw new AssertionError();
+
+        supportActionBar.setDisplayHomeAsUpEnabled(true);
+        supportActionBar.setDisplayShowTitleEnabled(false);
+        supportActionBar.setDisplayShowCustomEnabled(true);
+
 
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }

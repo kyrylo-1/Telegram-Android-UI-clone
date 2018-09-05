@@ -1,15 +1,17 @@
 package com.shorka.telegramclone_ui.contact_chat_screen;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +40,7 @@ public class ContactChatFragment extends Fragment {
     private MessageListAdapter adapterRv;
     private FabHelper fabHelper;
     private ActionMode actionMode;
+    private final ActionModeCallback actionModeCallback = new ActionModeCallback();
     private ContactChatViewModel viewModel;
 
     public RecyclerView getRecyclerView() {
@@ -51,7 +54,7 @@ public class ContactChatFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = ViewModelProviders.of(getActivity()).get(ContactChatViewModel.class);
+        viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(ContactChatViewModel.class);
     }
 
     @Nullable
@@ -126,12 +129,13 @@ public class ContactChatFragment extends Fragment {
         toggleMessage(message);
     }
 
+    @SuppressLint("RestrictedApi")
     private void longClickOnMessage(@NonNull Message message) {
         Log.d(TAG, "longClickOnMessage: ");
 
         //create Action mode only on long click
         if (actionMode == null) {
-            actionMode = getActivity().startActionMode(callback);
+            actionMode = ((AppCompatActivity) getActivity()).startSupportActionMode(actionModeCallback);
         }
         toggleMessage(message);
     }
@@ -171,28 +175,28 @@ public class ContactChatFragment extends Fragment {
 //        }
     }
 
-    private ActionMode.Callback callback = new ActionMode.Callback() {
+    private class ActionModeCallback implements ActionMode.Callback {
 
-        private int statusBarColor;
         private MenuInflater inflater;
 
+        @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-
             inflater = mode.getMenuInflater();
             inflater.inflate(R.menu.menu_message_context, menu);
 
             mode.setTitle(String.valueOf(adapterRv.getSizeOfSelectedItems()));
             Window window = Objects.requireNonNull(getActivity()).getWindow();
-            statusBarColor = window.getStatusBarColor();
             window.setStatusBarColor(getResources().getColor(R.color.action_mode_status_bar));
 
             return true;
         }
 
+        @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             return false;
         }
 
+        @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             Log.d(TAG, "onActionItemClicked " + item.getTitle());
 
@@ -212,11 +216,12 @@ public class ContactChatFragment extends Fragment {
             }
         }
 
+        @Override
         public void onDestroyActionMode(ActionMode mode) {
             Log.d(TAG, "destroy");
 
             adapterRv.clearSelectedItems();
             actionMode = null;
         }
-    };
+    }
 }

@@ -30,6 +30,7 @@
         <activity android:name=".settings_screen.SettingsActivity" />
         <activity
             android:name=".contact_chat_screen.ContactChatActivity"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
 
         <activity android:name=".contacts_screen.ContactsActivity" />
