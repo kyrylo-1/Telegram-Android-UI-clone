@@ -22,6 +22,7 @@ import android.view.Window;
 
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.RecyclerItemClickListener;
+import com.shorka.telegramclone_ui.RollingFabState;
 import com.shorka.telegramclone_ui.adapter.MessageListAdapter;
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.utils.FabHelper;
@@ -155,24 +156,24 @@ public class ContactChatFragment extends Fragment {
         int lastVisible = linearLayoutManager.findLastCompletelyVisibleItemPosition();
 //        Log.d(TAG, "onScrolled: lastVisible: " + lastVisible);
         //hide fab when user scrolls to the f
-//        if (lastVisible >= listMsgs.size() - 2) {
-//            Log.d(TAG, "scrollButton: scroll to FirstCompletelyVisibleItem");
-//            if (fabHelper.getRollingState() == RollingFabState.IDLE)
-//                fabHelper.postRollFabOutCompletely(fab);
-//        }
+        if (lastVisible >= adapterRv.getItemsMessages().size() - 2) {
+            Log.d(TAG, "scrollButton: scroll to FirstCompletelyVisibleItem");
+            if (fabHelper.getRollingState() == RollingFabState.IDLE)
+                fabHelper.postRollFabOutCompletely(fab);
+        }
 
-        //Scroll down to fresh messages. if user scrolls a lot of vertical
-//        if (dy > 4 && lastVisible < listMsgs.size() - 3 &&
-//                (fabHelper.getRollingState() == RollingFabState.IDLE || fabHelper.getRollingState() == RollingFabState.ROLLED_OUT)) {
-//
-//            fab.setVisibility(View.VISIBLE);
-//            fabHelper.postRollFabInCompletely(fab);
-//        }
+//        Scroll down to fresh messages. if user scrolls a lot of vertical
+        if (dy > 4 && lastVisible < adapterRv.getItemsMessages().size() - 3 &&
+                (fabHelper.getRollingState() == RollingFabState.IDLE || fabHelper.getRollingState() == RollingFabState.ROLLED_OUT)) {
 
-        //Scroll up to older messages
-//        else if (dy < 0 && fabHelper.getRollingState() == RollingFabState.IDLE) {
-//            fabHelper.postRollFabOutCompletely(fab);
-//        }
+            fab.setVisibility(View.VISIBLE);
+            fabHelper.postRollFabInCompletely(fab);
+        }
+
+//        Scroll up to older messages
+        else if (dy < 0 && fabHelper.getRollingState() == RollingFabState.IDLE) {
+            fabHelper.postRollFabOutCompletely(fab);
+        }
     }
 
     private class ActionModeCallback implements ActionMode.Callback {

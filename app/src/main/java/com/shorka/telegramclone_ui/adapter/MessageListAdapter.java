@@ -25,6 +25,8 @@ import java.util.Set;
 public class MessageListAdapter extends RecyclerView.Adapter {
 
     private static final String TAG = "MessageListAdapter";
+
+
     private List<Message> itemsMessages;
     private HashMap<Long, Message> batchSelected = new HashMap();
 
@@ -60,6 +62,11 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
 
         batchSelected.clear();
+    }
+
+
+    public List<Message> getItemsMessages() {
+        return itemsMessages;
     }
 
     public int getSizeOfSelectedItems() {
