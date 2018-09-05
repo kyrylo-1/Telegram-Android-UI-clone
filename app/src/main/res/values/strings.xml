@@ -16,6 +16,14 @@
         <item>Delete photo</item>
     </string-array>
 
+
+    <string name="ok">@android:string/ok</string>
+    <string name="cancel">@android:string/cancel</string>
+
+    <string name="Are_you_sure">Are you sure you want to delete</string>
+    <string name="message">message</string>
+    <string name="messages">messages</string>
+
     <string name="invitation_text">Hey, I\'m using Telegram to chat. Join me! Download it here: https://telegram.org/dl</string>
 
     <string name="bio_description">You can add a few lines about yourself. Anyone who opens your profile will see this text</string>

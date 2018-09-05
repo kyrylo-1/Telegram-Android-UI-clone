@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.shorka.telegramclone_ui.DividerCustomItemDecoration;
 import com.shorka.telegramclone_ui.HeaderView;
-import com.shorka.telegramclone_ui.ProfilePicDialogFragment;
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.RecyclerItemClickListener;
 import com.shorka.telegramclone_ui.ViewModelFactory;

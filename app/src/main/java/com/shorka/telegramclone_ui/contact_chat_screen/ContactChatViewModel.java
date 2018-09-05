@@ -20,15 +20,10 @@ import com.shorka.telegramclone_ui.db.User;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -134,12 +129,14 @@ public class ContactChatViewModel extends AndroidViewModel {
     }
 
     @SuppressLint("CheckResult")
-    public void deleteMessage(@NonNull final Message ...message){
+    public void deleteMessage(@NonNull final Message ...message) {
 //        Log.d(TAG, "deleteMessage: " + message.text);
+
+
+
         Consumer<Message[]> consumer = m -> localDb.getMessageRepo().deleteMessage(m);
         Flowable.just(message)
                 .subscribeOn(Schedulers.io())
                 .subscribe(consumer, Throwable::printStackTrace);
     }
-
 }

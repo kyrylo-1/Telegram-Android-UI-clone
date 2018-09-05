@@ -27,7 +27,7 @@ import com.shorka.telegramclone_ui.utils.Config;
 import com.shorka.telegramclone_ui.DividerCustomPaddingItemDecoration;
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.RecyclerItemClickListener;
-import com.shorka.telegramclone_ui.Utils;
+import com.shorka.telegramclone_ui.utils.Utils;
 import com.shorka.telegramclone_ui.ViewModelFactory;
 import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatActivity;
 import com.shorka.telegramclone_ui.contacts_screen.ContactsActivity;

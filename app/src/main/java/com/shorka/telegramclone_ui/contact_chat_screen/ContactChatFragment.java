@@ -208,20 +208,34 @@ public class ContactChatFragment extends Fragment {
                     return true;
 
                 case R.id.menu_msg_delete:
-                    Message[] arrMsg = new Message[adapterRv.getSizeOfSelectedItems()];
-                    int i = 0;
-                    for (Message m : adapterRv.getSelectedItems()) {
-                        arrMsg[i] = m;
-                        i++;
-                    }
+                    Message[] arrMsg = adapterRv.getSelectedItems()
+                            .toArray(new Message[adapterRv.getSelectedItems().size()]);
 
-                    viewModel.deleteMessage(arrMsg);
-                    actionMode.finish();
+                    showDeletionDialog(arrMsg);
+
                     return true;
 
                 default:
                     return false;
             }
+        }
+
+        private void showDeletionDialog(Message[] arrMsg){
+            DeletionDialogFragment dialogDel = DeletionDialogFragment.newInstance(arrMsg.length);
+            dialogDel.show(getActivity().getFragmentManager(), "dialog");
+
+            dialogDel.setDelOptions(new DeletionDialogFragment.OnDeletionOptions() {
+                @Override
+                public void onOk() {
+                    viewModel.deleteMessage(arrMsg);
+                    actionMode.finish();
+                }
+
+                @Override
+                public void onCancel() {
+                    actionMode.finish();
+                }
+            });
         }
 
         @Override
@@ -232,4 +246,6 @@ public class ContactChatFragment extends Fragment {
             actionMode = null;
         }
     }
+
+
 }
