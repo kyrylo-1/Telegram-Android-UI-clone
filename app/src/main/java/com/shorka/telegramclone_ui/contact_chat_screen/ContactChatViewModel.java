@@ -66,7 +66,7 @@ public class ContactChatViewModel extends AndroidViewModel {
         m.messageType = Message.SENT;
         m.setDate(Calendar.getInstance().getTime());
 
-        Consumer<Message> consumer = localDb.getMessageRepo()::insertMessage;
+        Consumer<Message> consumer = message -> localDb.getMessageRepo().insertMessage(message);
         Flowable.just(m)
                 .subscribeOn(Schedulers.io())
                 .subscribe(consumer, Throwable::printStackTrace);
@@ -133,5 +133,13 @@ public class ContactChatViewModel extends AndroidViewModel {
         return nameOfRecipient;
     }
 
+    @SuppressLint("CheckResult")
+    public void deleteMessage(@NonNull final Message ...message){
+//        Log.d(TAG, "deleteMessage: " + message.text);
+        Consumer<Message[]> consumer = m -> localDb.getMessageRepo().deleteMessage(m);
+        Flowable.just(message)
+                .subscribeOn(Schedulers.io())
+                .subscribe(consumer, Throwable::printStackTrace);
+    }
 
 }

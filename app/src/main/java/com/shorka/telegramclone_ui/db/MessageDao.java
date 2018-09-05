@@ -39,6 +39,6 @@ public interface MessageDao {
     void insert(Message message);
 
     @Delete
-    void delete(Message message);
+    void delete(Message ...message);
 
 }

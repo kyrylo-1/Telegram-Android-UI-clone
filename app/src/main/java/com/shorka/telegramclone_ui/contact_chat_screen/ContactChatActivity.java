@@ -87,7 +87,6 @@ public class ContactChatActivity extends AppCompatActivity {
         return true;
     }
 
-
     private void setUpToolBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.convo_toolbar);
         setSupportActionBar(toolbar);
@@ -98,7 +97,6 @@ public class ContactChatActivity extends AppCompatActivity {
         supportActionBar.setDisplayHomeAsUpEnabled(true);
         supportActionBar.setDisplayShowTitleEnabled(false);
         supportActionBar.setDisplayShowCustomEnabled(true);
-
 
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }

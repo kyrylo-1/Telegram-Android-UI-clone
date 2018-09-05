@@ -208,6 +208,14 @@ public class ContactChatFragment extends Fragment {
                     return true;
 
                 case R.id.menu_msg_delete:
+                    Message[] arrMsg = new Message[adapterRv.getSizeOfSelectedItems()];
+                    int i = 0;
+                    for (Message m : adapterRv.getSelectedItems()) {
+                        arrMsg[i] = m;
+                        i++;
+                    }
+
+                    viewModel.deleteMessage(arrMsg);
                     actionMode.finish();
                     return true;
 
