@@ -28,5 +28,6 @@
 
     <string name="bio_description">You can add a few lines about yourself. Anyone who opens your profile will see this text</string>
     <string name="copy_to_clipboard">Text has been copied of the clipboard</string>
+    <string name="draft">Draft:</string>
 
 </resources>

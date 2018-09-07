@@ -1,4 +1,4 @@
-package com.shorka.telegramclone_ui.entities;
+package com.shorka.telegramclone_ui;
 
 import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
@@ -13,8 +13,8 @@ public class MessagePreview {
 
     private static final String TAG = "MessagePreview";
 
-    public long getId() {
-        return id;
+    public long getRecipientId() {
+        return recipientId;
     }
 
     public String getContactName() {
@@ -41,7 +41,11 @@ public class MessagePreview {
         return imageResId;
     }
 
-    private long id;
+    public boolean isDraft() {
+        return isDraft;
+    }
+
+    private long recipientId;
     private String contactName;
     private String lastMessage;
     private boolean isPinned;
@@ -49,31 +53,33 @@ public class MessagePreview {
     private Date date;
     @DrawableRes
     private int imageResId;
+    private boolean isDraft;
 
-    MessagePreview(MessagePreviewBuilder messagePreviewBuilder) {
+    MessagePreview(MessagePreviewBuilder mpb) {
 
-        this.id = messagePreviewBuilder.id;
-        this.contactName = messagePreviewBuilder.contactName;
-        this.lastMessage = messagePreviewBuilder.lastMessage;
-        this.isPinned = messagePreviewBuilder.isPinned;
-        this.isReaded = messagePreviewBuilder.isReaded;
-        this.date = messagePreviewBuilder.date;
-        this.imageResId = messagePreviewBuilder.imageResId;
+        this.recipientId = mpb.recipient;
+        this.contactName = mpb.contactName;
+        this.lastMessage = mpb.lastMessage;
+        this.isPinned = mpb.isPinned;
+        this.isReaded = mpb.isRead;
+        this.date = mpb.date;
+        this.imageResId = mpb.imageResId;
+        this.isDraft = mpb.isDraft;
     }
 
     public static class MessagePreviewBuilder {
-        private long id;
+        private long recipient;
         private String contactName;
         private String lastMessage;
         private boolean isPinned;
-        private boolean isReaded;
+        private boolean isRead;
         private Date date;
         @DrawableRes
         private int imageResId;
+        private boolean isDraft;
 
-
-        public MessagePreviewBuilder withId(long id){
-            this.id = id;
+        public MessagePreviewBuilder withId(long recipient) {
+            this.recipient = recipient;
             return this;
         }
 
@@ -92,8 +98,8 @@ public class MessagePreview {
             return this;
         }
 
-        public MessagePreviewBuilder withIsReaded(boolean isReaded) {
-            this.isReaded = isReaded;
+        public MessagePreviewBuilder withIsReaded(boolean isRead) {
+            this.isRead = isRead;
             return this;
         }
 
@@ -102,18 +108,23 @@ public class MessagePreview {
             return this;
         }
 
+        public MessagePreviewBuilder withDraft(boolean isDraft) {
+            this.isDraft = isDraft;
+            return this;
+        }
+
         public MessagePreviewBuilder withImageResId(@DrawableRes int imageResId) {
             this.imageResId = imageResId;
             return this;
         }
 
-        public MessagePreview buildMesagePreview() {
+        public MessagePreview buildMessagePreview() {
 
             if (isValidateData())
                 return new MessagePreview(this);
 
             else {
-                Log.e(TAG, "buildMesagePreview: Data is NOT validated on build");
+                Log.e(TAG, "buildMessagePreview: Data is NOT validated on build");
                 return null;
             }
         }
@@ -130,17 +141,6 @@ public class MessagePreview {
                 Log.e(TAG, "isValidateData: lastMessage.isEmpty");
                 return false;
             }
-
-
-//            if (TextUtils.isEmpty(date)) {
-//                Log.e(TAG, "isValidateData: date.isEmpty");
-//                return false;
-//            }
-
-//            if (imageResId == 0) {
-//                Log.e(TAG, "isValidateData: imageResId == 0");
-//                return false;
-//            }
 
             return true;
         }

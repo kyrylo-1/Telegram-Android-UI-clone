@@ -17,6 +17,7 @@ import java.util.List;
 public interface MessageDao {
 
 
+
     @Query("SELECT * FROM message")
     LiveData<List<Message>> getAll();
 
@@ -24,7 +25,6 @@ public interface MessageDao {
     LiveData<List<Message>> getByRecipientId(long id);
 
 
-    //TODO: improve query, so it can SELECT *
     @Query("SELECT * FROM message as m " +
             "WHERE (m.recipientId+','+ m.message_date) IN " +
             "(SELECT m2.recipientId +',' +MAX(m2.message_date) FROM message as m2 " +
@@ -40,5 +40,8 @@ public interface MessageDao {
 
     @Delete
     void delete(Message ...message);
+
+    @Query("DELETE FROM message WHERE message.idMessage == :idMessage")
+    void deleteById(long idMessage);
 
 }

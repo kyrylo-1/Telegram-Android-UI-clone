@@ -4,20 +4,16 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.shorka.telegramclone_ui.MessagePreview;
 import com.shorka.telegramclone_ui.R;
-import com.shorka.telegramclone_ui.db.Converters;
 import com.shorka.telegramclone_ui.db.LocalDatabase;
 import com.shorka.telegramclone_ui.db.Message;
-import com.shorka.telegramclone_ui.db.PhoneContact;
 import com.shorka.telegramclone_ui.db.User;
-import com.shorka.telegramclone_ui.entities.MessagePreview;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -48,9 +44,6 @@ public class ChatPreviewViewModel extends AndroidViewModel {
         return localDb.getUserRepo().getAllLiveUsers();
     }
 
-    List<User> allUsers() {
-        return localDb.getUserRepo().getAllUsers();
-    }
 
     void setAllUsers(List<User> allUsers) {
         localDb.getUserRepo().setAllUsers(allUsers);
@@ -62,12 +55,9 @@ public class ChatPreviewViewModel extends AndroidViewModel {
         List<MessagePreview> listPreview = new ArrayList<>();
 
         for (Message msg : listMessages) {
-            if (msg != null){
+            if (msg != null) {
                 listPreview.add(transformToMsgPreview(msg));
-            }
-
-
-            else
+            } else
                 Log.e(TAG, "transformToMsgPreviews: userMsg is NULL");
         }
 
@@ -90,7 +80,8 @@ public class ChatPreviewViewModel extends AndroidViewModel {
                 .withIsReaded(true)
                 .withDate(msg.getRealDate())
                 .withImageResId(R.drawable.kochek_withback)
-                .buildMesagePreview();
+                .withDraft(msg.messageType == Message.DRAFT)
+                .buildMessagePreview();
     }
 
     void cacheUser(User user) {
@@ -105,10 +96,6 @@ public class ChatPreviewViewModel extends AndroidViewModel {
         return localDb.getMessageRepo().getRecentMessageByChat();
     }
 
-    LiveData<List<PhoneContact>> getLivePhoneContacts() {
-        return localDb.getUserRepo().getLivePhoneContacts();
-    }
-
     @SuppressLint("CheckResult")
     void loadPhoneContacts() {
         Log.d(TAG, "loadPhoneContacts: ");
@@ -119,7 +106,6 @@ public class ChatPreviewViewModel extends AndroidViewModel {
 
         compDisposable.add(disposable);
     }
-
 
 
     public void clearDisposables() {

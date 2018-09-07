@@ -1,9 +1,6 @@
 package com.shorka.telegramclone_ui.settings_screen;
 
-import android.text.TextUtils;
-import android.view.View;
-
-import com.shorka.telegramclone_ui.entities.SettingsTextEntity;
+import com.shorka.telegramclone_ui.SettingsTextEntity;
 
 import java.util.ArrayList;
 

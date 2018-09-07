@@ -32,7 +32,7 @@ import com.shorka.telegramclone_ui.RecyclerItemClickListener;
 import com.shorka.telegramclone_ui.ViewModelFactory;
 import com.shorka.telegramclone_ui.adapter.ComplexRecyclerViewAdapter;
 import com.shorka.telegramclone_ui.db.User;
-import com.shorka.telegramclone_ui.entities.SettingsTextEntity;
+import com.shorka.telegramclone_ui.SettingsTextEntity;
 import com.shorka.telegramclone_ui.utils.Config;
 
 import java.lang.annotation.Retention;
@@ -260,7 +260,7 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
 
                 Log.d(TAG, "onItemClick: pos: " + position + "\n view: " + view.getId());
 
-//                if(view.getId() == R.id.recycler_view_info){
+//                if(view.getRecipientId() == R.id.recycler_view_info){
 //                    Log.d(TAG, "onItemClick: recycler_view_info");
 //                }
 

@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="75dp"
     android:background="?android:selectableItemBackground"
-    android:paddingEnd="7dp"
     android:clickable="true"
-    android:paddingStart="0dp"
-    android:focusable="true">
+    android:focusable="true"
+    android:paddingEnd="7dp"
+    android:paddingStart="0dp">
 
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -39,21 +39,38 @@
         app:layout_constraintStart_toEndOf="@id/img_chat_contact"
         app:layout_constraintTop_toTopOf="@id/img_chat_contact" />
 
+
+    <TextView
+        android:id="@+id/draft_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:layout_marginEnd="5dp"
+        android:text="@string/draft"
+        android:textColor="@android:color/holo_red_light"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/img_chat_contact"
+        app:layout_constraintEnd_toStartOf="@id/pin_image"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/message_title" />
+
     <TextView
         android:id="@+id/message_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="6dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="3dp"
         android:maxLines="1"
         android:singleLine="true"
         android:text="is this PLACEHOLDER?"
         android:textSize="14sp"
         app:layout_constrainedWidth="true"
-        android:layout_marginEnd="5dp"
         app:layout_constraintBottom_toBottomOf="@id/img_chat_contact"
         app:layout_constraintEnd_toStartOf="@id/pin_image"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/message_title" />
+        app:layout_constraintStart_toEndOf="@id/draft_label" />
 
     <ImageView
         android:id="@+id/message_check_sign"
@@ -79,12 +96,11 @@
         android:id="@+id/pin_image"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@drawable/ic_pin"
-        android:layout_marginEnd="12dp"
-        app:layout_constraintBottom_toBottomOf="@id/img_chat_contact"
         android:layout_marginBottom="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="12dp"
+        android:src="@drawable/ic_pin"
         android:visibility="visible"
-        />
+        app:layout_constraintBottom_toBottomOf="@id/img_chat_contact"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

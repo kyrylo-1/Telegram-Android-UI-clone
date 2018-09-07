@@ -1,4 +1,4 @@
-package com.shorka.telegramclone_ui.entities;
+package com.shorka.telegramclone_ui;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;

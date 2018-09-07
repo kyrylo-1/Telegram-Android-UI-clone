@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shorka.telegramclone_ui.R;
-import com.shorka.telegramclone_ui.entities.MessagePreview;
+import com.shorka.telegramclone_ui.MessagePreview;
 import com.shorka.telegramclone_ui.recycle_views.ViewMessageGridPreview;
 import com.shorka.telegramclone_ui.utils.DateHelper;
 
@@ -34,9 +34,13 @@ public class MessagesGridRecycleViewAdapter extends RecyclerView.Adapter<Recycle
 
     public void setItems(List<MessagePreview> items) {
         this.items = items;
+
+
         Log.d(TAG, "setItemsMessages with size: " + items.size());
         notifyDataSetChanged();
     }
+
+
 
     public MessagePreview getMessagePreview(int position) {
         return items.get(position);
@@ -61,13 +65,15 @@ public class MessagesGridRecycleViewAdapter extends RecyclerView.Adapter<Recycle
         ViewMessageGridPreview viewMessageGridPreview = (ViewMessageGridPreview) viewHolder;
         MessagePreview entity = items.get(position);
         if (entity != null) {
-//            viewMessageGridPreview.s
+
             viewMessageGridPreview.getTitle().setText(entity.getContactName());
             viewMessageGridPreview.getMessageContent().setText(entity.getLastMessage());
             viewMessageGridPreview.setPinImage(entity.isPinned());
             viewMessageGridPreview.setMessageSentTime(DateHelper.getProperDateFormat(entity.getDate()));
 //            Log.d(TAG, "onBindViewHolder: entity.getImageResId()" + entity.getImageResId());
+            viewMessageGridPreview.makeDraftLabelVisible(entity.isDraft());
             viewMessageGridPreview.setImage(ContextCompat.getDrawable(context, entity.getImageResId()));
+
         } else {
             Log.e(TAG, "onBindViewHolder: entity is NULL at position: " + position);
         }

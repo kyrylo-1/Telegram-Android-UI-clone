@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shorka.telegramclone_ui.R;
-import com.shorka.telegramclone_ui.entities.SettingsTextEntity;
+import com.shorka.telegramclone_ui.SettingsTextEntity;
 import com.shorka.telegramclone_ui.recycle_views.ViewHolderSubTitle;
 import com.shorka.telegramclone_ui.recycle_views.ViewHolderTextWithOption;
 import com.shorka.telegramclone_ui.recycle_views.ViewHolderToggle;

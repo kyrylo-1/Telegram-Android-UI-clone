@@ -2,11 +2,9 @@ package com.shorka.telegramclone_ui.db;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.shorka.telegramclone_ui.entities.MessagePreview;
+import com.shorka.telegramclone_ui.MessagePreview;
 
 import java.util.List;
 
@@ -39,4 +37,20 @@ public class MessageRepository extends BaseRepository {
     public void deleteMessage(@NonNull final Message ...message) {
         messageDao.delete(message);
     }
+
+    public void deleteMessageById(long messageId){
+        messageDao.deleteById(messageId);
+    }
+
+//    public LiveData<List<MessageDraft>> getDraftMessages(){
+//        return messageDao.getDraftMessages();
+//    }
+//
+//    public void insertMessageDraft(@NonNull MessageDraft messageDraft){
+//        messageDao.insertDraft(messageDraft);
+//    }
+//
+//    public void deleleteMessageDraft(long recipientId){
+//        messageDao.deleteDraftByRecipientId(recipientId);
+//    }
 }

@@ -15,6 +15,25 @@ import java.util.Date;
 @Entity(tableName = "message")
 public class Message {
 
+    //<editor-fold desc="Room save fields">
+    @PrimaryKey(autoGenerate = true)
+    private long idMessage;
+    public long recipientId;
+    public String text;
+
+
+    @ColumnInfo(name = "message_date")
+    public long date;
+    public int messageType;
+    //</editor-fold>
+
+    @Ignore
+    public static final int SENT = 0;
+    @Ignore
+    public static final int RECEIVED = 1;
+
+    @Ignore
+    public static final int DRAFT = 2;
 
     private static final String TAG = "Message";
 
@@ -23,25 +42,6 @@ public class Message {
 
         void onSelect();
     }
-
-    @Ignore
-    public static final int SENT = 0;
-    @Ignore
-    public static final int RECEIVED = 1;
-
-    @PrimaryKey(autoGenerate = true)
-    private long idMessage;
-
-    public long recipientId;
-
-    public String text;
-
-
-
-    @ColumnInfo(name = "message_date")
-    public long date;
-
-    public int messageType;
 
     @Ignore
     private SelectionCallBack listenerSelection;

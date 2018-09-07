@@ -1,9 +1,6 @@
 package com.shorka.telegramclone_ui.recycle_views;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,9 +17,7 @@ public class ViewMessageGridPreview extends RecyclerView.ViewHolder {
 
     private static final String TAG = "ViewMessageGridPreview";
 
-    private TextView title;
-    private TextView messageContent;
-    private TextView messageSentTime;
+    private TextView title, messageContent, messageSentTime, draftLabel;
     private ImageView pinImage;
     private CircleImageView contactImage;
 
@@ -32,9 +27,10 @@ public class ViewMessageGridPreview extends RecyclerView.ViewHolder {
         title = itemView.findViewById(R.id.message_title);
         messageContent = itemView.findViewById(R.id.message_content);
         messageSentTime = itemView.findViewById(R.id.message_sent_time);
+        draftLabel = itemView.findViewById(R.id.draft_label);
+
         pinImage = itemView.findViewById(R.id.pin_image);
         contactImage = itemView.findViewById(R.id.img_chat_contact);
-
     }
 
     public TextView getTitle() {
@@ -46,18 +42,20 @@ public class ViewMessageGridPreview extends RecyclerView.ViewHolder {
         return messageContent;
     }
 
-    public void setImage(Drawable drawable){
-
-//        contactImage.setImageDrawable(ContextCompat.getDrawable(context, resId));
+    public void setImage(Drawable drawable) {
         contactImage.setImageDrawable(drawable);
     }
 
 
-    public void setMessageSentTime(String time){
+    public void setMessageSentTime(String time) {
         messageSentTime.setText(time);
     }
 
-    public void setPinImage(boolean isPinned){
+    public void setPinImage(boolean isPinned) {
         pinImage.setVisibility(isPinned ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    public void makeDraftLabelVisible(boolean doMakeVisible) {
+        draftLabel.setVisibility(doMakeVisible ? View.VISIBLE : View.GONE);
     }
 }

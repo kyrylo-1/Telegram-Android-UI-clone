@@ -1,7 +1,6 @@
 package com.shorka.telegramclone_ui.contact_chat_screen;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -10,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.ViewModelFactory;
+import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.utils.Config;
 
@@ -37,7 +38,6 @@ import java.util.Objects;
 public class ContactChatActivity extends AppCompatActivity {
 
     //region properties
-    private final Context context = ContactChatActivity.this;
     private static final String TAG = "ContactChatActivity";
 
     private TextView txtChatPersonName, txtLastSeen;
@@ -47,6 +47,7 @@ public class ContactChatActivity extends AppCompatActivity {
     private ContactChatViewModel chatViewModel;
     private long recipientUserId;
     private ContactChatFragment chatFragment;
+    private long messageDraftId = -1;
     //endregion
 
     @Override
@@ -131,7 +132,6 @@ public class ContactChatActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-//                Log.d(TAG, "afterTextChanged: " + editText.getText().toString());
                 enableBtnSend(!s.toString().isEmpty());
             }
         });
@@ -144,7 +144,17 @@ public class ContactChatActivity extends AppCompatActivity {
         chatViewModel.getListMessages(userId).observe(this, messages -> {
             Log.d(TAG, "observeViewModel: obsert list of messages with size: " + Objects.requireNonNull(messages).size());
 
-            if (chatFragment.getAdapterRv() != null) {
+            final int messagesSize = messages.size();
+            if (chatFragment.getAdapterRv() != null && messagesSize > 0) {
+
+                //Dont show draft message in the list. Show only in EditText
+                Message lastMessage = messages.get(messagesSize - 1);
+                if(lastMessage.messageType == Message.DRAFT){
+                    messageDraftId = lastMessage.getIdMessage();
+                    setTextToEditText(lastMessage.text);
+                    Log.d(TAG, "observeViewModel: remove draft message: " + lastMessage.text);
+                    messages.remove(messagesSize-1);
+                }
                 chatFragment.getAdapterRv().setItemsMessages(messages);
                 chatFragment.getRecyclerView().scrollToPosition(chatFragment.getAdapterRv().getItemCount() - 1);
             }
@@ -156,11 +166,34 @@ public class ContactChatActivity extends AppCompatActivity {
     }
 
     private void sendMessages() {
-        chatViewModel.sendMessage(recipientUserId, editText.getText().toString());
-        editText.getText().clear();
+        if(messageDraftId>=0){
+            chatViewModel.deleteMessageById(messageDraftId);
+            messageDraftId = -1;
+        }
+
+        Editable ed = editText.getText();
+        chatViewModel.sendMessage(recipientUserId, ed.toString());
+        ed.clear();
     }
 
     private void updateRecipientUI(User user) {
         txtChatPersonName.setText(user.firstName);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        String s = editText.getText().toString();
+        if (!TextUtils.isEmpty(s))
+            chatViewModel.saveDraft(recipientUserId, s);
+    }
+
+    private void setTextToEditText(String text){
+        if(TextUtils.isEmpty(text))
+            return;
+
+        editText.setText(text);
+        editText.setSelection(text.length());
     }
 }

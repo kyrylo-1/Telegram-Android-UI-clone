@@ -112,7 +112,7 @@ public abstract class AppDatabase extends RoomDatabase {
             Log.d(TAG, "doInBackground: actually insert data of users");
 
             for (User user : DefaultDataGenerator.generateUsers()) {
-//                Log.d(TAG, "doInBackground: insert user with id: " + user.getId());
+//                Log.d(TAG, "doInBackground: insert user with id: " + user.getRecipientId());
                 userDao.insert(user);
             }
 

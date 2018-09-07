@@ -81,13 +81,12 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         return itemsMessages.get(position);
     }
 
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         //get proper id of resource layout
-        Log.d(TAG, "onCreateViewHolder: ");
+//        Log.d(TAG, "onCreateViewHolder: ");
         int res = viewType == Message.RECEIVED ? R.layout.item_message_received : R.layout.item_message_sent;
 
         View view = LayoutInflater.from(parent.getContext()).inflate(res, parent, false);
@@ -110,9 +109,9 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         if (batchSelected.containsKey(message.getIdMessage())) {
             batchSelected.put(message.getIdMessage(), message);
             message.makeSelection();
-            Log.d(TAG, "onBindViewHolder: Message " + "__ " + message.text + " ___ is SELECTED");
+//            Log.d(TAG, "onBindViewHolder: Message " + "__ " + message.text + " ___ is SELECTED");
         } else {
-            Log.d(TAG, "onBindViewHolder: Message " + "__ " + message.toString() + " ___ is NOT SELECTED with id: ");
+//            Log.d(TAG, "onBindViewHolder: Message " + "__ " + message.toString() + " ___ is NOT SELECTED with id: ");
             message.clearSelection();
         }
 

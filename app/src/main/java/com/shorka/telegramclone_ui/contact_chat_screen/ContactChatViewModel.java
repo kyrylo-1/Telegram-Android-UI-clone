@@ -55,16 +55,13 @@ public class ContactChatViewModel extends AndroidViewModel {
     @SuppressLint("CheckResult")
     public void sendMessage(long recipientId, String text) {
         Log.d(TAG, "sendMessage with text: " + text);
-        Message m = new Message(0);
-        m.recipientId = recipientId;
-        m.text = text;
-        m.messageType = Message.SENT;
-        m.setDate(Calendar.getInstance().getTime());
 
-        Consumer<Message> consumer = message -> localDb.getMessageRepo().insertMessage(message);
+        Message m = createMessageInstance(recipientId, text);
+        m.messageType = Message.SENT;
+
         Flowable.just(m)
                 .subscribeOn(Schedulers.io())
-                .subscribe(consumer, Throwable::printStackTrace);
+                .subscribe(message -> localDb.getMessageRepo().insertMessage(message), Throwable::printStackTrace);
     }
 
     public void handleCopyMessage(final Set<Message> messages) {
@@ -129,14 +126,40 @@ public class ContactChatViewModel extends AndroidViewModel {
     }
 
     @SuppressLint("CheckResult")
-    public void deleteMessage(@NonNull final Message ...message) {
+    public void deleteMessage(@NonNull final Message... message) {
+        Flowable.just(message)
+                .subscribeOn(Schedulers.io())
+                .subscribe(messages -> localDb.getMessageRepo().deleteMessage(message));
+    }
+
+    @SuppressLint("CheckResult")
+    public void deleteMessageById(long messageId) {
 //        Log.d(TAG, "deleteMessage: " + message.text);
 
+        Flowable.just(messageId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(aLong -> localDb.getMessageRepo().deleteMessageById(messageId))
+                .dispose();
+    }
 
+    @SuppressLint("CheckResult")
+    public void saveDraft(long recipientId, @NonNull final String text) {
 
-        Consumer<Message[]> consumer = m -> localDb.getMessageRepo().deleteMessage(m);
-        Flowable.just(message)
+        Message m = createMessageInstance(recipientId, text);
+        m.messageType = Message.DRAFT;
+
+        Consumer<Message> consumer = message -> localDb.getMessageRepo().insertMessage(message);
+        Flowable.just(m)
                 .subscribeOn(Schedulers.io())
                 .subscribe(consumer, Throwable::printStackTrace);
     }
+
+    private Message createMessageInstance(long recipientId, String text) {
+        Message m = new Message(0);
+        m.recipientId = recipientId;
+        m.text = text;
+        m.setDate(Calendar.getInstance().getTime());
+        return m;
+    }
+
 }

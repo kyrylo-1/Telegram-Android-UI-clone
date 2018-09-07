@@ -19,10 +19,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.utils.Config;
 import com.shorka.telegramclone_ui.DividerCustomPaddingItemDecoration;
 import com.shorka.telegramclone_ui.R;
@@ -33,7 +33,7 @@ import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatActivity;
 import com.shorka.telegramclone_ui.contacts_screen.ContactsActivity;
 import com.shorka.telegramclone_ui.adapter.MessagesGridRecycleViewAdapter;
 import com.shorka.telegramclone_ui.db.User;
-import com.shorka.telegramclone_ui.entities.MessagePreview;
+import com.shorka.telegramclone_ui.MessagePreview;
 import com.shorka.telegramclone_ui.settings_screen.SettingsActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -63,14 +63,14 @@ public class ChatsPreviewActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: ");
+//        Log.d(TAG, "onResume: ");
         updateUserDetail(viewModel.getCacheUser());
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.d(TAG, "onRestart: ");
+//        Log.d(TAG, "onRestart: ");
     }
 
     private void setUpUI() {
@@ -101,12 +101,7 @@ public class ChatsPreviewActivity extends AppCompatActivity
 
         final View navHeaderView = navigationView.getHeaderView(0);
         ToggleButton toggleBtn = navHeaderView.findViewById(R.id.account_view_icon_button);
-        toggleBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                menuNav.setGroupVisible(R.id.nav_group_accounts, isChecked);
-            }
-        });
+        toggleBtn.setOnCheckedChangeListener((buttonView, isChecked) -> menuNav.setGroupVisible(R.id.nav_group_accounts, isChecked));
 
         txtUserFullname = navHeaderView.findViewById(R.id.text_user_fullname);
         txtPhoneNumber = navHeaderView.findViewById(R.id.text_phonenumber);
@@ -162,7 +157,6 @@ public class ChatsPreviewActivity extends AppCompatActivity
             }
         });
 
-
         viewModel.getRecentMessageByChat().observe(this, messages -> {
 
             if (messages == null) {
@@ -178,11 +172,6 @@ public class ChatsPreviewActivity extends AppCompatActivity
         viewModel.loadPhoneContacts();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        viewModel.cancelLoadContacts();;
-    }
 
     @Override
     protected void onStop() {
@@ -268,10 +257,10 @@ public class ChatsPreviewActivity extends AppCompatActivity
         MessagePreview mp = adapterRv.getMessagePreview(position);
         Log.d(TAG, "onItemClick: click on pos: " + position +
                 "_  and lastMessage: " + adapterRv.getMessagePreview(position).getLastMessage() +
-                " id: " + mp.getId());
+                " id: " + mp.getRecipientId());
 
         Intent intent = new Intent(context, ContactChatActivity.class);
-        intent.putExtra(Config.USER_ID_EXTRA, mp.getId());
+        intent.putExtra(Config.USER_ID_EXTRA, mp.getRecipientId());
         startActivity(intent);
     }
 }
