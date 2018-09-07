@@ -71,12 +71,21 @@
         <item name="android:layout_height">wrap_content</item>
 
         <item name="android:paddingBottom">8dp</item>
-        <item name="android:paddingEnd">53dp</item>
+        <item name="android:paddingEnd">61dp</item>
         <item name="android:paddingStart">8dp</item>
         <item name="android:paddingTop">8dp</item>
 
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="MessageTimeTextView">
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:text">66:67</item>
+        <item name="android:layout_marginBottom">3dp</item>
+        <item name="android:layout_marginEnd">22dp</item>
     </style>
 
     <style name="LayoutOfMessage">
