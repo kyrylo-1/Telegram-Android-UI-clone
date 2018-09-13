@@ -4,8 +4,13 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.IntDef;
 import android.util.Log;
 
+import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatFragment;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Date;
 
 /**
@@ -24,16 +29,19 @@ public class Message {
 
     @ColumnInfo(name = "message_date")
     public long date;
+
+    @MessageType
     public int messageType;
     //</editor-fold>
 
-    @Ignore
-    public static final int SENT = 0;
-    @Ignore
-    public static final int RECEIVED = 1;
-
-    @Ignore
-    public static final int DRAFT = 2;
+    @IntDef({MessageType.SENT, MessageType.RECEIVED, MessageType.DRAFT, MessageType.EMPTY})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface MessageType {
+        int SENT = 0;
+        int RECEIVED = 1;
+        int DRAFT = 2;
+        int EMPTY = 3;
+    }
 
     private static final String TAG = "Message";
 
@@ -56,30 +64,34 @@ public class Message {
 
 
     //<editor-fold desc="Date properties">
-    public Date getRealDate(){
+    public Date getRealDate() {
         return Converters.fromTimestamp(date);
     }
 
-    public String getStringDate(){
-        return  Converters.dateToHourAndMinute(date);
+    public String getStringDate() {
+        return Converters.dateToHourAndMinute(date);
     }
 
 
-    public void setDate(Date date){
+    public void setDate(Date date) {
         this.date = Converters.dateToTimestamp(date);
+    }
+
+    public void setDate(long date) {
+        this.date = date;
     }
     //</editor-fold>
 
-    public void setSelectionCallback(SelectionCallBack listener){
+    public void setSelectionCallback(SelectionCallBack listener) {
         listenerSelection = listener;
     }
 
-    public void clearSelection(){
+    public void clearSelection() {
         Log.d(TAG, "clearSelection: ");
         listenerSelection.onClear();
     }
 
-    public void makeSelection(){
+    public void makeSelection() {
         listenerSelection.onSelect();
     }
 

@@ -22,7 +22,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.utils.Config;
 import com.shorka.telegramclone_ui.DividerCustomPaddingItemDecoration;
 import com.shorka.telegramclone_ui.R;
@@ -122,11 +121,12 @@ public class ChatsPreviewActivity extends AppCompatActivity
         recycleView.addOnItemTouchListener(new RecyclerItemClickListener(context, recycleView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                clickOnRecycleItem(view, position);
+                clickOnRecycleItem(position);
             }
 
             @Override
             public void onItemLongClick(View view, int position) {
+                longClickRecycleItem(position);
             }
         }));
     }
@@ -176,12 +176,6 @@ public class ChatsPreviewActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        viewModel.clearDisposables();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
         viewModel.clearDisposables();
     }
 
@@ -253,7 +247,7 @@ public class ChatsPreviewActivity extends AppCompatActivity
         menuCurrAccount.setTitle(user.firstName);
     }
 
-    private void clickOnRecycleItem(View view, int position) {
+    private void clickOnRecycleItem(int position) {
         MessagePreview mp = adapterRv.getMessagePreview(position);
         Log.d(TAG, "onItemClick: click on pos: " + position +
                 "_  and lastMessage: " + adapterRv.getMessagePreview(position).getLastMessage() +
@@ -262,5 +256,18 @@ public class ChatsPreviewActivity extends AppCompatActivity
         Intent intent = new Intent(context, ContactChatActivity.class);
         intent.putExtra(Config.USER_ID_EXTRA, mp.getRecipientId());
         startActivity(intent);
+    }
+
+    private void longClickRecycleItem(int position) {
+        MessagePreview mp = adapterRv.getMessagePreview(position);
+
+
+        ConvoBottomDialog cbDialog = ConvoBottomDialog.newInstance(mp.getRecipientId());
+        Bundle bundle = new Bundle();
+        bundle.putLong(ConvoBottomDialog.RECIPIENT_ID, mp.getRecipientId());
+        cbDialog.setArguments(bundle);
+
+        cbDialog.show(getSupportFragmentManager(),
+                "buttom_dialog_fragment");
     }
 }

@@ -16,8 +16,10 @@ import com.shorka.telegramclone_ui.db.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -80,7 +82,7 @@ public class ChatPreviewViewModel extends AndroidViewModel {
                 .withIsReaded(true)
                 .withDate(msg.getRealDate())
                 .withImageResId(R.drawable.kochek_withback)
-                .withDraft(msg.messageType == Message.DRAFT)
+                .withMessageType(msg.messageType)
                 .buildMessagePreview();
     }
 
@@ -107,7 +109,22 @@ public class ChatPreviewViewModel extends AndroidViewModel {
         compDisposable.add(disposable);
     }
 
+    public void clearChat(long recipientId){
+        Log.d(TAG, "clearChat: ");
+//        localDb.getMessageRepo().
+    }
+    
+    @SuppressLint("CheckResult")
+    public void deleteChat(Long recipientId){
+        Log.d(TAG, "deleteChat: with recipientId" + recipientId);
+        Consumer<Long> consumer = id -> localDb.getMessageRepo().deleteMessageByRecipientId(id);
+        Flowable.just(recipientId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(consumer, Throwable::printStackTrace);
+    }
 
+
+    
     public void clearDisposables() {
         if (compDisposable != null && compDisposable.isDisposed())
             compDisposable.clear();

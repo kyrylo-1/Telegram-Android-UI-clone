@@ -29,5 +29,13 @@
     <string name="bio_description">You can add a few lines about yourself. Anyone who opens your profile will see this text</string>
     <string name="copy_to_clipboard">Text has been copied of the clipboard</string>
     <string name="draft">Draft:</string>
+    <string name="clear_history">Clear history</string>
+
+
+    <string name="bottom_sheet_option_camera">Use Camera</string>
+    <string name="bottom_sheet_option_gallery">Upload from Gallery</string>
+    <string name="bottom_sheet_option_heading">Add Photo</string>
+    <string name="delete">Delete</string>
+    <string name="no_messages_here_yet">No messages here yet…</string>
 
 </resources>

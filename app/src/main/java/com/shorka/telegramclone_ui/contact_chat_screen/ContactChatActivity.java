@@ -2,6 +2,7 @@ package com.shorka.telegramclone_ui.contact_chat_screen;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.WindowCompat;
@@ -26,6 +27,7 @@ import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.utils.Config;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -37,6 +39,7 @@ import java.util.Objects;
 
 public class ContactChatActivity extends AppCompatActivity {
 
+
     //region properties
     private static final String TAG = "ContactChatActivity";
 
@@ -44,10 +47,11 @@ public class ContactChatActivity extends AppCompatActivity {
     private ImageButton btnSend;
     private EditText editText;
 
-    private ContactChatViewModel chatViewModel;
+    private ContactChatViewModel viewModel;
     private long recipientUserId;
     private ContactChatFragment chatFragment;
     private long messageDraftId = -1;
+
     //endregion
 
     @Override
@@ -70,7 +74,7 @@ public class ContactChatActivity extends AppCompatActivity {
         recipientUserId = getIntent().getLongExtra(Config.USER_ID_EXTRA, 1);
         observeViewModel(recipientUserId);
         Log.d(TAG, "onCreate: String recipientUserId: " + recipientUserId);
-        updateRecipientUI(chatViewModel.getUser(recipientUserId));
+        updateRecipientUI(viewModel.getUser(recipientUserId));
     }
 
     @Override
@@ -137,28 +141,54 @@ public class ContactChatActivity extends AppCompatActivity {
         });
     }
 
-    private void observeViewModel(long userId) {
+    private void observeViewModel(long recipientUserId) {
 
         ViewModelFactory factory = ViewModelFactory.getInstance(getApplication());
-        chatViewModel = ViewModelProviders.of(this, factory).get(ContactChatViewModel.class);
-        chatViewModel.getListMessages(userId).observe(this, messages -> {
-            Log.d(TAG, "observeViewModel: obsert list of messages with size: " + Objects.requireNonNull(messages).size());
+        viewModel = ViewModelProviders.of(this, factory).get(ContactChatViewModel.class);
+        viewModel.getListMessages(recipientUserId).observe(this, messages -> {
+            Log.d(TAG, "observeViewModel: observe list of messages with size: " + Objects.requireNonNull(messages).size());
 
             final int messagesSize = messages.size();
-            if (chatFragment.getAdapterRv() != null && messagesSize > 0) {
+            viewModel.setQtyOfCachedMessages(messagesSize);
 
-                //Dont show draft message in the list. Show only in EditText
-                Message lastMessage = messages.get(messagesSize - 1);
-                if(lastMessage.messageType == Message.DRAFT){
-                    messageDraftId = lastMessage.getIdMessage();
-                    setTextToEditText(lastMessage.text);
-                    Log.d(TAG, "observeViewModel: remove draft message: " + lastMessage.text);
-                    messages.remove(messagesSize-1);
-                }
-                chatFragment.getAdapterRv().setItemsMessages(messages);
-                chatFragment.getRecyclerView().scrollToPosition(chatFragment.getAdapterRv().getItemCount() - 1);
+            if(messagesSize > 1)
+                showMessages(messages);
+
+            else if (messagesSize == 1) {
+                Message m = messages.get(0);
+                if (m.messageType == Message.MessageType.EMPTY)
+                    viewModel.deleteMessage(m);
+
+                showMessages(messages);
             }
+
+            else showEmptyMessages();
         });
+    }
+
+
+    private void showMessages(@NonNull final List<Message> messages) {
+        //Don't show draft message in the list. Show only in EditText
+        int size = messages.size();
+        Message lastMessage = messages.get(size - 1);
+        if (lastMessage.messageType == Message.MessageType.DRAFT) {
+            messageDraftId = lastMessage.getIdMessage();
+            setTextToEditText(lastMessage.text);
+            Log.d(TAG, "observeViewModel: remove draft message: " + lastMessage.text);
+            messages.remove(size - 1);
+        }
+        else if(lastMessage.messageType == Message.MessageType.EMPTY){
+            messages.remove(size - 1);
+        }
+
+
+        chatFragment.getAdapterRv().setItemsMessages(messages);
+        chatFragment.getRecyclerView().scrollToPosition(chatFragment.getAdapterRv().getItemCount() - 1);
+        chatFragment.setStatus(ContactChatFragment.ContentStatus.SHOW_MESSAGES);
+    }
+
+    private void showEmptyMessages() {
+        chatFragment.setStatus(ContactChatFragment.ContentStatus.NO_MESSAGES);
     }
 
     private void enableBtnSend(boolean doEnable) {
@@ -166,13 +196,15 @@ public class ContactChatActivity extends AppCompatActivity {
     }
 
     private void sendMessages() {
-        if(messageDraftId>=0){
-            chatViewModel.deleteMessageById(messageDraftId);
+
+        Log.d(TAG, "sendMessages: items in adapter: " + chatFragment.getAdapterRv().getItemCount());
+        if (messageDraftId >= 0) {
+            viewModel.deleteMessageById(messageDraftId);
             messageDraftId = -1;
         }
 
         Editable ed = editText.getText();
-        chatViewModel.sendMessage(recipientUserId, ed.toString());
+        viewModel.sendMessage(recipientUserId, ed.toString());
         ed.clear();
     }
 
@@ -184,13 +216,19 @@ public class ContactChatActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
+        if(viewModel.getDoAddEmptyMessage()){
+            viewModel.addEmptyMessage(recipientUserId);
+        }
+
         String s = editText.getText().toString();
         if (!TextUtils.isEmpty(s))
-            chatViewModel.saveDraft(recipientUserId, s);
+            viewModel.saveDraft(recipientUserId, s);
+
+        viewModel.clearDisposables();
     }
 
-    private void setTextToEditText(String text){
-        if(TextUtils.isEmpty(text))
+    private void setTextToEditText(String text) {
+        if (TextUtils.isEmpty(text))
             return;
 
         editText.setText(text);

@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layout_marginTop="8dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_clear_convo"
+        style="@style/TextView_Bottom_Sheet"
+
+        android:drawableStart="@drawable/ic_clean"
+        android:text="@string/clear_history" />
+
+    <TextView
+        android:id="@+id/tv_delete_convo"
+        style="@style/TextView_Bottom_Sheet"
+
+        android:drawableStart="@drawable/ic_delete"
+        android:text="@string/delete" />
+
+</LinearLayout>

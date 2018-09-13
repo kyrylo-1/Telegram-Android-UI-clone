@@ -4,6 +4,8 @@ import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.shorka.telegramclone_ui.db.Message;
+
 import java.util.Date;
 
 /**
@@ -41,8 +43,9 @@ public class MessagePreview {
         return imageResId;
     }
 
-    public boolean isDraft() {
-        return isDraft;
+    @Message.MessageType
+    public int getMessageType() {
+        return messageType;
     }
 
     private long recipientId;
@@ -53,7 +56,9 @@ public class MessagePreview {
     private Date date;
     @DrawableRes
     private int imageResId;
-    private boolean isDraft;
+
+    @Message.MessageType
+    private int messageType;
 
     MessagePreview(MessagePreviewBuilder mpb) {
 
@@ -64,8 +69,10 @@ public class MessagePreview {
         this.isReaded = mpb.isRead;
         this.date = mpb.date;
         this.imageResId = mpb.imageResId;
-        this.isDraft = mpb.isDraft;
+        this.messageType = mpb.messageType;
     }
+
+
 
     public static class MessagePreviewBuilder {
         private long recipient;
@@ -76,7 +83,8 @@ public class MessagePreview {
         private Date date;
         @DrawableRes
         private int imageResId;
-        private boolean isDraft;
+        @Message.MessageType
+        private int messageType;
 
         public MessagePreviewBuilder withId(long recipient) {
             this.recipient = recipient;
@@ -108,8 +116,8 @@ public class MessagePreview {
             return this;
         }
 
-        public MessagePreviewBuilder withDraft(boolean isDraft) {
-            this.isDraft = isDraft;
+        public MessagePreviewBuilder withMessageType(@Message.MessageType int messageType) {
+            this.messageType = messageType;
             return this;
         }
 
@@ -131,6 +139,9 @@ public class MessagePreview {
 
         private boolean isValidateData() {
             //Do some basic validations to check
+
+            if(messageType == Message.MessageType.EMPTY)
+                return true;
 
             if (TextUtils.isEmpty(contactName)) {
                 Log.e(TAG, "isValidateData: contactName.isEmpty");

@@ -1,5 +1,7 @@
 package com.shorka.telegramclone_ui.adapter;
 
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -83,11 +85,11 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, @Message.MessageType int viewType) {
 
         //get proper id of resource layout
 //        Log.d(TAG, "onCreateViewHolder: ");
-        int res = viewType == Message.RECEIVED ? R.layout.item_message_received : R.layout.item_message_sent;
+        @LayoutRes int res = viewType == Message.MessageType.RECEIVED ? R.layout.item_message_received : R.layout.item_message_sent;
 
         View view = LayoutInflater.from(parent.getContext()).inflate(res, parent, false);
         return new BasicViewMessage(view);
@@ -123,6 +125,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     }
 
     @Override
+    @Message.MessageType
     public int getItemViewType(int position) {
 
         Message msg = itemsMessages.get(position);

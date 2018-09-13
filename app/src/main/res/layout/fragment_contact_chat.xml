@@ -3,14 +3,15 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/convo_messages"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="visible"
         tools:listitem="@layout/item_message_sent" />
 
     <View
@@ -18,8 +19,9 @@
         android:layout_height="8dp"
         android:background="@drawable/ab_shadow" />
 
+
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_sroll_down"
+        android:id="@+id/fab_scroll_down"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="bottom|end"
@@ -28,6 +30,29 @@
         android:src="@drawable/ic_arrow_scroll_down"
         app:backgroundTint="@color/colorWhite"
         app:fabSize="normal" />
+
+    <ScrollView
+        android:id="@+id/tv_no_messages"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:background="@drawable/rounded_rect_semi_transparent"
+            android:paddingBottom="2dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:paddingTop="2dp"
+            android:text="@string/no_messages_here_yet"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@android:color/white" />
+
+    </ScrollView>
+
 
 </FrameLayout>
 

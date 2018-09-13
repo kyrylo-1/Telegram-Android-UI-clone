@@ -41,7 +41,16 @@ public interface MessageDao {
     @Delete
     void delete(Message ...message);
 
-    @Query("DELETE FROM message WHERE message.idMessage == :idMessage")
-    void deleteById(long idMessage);
+    @Query("DELETE FROM message WHERE  message.text IS NOT NULL + ','+ message.idMessage == :idMessage ")
+    void deleteNonEmptyById(long idMessage);
 
+    @Query("DELETE FROM message WHERE message.recipientId == :recipientId")
+    void deleteByRecipientId(long recipientId);
+
+    //Delete all messages, except empty one.
+    @Query("DELETE FROM message WHERE message.messageType != :emptyType AND  message.recipientId == :recipientId")
+    void clearByRecipientId(long recipientId, @Message.MessageType int emptyType);
+
+    @Query("DELETE FROM message WHERE message.messageType == :emptyType AND  message.recipientId == :recipientId")
+    void deleteAllMessages(long recipientId, @Message.MessageType int emptyType);
 }

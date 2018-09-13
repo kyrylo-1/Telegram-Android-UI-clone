@@ -3,6 +3,7 @@ package com.shorka.telegramclone_ui.contact_chat_screen;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.RecyclerItemClickListener;
@@ -27,6 +30,8 @@ import com.shorka.telegramclone_ui.adapter.MessageListAdapter;
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.utils.FabHelper;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
 /**
@@ -34,12 +39,21 @@ import java.util.Objects;
  */
 public class ContactChatFragment extends Fragment {
 
+    @IntDef({ContentStatus.SHOW_MESSAGES, ContentStatus.NO_MESSAGES})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface ContentStatus {
+        int SHOW_MESSAGES = 0;
+        int NO_MESSAGES = 1;
+    }
+
+    //region properties
     private static final String TAG = "ContactChatFragment";
 
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private MessageListAdapter adapterRv;
     private FabHelper fabHelper;
+    private ScrollView tvNoMessages;
     private ActionMode actionMode;
     private final ActionModeCallback actionModeCallback = new ActionModeCallback();
     private ContactChatViewModel viewModel;
@@ -51,6 +65,7 @@ public class ContactChatFragment extends Fragment {
     public MessageListAdapter getAdapterRv() {
         return adapterRv;
     }
+    //endregion
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +83,9 @@ public class ContactChatFragment extends Fragment {
     }
 
     private void setUpUI(@NonNull final View view) {
+
+        tvNoMessages = view.findViewById(R.id.tv_no_messages);
+
         recyclerView = view.findViewById(R.id.convo_messages);
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
@@ -76,7 +94,7 @@ public class ContactChatFragment extends Fragment {
         adapterRv = new MessageListAdapter();
         recyclerView.setAdapter(adapterRv);
 
-        final FloatingActionButton fabScrollDown = (FloatingActionButton) view.findViewById(R.id.fab_sroll_down);
+        final FloatingActionButton fabScrollDown = (FloatingActionButton) view.findViewById(R.id.fab_scroll_down);
         fabScrollDown.setVisibility(View.INVISIBLE);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -120,6 +138,7 @@ public class ContactChatFragment extends Fragment {
             }
         }));
     }
+
 
     private void clickOnMessage(@NonNull Message message) {
         if (actionMode == null)
@@ -176,6 +195,22 @@ public class ContactChatFragment extends Fragment {
         }
     }
 
+    public void setStatus(@ContentStatus int status) {
+
+        switch (status) {
+
+            case ContentStatus.SHOW_MESSAGES:
+                recyclerView.setVisibility(View.VISIBLE);
+                tvNoMessages.setVisibility(View.GONE);
+                break;
+
+            default:
+                recyclerView.setVisibility(View.GONE);
+                tvNoMessages.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
     private class ActionModeCallback implements ActionMode.Callback {
 
         private MenuInflater inflater;
@@ -221,7 +256,7 @@ public class ContactChatFragment extends Fragment {
             }
         }
 
-        private void showDeletionDialog(Message[] arrMsg){
+        private void showDeletionDialog(Message[] arrMsg) {
             DeletionDialogFragment dialogDel = DeletionDialogFragment.newInstance(arrMsg.length);
             dialogDel.show(getActivity().getFragmentManager(), "dialog");
 

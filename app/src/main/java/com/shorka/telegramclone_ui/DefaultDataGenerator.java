@@ -129,7 +129,7 @@ public class DefaultDataGenerator {
         message.text = text;
         message.setDate(date);
 //        message.date = date;
-        message.messageType = Message.RECEIVED;
+        message.messageType =  Message.MessageType.RECEIVED;
         return message;
     }
 

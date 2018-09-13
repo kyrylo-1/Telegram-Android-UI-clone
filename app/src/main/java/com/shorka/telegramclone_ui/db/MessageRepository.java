@@ -1,5 +1,6 @@
 package com.shorka.telegramclone_ui.db;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
@@ -7,6 +8,10 @@ import android.support.annotation.NonNull;
 import com.shorka.telegramclone_ui.MessagePreview;
 
 import java.util.List;
+
+import io.reactivex.Flowable;
+import io.reactivex.functions.Action;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Kyrylo Avramenko on 8/24/2018.
@@ -38,19 +43,21 @@ public class MessageRepository extends BaseRepository {
         messageDao.delete(message);
     }
 
-    public void deleteMessageById(long messageId){
-        messageDao.deleteById(messageId);
+    public Flowable<Long> deleteMessageById(long messageId){
+        return Flowable.fromCallable(() -> {
+            messageDao.deleteNonEmptyById(messageId);
+            return messageId;
+        });
     }
 
-//    public LiveData<List<MessageDraft>> getDraftMessages(){
-//        return messageDao.getDraftMessages();
-//    }
-//
-//    public void insertMessageDraft(@NonNull MessageDraft messageDraft){
-//        messageDao.insertDraft(messageDraft);
-//    }
-//
-//    public void deleleteMessageDraft(long recipientId){
-//        messageDao.deleteDraftByRecipientId(recipientId);
-//    }
+    public Flowable<Long> deleteEmptyMessages (long recipientId){
+        return Flowable.fromCallable(() -> {
+            messageDao.deleteAllMessages(recipientId, Message.MessageType.EMPTY);
+            return recipientId;
+        });
+    }
+
+    public void deleteMessageByRecipientId(long recipientId){
+        messageDao.deleteByRecipientId(recipientId);
+    }
 }
