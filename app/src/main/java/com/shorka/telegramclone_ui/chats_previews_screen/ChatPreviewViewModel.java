@@ -19,6 +19,7 @@ import java.util.List;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -109,22 +110,39 @@ public class ChatPreviewViewModel extends AndroidViewModel {
         compDisposable.add(disposable);
     }
 
-    public void clearChat(long recipientId){
-        Log.d(TAG, "clearChat: ");
-//        localDb.getMessageRepo().
+    public void clearChat(long recipientId) {
+        Log.d(TAG, "clearChat: with recipientId: " + recipientId);
+
+        Consumer<Long> consumerClean = id -> {
+            localDb.getMessageRepo().cleanMessages(id);
+        };
+
+        Flowable<Long> flowableClean = Flowable.just(recipientId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io());
+
+
+        Disposable disposable = localDb.getMessageRepo().makeEmptyMessageInsertion(recipientId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .doOnComplete(() -> compDisposable.add(flowableClean
+                        .subscribe(consumerClean, Throwable::printStackTrace)))
+                .subscribe();
+
+        compDisposable.add(disposable);
     }
-    
+
     @SuppressLint("CheckResult")
-    public void deleteChat(Long recipientId){
+    public void deleteChat(Long recipientId) {
         Log.d(TAG, "deleteChat: with recipientId" + recipientId);
         Consumer<Long> consumer = id -> localDb.getMessageRepo().deleteMessageByRecipientId(id);
-        Flowable.just(recipientId)
+        Disposable disposable = Flowable.just(recipientId)
                 .subscribeOn(Schedulers.io())
                 .subscribe(consumer, Throwable::printStackTrace);
+
+        compDisposable.add(disposable);
     }
 
-
-    
     public void clearDisposables() {
         if (compDisposable != null && compDisposable.isDisposed())
             compDisposable.clear();

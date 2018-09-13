@@ -47,10 +47,12 @@ public interface MessageDao {
     @Query("DELETE FROM message WHERE message.recipientId == :recipientId")
     void deleteByRecipientId(long recipientId);
 
-    //Delete all messages, except empty one.
-    @Query("DELETE FROM message WHERE message.messageType != :emptyType AND  message.recipientId == :recipientId")
-    void clearByRecipientId(long recipientId, @Message.MessageType int emptyType);
 
-    @Query("DELETE FROM message WHERE message.messageType == :emptyType AND  message.recipientId == :recipientId")
-    void deleteAllMessages(long recipientId, @Message.MessageType int emptyType);
+    /**Delete all messages, except empty one.
+     */
+    @Query("DELETE FROM message WHERE message.messageType <> :emptyType AND  message.recipientId == :recipientId")
+    void cleanByRecipientId(long recipientId, @Message.MessageType int emptyType);
+
+//    @Query("DELETE FROM message WHERE message.messageType == :emptyType AND  message.recipientId == :recipientId")
+//    void deleteAllMessages(long recipientId, @Message.MessageType int emptyType);
 }

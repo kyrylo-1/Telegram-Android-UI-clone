@@ -15,10 +15,10 @@ import android.widget.Toast;
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.db.LocalDatabase;
 import com.shorka.telegramclone_ui.db.Message;
+import com.shorka.telegramclone_ui.db.MessageHelper;
 import com.shorka.telegramclone_ui.db.User;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +26,6 @@ import java.util.Set;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -69,7 +68,7 @@ public class ContactChatViewModel extends AndroidViewModel {
     public void sendMessage(long recipientId, String text) {
         Log.d(TAG, "sendMessage with text: " + text);
 
-        Message m = createMessageInstance(recipientId, text);
+        Message m = MessageHelper.createInstance(recipientId, text);
         m.messageType = Message.MessageType.SENT;
 
         Disposable disposable = Flowable.just(m)
@@ -167,22 +166,10 @@ public class ContactChatViewModel extends AndroidViewModel {
         compDisposable.add(disposable);
     }
 
-
-//    @SuppressLint("CheckResult")
-//    public void deleteEmptyMessages(long recipientId){
-//        doAddEmptyMessage = true;
-//
-//        Disposable disposable = Flowable.just(recipientId)
-//                .subscribeOn(Schedulers.io())
-//                .subscribe(id -> localDb.getMessageRepo().deleteEmptyMessages(id), Throwable::printStackTrace);
-//
-//        compDisposable.add(disposable);
-//    }
-
     @SuppressLint("CheckResult")
     public void saveDraft(long recipientId, @NonNull final String text) {
 
-        Message m = createMessageInstance(recipientId, text);
+        Message m = MessageHelper.createInstance(recipientId, text);
         m.messageType = Message.MessageType.DRAFT;
 
         Consumer<Message> consumer = message -> localDb.getMessageRepo().insertMessage(message);
@@ -196,16 +183,15 @@ public class ContactChatViewModel extends AndroidViewModel {
     @SuppressLint("CheckResult")
     public void addEmptyMessage(long recipientId){
 
-        Message m = createMessageInstance(recipientId, "NULL",0);
-        m.messageType = Message.MessageType.EMPTY;
 
-        Disposable disposable =  Flowable.just(m)
+        Disposable disposable = localDb.getMessageRepo().makeEmptyMessageInsertion(recipientId)
                 .subscribeOn(Schedulers.io())
-                .subscribe(message -> localDb.getMessageRepo().insertMessage(message), Throwable::printStackTrace);
+                .observeOn(Schedulers.io())
+                .subscribe();
 
         compDisposable.add(disposable);
 
-        //we dont need to add empty message anymore
+        //because we dont need to add empty message anymore
         doAddEmptyMessage = false;
     }
 
@@ -214,21 +200,7 @@ public class ContactChatViewModel extends AndroidViewModel {
             compDisposable.clear();
     }
 
-    private Message createMessageInstance(long recipientId, String text) {
-        Message m = new Message(0);
-        m.recipientId = recipientId;
-        m.text = text;
-        m.setDate(Calendar.getInstance().getTime());
-        return m;
-    }
 
-    private Message createMessageInstance(long recipientId, String text, long date) {
-        Message m = new Message(0);
-        m.recipientId = recipientId;
-        m.text = text;
-        m.setDate(date);
-        return m;
-    }
 
 
 

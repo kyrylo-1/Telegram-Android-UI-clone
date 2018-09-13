@@ -79,10 +79,6 @@ public class UserRepository extends BaseRepository{
     }
     //</editor-fold>
 
-    public LiveData<List<PhoneContact>> getLivePhoneContacts() {
-        return userDao.getPhoneContacts();
-    }
-
     public Flowable<List<PhoneContact>> loadPhoneContacts(@NonNull Context context, boolean doRefresh) {
 
         if (cachedPhoneContacts != null && !doRefresh)
@@ -99,9 +95,5 @@ public class UserRepository extends BaseRepository{
 
     public List<PhoneContact> getCachedPhoneContacts() {
         return cachedPhoneContacts;
-    }
-
-    public void setCachedPhoneContacts(List<PhoneContact> cachedPhoneContacts) {
-        this.cachedPhoneContacts = cachedPhoneContacts;
     }
 }
