@@ -28,10 +28,19 @@
         </activity>
 
         <activity android:name=".settings_screen.SettingsActivity" />
+
         <activity
             android:name=".contact_chat_screen.ContactChatActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+            android:windowSoftInputMode="stateHidden|stateUnchanged">
+
+        <intent-filter>
+            <action android:name="android.intent.action.PROCESS_TEXT" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <data android:mimeType="text/plain" />
+        </intent-filter>
+
+        </activity>
 
         <activity android:name=".phone_contacts_screen.ContactsActivity" />
         <activity android:name=".settings_screen.ChangeNameActivity">

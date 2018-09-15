@@ -2,17 +2,17 @@
 <resources>
     <color name="colorPrimary">#4c84b6</color>
     <color name="colorPrimaryDark">#3d5573</color>
-    <color name="colorAccent">#f5f3f3</color>
+    <color name="colorAccent">@color/brightBlue</color>
 
-    <color name="colorBrightBlue">#51acf1</color>
+    <color name="brightBlue">#51acf1</color>
 
     <color name="colorWhite">#ffffff</color>
 
+    <color name="white_gray">#f5f3f3</color>
     <color name="colorBackGray">#eaeaea</color>
 
     <color name="gray65">#ff595959</color>
     <color name="action_mode_status_bar">@color/gray65</color>
-
 
     <color name="blue2">#882090ea</color>
 

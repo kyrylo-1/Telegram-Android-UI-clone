@@ -6,18 +6,17 @@
 
     <EditText
         android:id="@+id/convo_message_edittext"
+        style="@style/BasicEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorWhite"
-        android:cursorVisible="true"
         android:hint="@string/hint_chat_edittext"
         android:inputType="textLongMessage|textCapSentences|textMultiLine"
         android:paddingEnd="50dp"
         android:paddingStart="15dp"
         android:maxLines="4"
         android:minHeight="54dp"
-        android:ems="10"
-        android:textCursorDrawable="@color/colorPrimary"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

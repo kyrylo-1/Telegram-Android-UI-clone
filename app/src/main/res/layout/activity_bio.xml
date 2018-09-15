@@ -29,7 +29,7 @@
         android:paddingBottom="15dp"
         android:textSize="15sp"
         app:layout_constraintTop_toBottomOf="@id/bio_toolbar"
-        android:backgroundTint="@color/colorBrightBlue"
+        android:backgroundTint="@color/brightBlue"
 
         android:inputType="textMultiLine"
 />

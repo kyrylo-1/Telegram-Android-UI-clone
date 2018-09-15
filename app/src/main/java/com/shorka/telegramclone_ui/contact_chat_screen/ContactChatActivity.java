@@ -84,6 +84,8 @@ public class ContactChatActivity extends AppCompatActivity {
         Objects.requireNonNull(imm).hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -99,8 +101,7 @@ public class ContactChatActivity extends AppCompatActivity {
         if (supportActionBar == null) throw new AssertionError();
 
         supportActionBar.setDisplayHomeAsUpEnabled(true);
-        supportActionBar.setDisplayShowTitleEnabled(false);
-        supportActionBar.setDisplayShowCustomEnabled(true);
+        supportActionBar.setTitle(null);
 
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
@@ -163,7 +164,7 @@ public class ContactChatActivity extends AppCompatActivity {
             Log.d(TAG, "setChatMessages: m text: " + m.text + " id: " + m.getIdMessage());
         }
 
-        final int msgQTY = listMessages.size();
+        int msgQTY = listMessages.size();
         viewModel.setListCachedMessages(listMessages);
 
         if (msgQTY == 0) {
@@ -183,6 +184,7 @@ public class ContactChatActivity extends AppCompatActivity {
             Log.d(TAG, "observeViewModel: remove draft lastMessageLive: " + lastMessage.text);
         }
 
+        msgQTY = listMessages.size();
         //check for empty messages. and delete them. Empty messages
         if (msgQTY == 1 || msgQTY == 2) {
             for (int i = 0; i < msgQTY; i++) {
