@@ -140,15 +140,12 @@ public class MessagePreview {
         private boolean isValidateData() {
             //Do some basic validations to check
 
-            if(messageType == Message.MessageType.EMPTY)
-                return true;
-
             if (TextUtils.isEmpty(contactName)) {
                 Log.e(TAG, "isValidateData: contactName.isEmpty");
                 return false;
             }
 
-            if (TextUtils.isEmpty(lastMessage)) {
+            if (TextUtils.isEmpty(lastMessage) && messageType != Message.MessageType.EMPTY) {
                 Log.e(TAG, "isValidateData: lastMessage.isEmpty");
                 return false;
             }

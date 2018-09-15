@@ -1,4 +1,4 @@
-package com.shorka.telegramclone_ui.contacts_screen;
+package com.shorka.telegramclone_ui.phone_contacts_screen;
 
 import android.app.Application;
 import android.support.annotation.NonNull;

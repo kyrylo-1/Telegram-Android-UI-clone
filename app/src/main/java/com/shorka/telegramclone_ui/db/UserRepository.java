@@ -11,12 +11,13 @@ import com.shorka.telegramclone_ui.utils.ContactsFetcher;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 
 /**
  * Created by Kyrylo Avramenko on 8/1/2018.
  */
-public class UserRepository extends BaseRepository{
+public class UserRepository extends BaseRepository {
 
     private static final String TAG = "UserRepository";
 
@@ -89,7 +90,8 @@ public class UserRepository extends BaseRepository{
             List<PhoneContact> list = ContactsFetcher.fetch(context);
             cachedPhoneContacts = list;
             return list;
-        });
+        }).subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io());
     }
 
 

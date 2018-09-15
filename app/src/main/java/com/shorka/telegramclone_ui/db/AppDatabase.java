@@ -1,21 +1,26 @@
 package com.shorka.telegramclone_ui.db;
 
+import android.annotation.SuppressLint;
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.shorka.telegramclone_ui.DefaultDataGenerator;
 
+import java.util.List;
+
+import io.reactivex.Completable;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * Created by Kyrylo Avramenko on 8/1/2018.
  */
-@Database(entities = {User.class, UserMessages.class, Message.class, PhoneContact.class}, version = 6)
+@Database(entities = {User.class, Message.class, PhoneContact.class}, version = 6)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -24,7 +29,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "user_database";
 
     public abstract UserDao userDao();
-    public abstract UserMsgDao userMsgDao();
+
     public abstract MessageDao messageDao();
 
     public static AppDatabase getInstance(final Context context, final boolean inMemory) {
@@ -61,12 +66,13 @@ public abstract class AppDatabase extends RoomDatabase {
     private static RoomDatabase.Callback sRoomDatabaseCallback =
             new RoomDatabase.Callback() {
 
+                @SuppressLint({"RxSubscribeOnError", "RxLeakedSubscription"})
                 @Override
                 public void onCreate(@NonNull SupportSQLiteDatabase db) {
                     super.onCreate(db);
 
                     Log.d(TAG, "onCreate: populate database");
-                    new PopulateDbAsync(INSTANCE).execute();
+                    populateDb(INSTANCE).subscribe();
                 }
 
                 @Override
@@ -76,57 +82,22 @@ public abstract class AppDatabase extends RoomDatabase {
                 }
             };
 
-    private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
-        private final UserDao userDao;
-        private final MessageDao messageDao;
-
-        PopulateDbAsync(@NonNull AppDatabase db) {
-            Log.d(TAG, "PopulateDbAsync: ");
-            userDao = db.userDao();
-            messageDao = db.messageDao();
-        }
-
-//        @Override
-//        protected Void doInBackground(final Void... params) {
-//
-//            Log.d(TAG, "doInBackground: actually insert data of users");
-//
-//            for (User user : DefaultDataGenerator.generateUsers()) {
-//                Log.d(TAG, "doInBackground: insert user with id: " + user.getIdMessage());
-//                userDao.insert(user);
-//            }
-//
-//            for (UserMessages userMessages : DefaultDataGenerator.generateLastUserMessages()) {
-//                Log.d(TAG, "doInBackground: insert userMessages with id:" + userMessages.getRecipientId());
-//                userMsgsDao.insertUserMessages(userMessages);
-//            }
-//
-//            return null;
-//        }
-//    }
-
-        @Override
-        protected Void doInBackground(final Void... params) {
-
-            Log.d(TAG, "doInBackground: actually insert data of users");
-
+    @SuppressLint("CheckResult")
+    private static Completable populateDb(@NonNull AppDatabase db) {
+        return Completable.fromAction(() -> {
+            UserDao userDao = db.userDao();
+            MessageDao messageDao = db.messageDao();
             for (User user : DefaultDataGenerator.generateUsers()) {
-//                Log.d(TAG, "doInBackground: insert user with id: " + user.getRecipientId());
                 userDao.insert(user);
             }
 
-//            for (UserMessages userMessages : DefaultDataGenerator.generateLastUserMessages()) {
-//                Log.d(TAG, "doInBackground: insert userMessages with id:" + userMessages.getRecipientId());
-//                userMsgsDao.insertUserMessages(userMessages);
-//            }
+            List<Message> messages = DefaultDataGenerator.generateMessages();
 
-            for (Message message : DefaultDataGenerator.generateMessages()) {
-//                Log.d(TAG, "doInBackground: insert userMessages with id:" + message.recipientId);
+            for (Message message : messages) {
                 messageDao.insert(message);
             }
 
-            return null;
-        }
+        }).observeOn(Schedulers.io()).subscribeOn(Schedulers.io());
     }
 }

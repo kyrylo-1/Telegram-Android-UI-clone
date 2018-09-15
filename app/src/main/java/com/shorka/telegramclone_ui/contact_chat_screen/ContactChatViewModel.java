@@ -36,17 +36,23 @@ public class ContactChatViewModel extends AndroidViewModel {
 
     private static final String TAG = "ContactChatViewModel";
 
+    //region properties
     private final LocalDatabase localDb;
     private final CompositeDisposable compDisposable;
     private boolean doAddEmptyMessage;
-    private int qtyOfCachedMessages;
+    private List<Message> listCachedMessages;
 
+    public List<Message> getListCachedMessages() {
+        return listCachedMessages;
+    }
+
+    public void setListCachedMessages(List<Message> listCachedMessages) {
+        this.listCachedMessages = listCachedMessages;
+    }
     public boolean getDoAddEmptyMessage() {
         return doAddEmptyMessage;
     }
-    public void setQtyOfCachedMessages(int qtyOfCachedMessages) {
-        this.qtyOfCachedMessages = qtyOfCachedMessages;
-    }
+    //endregion
 
     public ContactChatViewModel(@NonNull Application application, LocalDatabase localDb) {
         super(application);
@@ -65,14 +71,18 @@ public class ContactChatViewModel extends AndroidViewModel {
     }
 
     @SuppressLint("CheckResult")
-    public void sendMessage(long recipientId, String text) {
-        Log.d(TAG, "sendMessage with text: " + text);
+    public void sendNonEmptyMessage(long recipientId, String text) {
+        Log.d(TAG, "sendNonEmptyMessage with text: " + text);
+
+        if(TextUtils.isEmpty(text))
+            return;
 
         Message m = MessageHelper.createInstance(recipientId, text);
         m.messageType = Message.MessageType.SENT;
 
         Disposable disposable = Flowable.just(m)
                 .subscribeOn(Schedulers.io())
+                .doOnComplete(() -> doAddEmptyMessage = false)
                 .subscribe(message -> localDb.getMessageRepo().insertMessage(message), Throwable::printStackTrace);
 
         compDisposable.add(disposable);
@@ -141,12 +151,14 @@ public class ContactChatViewModel extends AndroidViewModel {
 
     @SuppressLint("CheckResult")
     public void deleteMessage(@NonNull final Message... message) {
-
-        Disposable disposable = Flowable.just(message)
+        Log.d(TAG, "deleteMessage: ");
+        @SuppressLint("RxSubscribeOnError") Disposable disposable = Flowable.just(message)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .doOnComplete(() -> {
-                    if(qtyOfCachedMessages - message.length <= 0)
+                    //We need empty message, because otherwise chat will not exist
+                    if(listCachedMessages.size() - message.length <= 0)
+                        Log.d(TAG, "deleteMessage: doAddEmptyMessage = true");
                         doAddEmptyMessage = true;
                 })
                 .subscribe(messages ->localDb.getMessageRepo().deleteMessage(message));
@@ -156,9 +168,9 @@ public class ContactChatViewModel extends AndroidViewModel {
 
     @SuppressLint("CheckResult")
     public void deleteMessageById(long messageId) {
-//        Log.d(TAG, "deleteMessage: " + message.text);
+        Log.d(TAG, "deleteMessage: " + messageId);
 
-        Disposable disposable = localDb.getMessageRepo().deleteMessageById(messageId)
+        @SuppressLint("RxSubscribeOnError") Disposable disposable = localDb.getMessageRepo().deleteMessageById(messageId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe();
@@ -174,6 +186,7 @@ public class ContactChatViewModel extends AndroidViewModel {
 
         Consumer<Message> consumer = message -> localDb.getMessageRepo().insertMessage(message);
         Disposable disposable = Flowable.just(m)
+                .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.io())
                 .subscribe(consumer, Throwable::printStackTrace);
 
@@ -183,15 +196,13 @@ public class ContactChatViewModel extends AndroidViewModel {
     @SuppressLint("CheckResult")
     public void addEmptyMessage(long recipientId){
 
-
-        Disposable disposable = localDb.getMessageRepo().makeEmptyMessageInsertion(recipientId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
+        Log.d(TAG, "FINALLY addEmptyMessage: ");
+        @SuppressLint("RxSubscribeOnError") Disposable disposable = localDb.getMessageRepo().makeEmptyMessageInsertion(recipientId)
                 .subscribe();
 
         compDisposable.add(disposable);
 
-        //because we dont need to add empty message anymore
+        //because we dont need to add empty lastMessageLive anymore
         doAddEmptyMessage = false;
     }
 
@@ -199,9 +210,6 @@ public class ContactChatViewModel extends AndroidViewModel {
         if (compDisposable != null && compDisposable.isDisposed())
             compDisposable.clear();
     }
-
-
-
 
 
 }

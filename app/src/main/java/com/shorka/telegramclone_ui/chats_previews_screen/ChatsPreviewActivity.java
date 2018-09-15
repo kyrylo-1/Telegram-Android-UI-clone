@@ -22,18 +22,21 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.shorka.telegramclone_ui.utils.Config;
 import com.shorka.telegramclone_ui.DividerCustomPaddingItemDecoration;
+import com.shorka.telegramclone_ui.MessagePreview;
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.RecyclerItemClickListener;
-import com.shorka.telegramclone_ui.utils.Utils;
 import com.shorka.telegramclone_ui.ViewModelFactory;
-import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatActivity;
-import com.shorka.telegramclone_ui.contacts_screen.ContactsActivity;
 import com.shorka.telegramclone_ui.adapter.MessagesGridRecycleViewAdapter;
+import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatActivity;
+import com.shorka.telegramclone_ui.phone_contacts_screen.ContactsActivity;
+import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.User;
-import com.shorka.telegramclone_ui.MessagePreview;
 import com.shorka.telegramclone_ui.settings_screen.SettingsActivity;
+import com.shorka.telegramclone_ui.utils.Config;
+import com.shorka.telegramclone_ui.utils.Utils;
+
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -158,18 +161,22 @@ public class ChatsPreviewActivity extends AppCompatActivity
         });
 
         viewModel.getRecentMessageByChat().observe(this, messages -> {
-
-            if (messages == null) {
-                Log.e(TAG, "messages == null");
-            } else {
-                Log.d(TAG, "observeViewModel: getRecentMessageByChat() setItemsMessages. QTY IS: " + messages.size());
-
-                adapterRv.setItems(viewModel.transformToMsgPreviews(messages));
-            }
+            setChatToRvAdapter(messages);
 
         });
 
         viewModel.loadPhoneContacts();
+    }
+
+    private void setChatToRvAdapter(List<Message> listMessages) {
+
+        if (listMessages == null)
+            return;
+
+        Log.d(TAG, "observeViewModel: getRecentMessageByChat() setItemsMessages. QTY IS: " + listMessages.size());
+
+        adapterRv.setItems(viewModel.transformToMsgPreviews(listMessages));
+
     }
 
 
@@ -260,7 +267,6 @@ public class ChatsPreviewActivity extends AppCompatActivity
 
     private void longClickRecycleItem(int position) {
         MessagePreview mp = adapterRv.getMessagePreview(position);
-
 
         ConvoBottomDialog cbDialog = ConvoBottomDialog.newInstance(mp.getRecipientId());
         Bundle bundle = new Bundle();

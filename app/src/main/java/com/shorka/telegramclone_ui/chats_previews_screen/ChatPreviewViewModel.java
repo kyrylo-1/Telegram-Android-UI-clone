@@ -19,7 +19,6 @@ import java.util.List;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -30,27 +29,30 @@ public class ChatPreviewViewModel extends AndroidViewModel {
 
     private static final String TAG = "ChatPreviewViewModel";
     private final LocalDatabase localDb;
-    private CompositeDisposable compDisposable;
+    private final CompositeDisposable compDisposable = new CompositeDisposable();
 
     public ChatPreviewViewModel(@NonNull Application application, LocalDatabase localDb) {
         super(application);
         this.localDb = localDb;
-        compDisposable = new CompositeDisposable();
     }
 
+    //region getters & setters
     public LiveData<User> getLiveCurrUser() {
         return localDb.getUserRepo().getCurrLiveUser();
     }
-
 
     public LiveData<List<User>> getAllLiveUsers() {
         return localDb.getUserRepo().getAllLiveUsers();
     }
 
+    public LiveData<Message> getMessageById(long messageId) {
+        return localDb.getMessageRepo().getMessageById(messageId);
+    }
 
     void setAllUsers(List<User> allUsers) {
         localDb.getUserRepo().setAllUsers(allUsers);
     }
+    //endregion
 
     public List<MessagePreview> transformToMsgPreviews(List<Message> listMessages) {
 
@@ -73,8 +75,8 @@ public class ChatPreviewViewModel extends AndroidViewModel {
         if (recipientUser == null)
             return null;
 
-        Log.d(TAG, "transformToMsgPreview: recUserId: " + recipientUser.getId() + " _lastMessage: " + msg.text
-                + " _date: " + msg.getStringDate());
+//        Log.d(TAG, "transformToMsgPreview: recUserId: " + recipientUser.getId() + " _lastMessage: " + msg.text
+//                + " _date: " + msg.getStringDate());
         return new MessagePreview.MessagePreviewBuilder()
                 .withId(recipientUser.getId())
                 .withContactName(recipientUser.firstName)
@@ -103,31 +105,29 @@ public class ChatPreviewViewModel extends AndroidViewModel {
     void loadPhoneContacts() {
         Log.d(TAG, "loadPhoneContacts: ");
 
-        Disposable disposable = localDb.getUserRepo().loadPhoneContacts(getApplication(), true).subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
+        @SuppressLint("RxSubscribeOnError") Disposable disposable
+                = localDb.getUserRepo().loadPhoneContacts(getApplication(), true)
                 .subscribe();
 
         compDisposable.add(disposable);
     }
 
-    public void clearChat(long recipientId) {
-        Log.d(TAG, "clearChat: with recipientId: " + recipientId);
+    public void cleanChat(long recipientId) {
+        Log.d(TAG, "cleanChat: with recipientId: " + recipientId);
 
         Consumer<Long> consumerClean = id -> {
             localDb.getMessageRepo().cleanMessages(id);
         };
 
-        Flowable<Long> flowableClean = Flowable.just(recipientId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io());
-
-
-        Disposable disposable = localDb.getMessageRepo().makeEmptyMessageInsertion(recipientId)
+        Disposable disposable = Flowable.just(recipientId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .doOnComplete(() -> compDisposable.add(flowableClean
-                        .subscribe(consumerClean, Throwable::printStackTrace)))
-                .subscribe();
+                .doOnComplete(() -> {
+                    @SuppressLint("RxSubscribeOnError") Disposable d =
+                            localDb.getMessageRepo().makeEmptyMessageInsertion(recipientId).subscribe();
+                    compDisposable.add(d);
+                })
+                .subscribe(consumerClean, Throwable::printStackTrace);
 
         compDisposable.add(disposable);
     }

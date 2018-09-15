@@ -1,11 +1,10 @@
-package com.shorka.telegramclone_ui.contacts_screen;
+package com.shorka.telegramclone_ui.phone_contacts_screen;
 
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,7 +19,6 @@ import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.RecyclerItemClickListener;
 import com.shorka.telegramclone_ui.ViewModelFactory;
 import com.shorka.telegramclone_ui.adapter.ContactsRecyclerViewAdapter;
-import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatViewModel;
 import com.shorka.telegramclone_ui.db.PhoneContact;
 import com.shorka.telegramclone_ui.utils.SmsHelper;
 
@@ -28,7 +26,7 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Action;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -97,7 +95,7 @@ public class ContactsActivity extends AppCompatActivity {
         ViewModelFactory factory = ViewModelFactory.getInstance(getApplication());
         viewModel = ViewModelProviders.of(this, factory).get(ContactsViewModel.class);
 
-        Completable.fromCallable((Callable<Void>) () -> {
+        @SuppressLint("RxSubscribeOnError") Disposable disposable = Completable.fromCallable((Callable<Void>) () -> {
             adapterRv.setItems(viewModel.getPhoneContacts());
             return null;
         }).subscribeOn(Schedulers.io())

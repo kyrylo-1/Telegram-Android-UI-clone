@@ -8,9 +8,8 @@ import android.support.annotation.NonNull;
 
 import com.shorka.telegramclone_ui.chats_previews_screen.ChatPreviewViewModel;
 import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatViewModel;
-import com.shorka.telegramclone_ui.contacts_screen.ContactsViewModel;
+import com.shorka.telegramclone_ui.phone_contacts_screen.ContactsViewModel;
 import com.shorka.telegramclone_ui.db.LocalDatabase;
-import com.shorka.telegramclone_ui.db.UserRepository;
 import com.shorka.telegramclone_ui.settings_screen.ChangeBioViewModel;
 import com.shorka.telegramclone_ui.settings_screen.ChangeNameViewModel;
 import com.shorka.telegramclone_ui.settings_screen.SettingsViewModel;

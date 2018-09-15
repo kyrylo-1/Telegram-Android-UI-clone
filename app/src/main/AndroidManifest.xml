@@ -33,7 +33,7 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
 
-        <activity android:name=".contacts_screen.ContactsActivity" />
+        <activity android:name=".phone_contacts_screen.ContactsActivity" />
         <activity android:name=".settings_screen.ChangeNameActivity">
 
         </activity>

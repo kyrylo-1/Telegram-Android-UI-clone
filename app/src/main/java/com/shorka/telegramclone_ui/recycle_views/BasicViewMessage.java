@@ -29,7 +29,7 @@ public class BasicViewMessage extends RecyclerView.ViewHolder {
     }
 
     public Message bind(@NonNull final Message message) {
-        Log.d(TAG, "bind: message: " + message.text);
+//        Log.d(TAG, "bind: lastMessageLive: " + message.text);
         idMessage = message.getIdMessage();
         if(convoItem != null){
             convoItem.getTxtBody().setText(message.text);
@@ -37,19 +37,19 @@ public class BasicViewMessage extends RecyclerView.ViewHolder {
         }
 
         else {
-            Log.e(TAG, "bind: convoItem of message: " + message.text + " is NULL");
+            Log.e(TAG, "bind: convoItem of lastMessageLive: " + message.text + " is NULL");
         }
 
         message.setSelectionCallback(new Message.SelectionCallBack() {
             @Override
             public void onClear() {
-                Log.d(TAG, "onClear: " + message.text);
+//                Log.d(TAG, "onClear Selection: " + message.text);
                 selectMessage(false);
             }
 
             @Override
             public void onSelect() {
-                Log.d(TAG, "onSelect: " + message.text);
+//                Log.d(TAG, "onSelect: " + message.text);
                 selectMessage(true);
             }
         });

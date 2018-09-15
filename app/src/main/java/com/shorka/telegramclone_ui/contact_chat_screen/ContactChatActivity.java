@@ -34,11 +34,10 @@ import java.util.Objects;
  * Created by Kyrylo Avramenko on 6/22/2018.
  */
 //TODO [Polishing] 1) make adjecent sent/received messages closer to each other than to opposite type of messages. Padding can be changed in style file -> 'LayoutOfMessage';
-//TODO [Polishing] 2) Make bigger paddingTop value in top message. Its needed to have space from toolbar
+//TODO [Polishing] 2) Make bigger paddingTop value in top lastMessageLive. Its needed to have space from toolbar
 
 
 public class ContactChatActivity extends AppCompatActivity {
-
 
     //region properties
     private static final String TAG = "ContactChatActivity";
@@ -51,7 +50,6 @@ public class ContactChatActivity extends AppCompatActivity {
     private long recipientUserId;
     private ContactChatFragment chatFragment;
     private long messageDraftId = -1;
-
     //endregion
 
     @Override
@@ -69,10 +67,11 @@ public class ContactChatActivity extends AppCompatActivity {
         transaction.replace(R.id.fragment_content, chatFragment);
         transaction.commit();
 
-        initEditText();
-
         recipientUserId = getIntent().getLongExtra(Config.USER_ID_EXTRA, 1);
         observeViewModel(recipientUserId);
+
+        initEditText();
+
         Log.d(TAG, "onCreate: String recipientUserId: " + recipientUserId);
         updateRecipientUI(viewModel.getUser(recipientUserId));
     }
@@ -141,46 +140,66 @@ public class ContactChatActivity extends AppCompatActivity {
         });
     }
 
+    private int observeTimesQTY = 0;
+
     private void observeViewModel(long recipientUserId) {
 
         ViewModelFactory factory = ViewModelFactory.getInstance(getApplication());
         viewModel = ViewModelProviders.of(this, factory).get(ContactChatViewModel.class);
-        viewModel.getListMessages(recipientUserId).observe(this, messages -> {
-            Log.d(TAG, "observeViewModel: observe list of messages with size: " + Objects.requireNonNull(messages).size());
-
-            final int messagesSize = messages.size();
-            viewModel.setQtyOfCachedMessages(messagesSize);
-
-            if(messagesSize > 1)
-                showMessages(messages);
-
-            else if (messagesSize == 1) {
-                Message m = messages.get(0);
-                if (m.messageType == Message.MessageType.EMPTY)
-                    viewModel.deleteMessage(m);
-
-                showMessages(messages);
-            }
-
-            else showEmptyMessages();
+        viewModel.getListMessages(recipientUserId).observe(this, listMessages -> {
+            observeTimesQTY++;
+            setChatMessages(listMessages);
         });
     }
 
 
-    private void showMessages(@NonNull final List<Message> messages) {
-        //Don't show draft message in the list. Show only in EditText
-        int size = messages.size();
-        Message lastMessage = messages.get(size - 1);
-        if (lastMessage.messageType == Message.MessageType.DRAFT) {
-            messageDraftId = lastMessage.getIdMessage();
-            setTextToEditText(lastMessage.text);
-            Log.d(TAG, "observeViewModel: remove draft message: " + lastMessage.text);
-            messages.remove(size - 1);
-        }
-        else if(lastMessage.messageType == Message.MessageType.EMPTY){
-            messages.remove(size - 1);
+    private void setChatMessages(List<Message> listMessages) {
+
+        if (listMessages == null)
+            return;
+
+        Log.d(TAG, "observeViewModel: observeTime: " + observeTimesQTY);
+        for (Message m : listMessages) {
+            Log.d(TAG, "setChatMessages: m text: " + m.text + " id: " + m.getIdMessage());
         }
 
+        final int msgQTY = listMessages.size();
+        viewModel.setListCachedMessages(listMessages);
+
+        if (msgQTY == 0) {
+            showEmptyMessages();
+            return;
+        }
+
+        Message lastMessage = listMessages.get(msgQTY - 1);
+        //check for draft messages only on activity creation, and remove from the list, if there is draft lastMessageLive
+        if (observeTimesQTY == 1 && lastMessage.messageType == Message.MessageType.DRAFT) {
+
+            messageDraftId = lastMessage.getIdMessage();
+            setTextToEditText(lastMessage.text);
+            listMessages.remove(msgQTY - 1);
+            viewModel.deleteMessageById(messageDraftId);
+
+            Log.d(TAG, "observeViewModel: remove draft lastMessageLive: " + lastMessage.text);
+        }
+
+        //check for empty messages. and delete them. Empty messages
+        if (msgQTY == 1 || msgQTY == 2) {
+            for (int i = 0; i < msgQTY; i++) {
+                Message m = listMessages.get(i);
+                if (m.messageType != Message.MessageType.EMPTY) continue;
+
+                Log.d(TAG, "observeViewModel: delete empty lastMessageLive from recipientId: " + m.recipientId);
+                listMessages.remove(i);
+                viewModel.deleteMessage(m);
+                break;
+            }
+        }
+
+        showMessages(listMessages);
+    }
+
+    private void showMessages(@NonNull final List<Message> messages) {
 
         chatFragment.getAdapterRv().setItemsMessages(messages);
         chatFragment.getRecyclerView().scrollToPosition(chatFragment.getAdapterRv().getItemCount() - 1);
@@ -199,13 +218,13 @@ public class ContactChatActivity extends AppCompatActivity {
 
         Log.d(TAG, "sendMessages: items in adapter: " + chatFragment.getAdapterRv().getItemCount());
         if (messageDraftId >= 0) {
+            Log.d(TAG, "sendMessages: DELELTE DRAFT MESSAGE FROM DB id: " + messageDraftId);
             viewModel.deleteMessageById(messageDraftId);
             messageDraftId = -1;
         }
-
-        Editable ed = editText.getText();
-        viewModel.sendMessage(recipientUserId, ed.toString());
-        ed.clear();
+        String text = editText.getText().toString();
+        editText.getText().clear();
+        viewModel.sendNonEmptyMessage(recipientUserId, text);
     }
 
     private void updateRecipientUI(User user) {
@@ -216,7 +235,7 @@ public class ContactChatActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
-        if(viewModel.getDoAddEmptyMessage()){
+        if (viewModel.getDoAddEmptyMessage()) {
             viewModel.addEmptyMessage(recipientUserId);
         }
 
@@ -227,11 +246,14 @@ public class ContactChatActivity extends AppCompatActivity {
         viewModel.clearDisposables();
     }
 
-    private void setTextToEditText(String text) {
-        if (TextUtils.isEmpty(text))
-            return;
+    private void setTextToEditText(@NonNull String text) {
 
-        editText.setText(text);
-        editText.setSelection(text.length());
+        if (TextUtils.isEmpty(editText.getText().toString())) {
+            editText.setText(text);
+            editText.setSelection(text.length());
+        } else {
+            Log.e(TAG, "setTextToEditText: Can NOT set text, because edit box is already set with text: " + text);
+        }
+
     }
 }

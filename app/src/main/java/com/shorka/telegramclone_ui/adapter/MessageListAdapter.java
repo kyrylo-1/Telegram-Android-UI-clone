@@ -50,7 +50,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             batchSelected.remove(key);
             message.clearSelection();
         } else {
-            Log.d(TAG, "toggleSelection: add batchSelected message: " + message.text);
+            Log.d(TAG, "toggleSelection: add batchSelected lastMessageLive: " + message.text);
             batchSelected.put(key, message);
             message.makeSelection();
         }
@@ -111,9 +111,9 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         if (batchSelected.containsKey(message.getIdMessage())) {
             batchSelected.put(message.getIdMessage(), message);
             message.makeSelection();
-//            Log.d(TAG, "onBindViewHolder: Message " + "__ " + message.text + " ___ is SELECTED");
+//            Log.d(TAG, "onBindViewHolder: Message " + "__ " + lastMessageLive.text + " ___ is SELECTED");
         } else {
-//            Log.d(TAG, "onBindViewHolder: Message " + "__ " + message.toString() + " ___ is NOT SELECTED with id: ");
+//            Log.d(TAG, "onBindViewHolder: Message " + "__ " + lastMessageLive.toString() + " ___ is NOT SELECTED with id: ");
             message.clearSelection();
         }
 

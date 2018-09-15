@@ -27,7 +27,6 @@ public class Message {
     public long recipientId;
     public String text;
 
-
     @ColumnInfo(name = "message_date")
     public long date;
 
@@ -88,7 +87,7 @@ public class Message {
     }
 
     public void clearSelection() {
-        Log.d(TAG, "clearSelection: ");
+//        Log.d(TAG, "clearSelection of: " );
         listenerSelection.onClear();
     }
 

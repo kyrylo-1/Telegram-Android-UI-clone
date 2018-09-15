@@ -1,5 +1,6 @@
 package com.shorka.telegramclone_ui;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.shorka.telegramclone_ui.db.Message;
@@ -17,6 +18,7 @@ import java.util.List;
 public class DefaultDataGenerator {
 
     private static final String TAG = "DefaultDataGenerator";
+
     public static List<User> generateUsers() {
 
         final List<User> list = new ArrayList<>();
@@ -44,83 +46,85 @@ public class DefaultDataGenerator {
         return user;
     }
 
-
+    @NonNull
     public static List<Message> generateMessages() {
-        final List<Message> list = new ArrayList<>();
+        final List<Message> listMessages = new ArrayList<>();
         long recipientId = 2;
 
-        Calendar c1 = GregorianCalendar.getInstance();
-        c1.set(2018, Calendar.AUGUST, 21,12,33);
+        Calendar cal1 = GregorianCalendar.getInstance();
+        cal1.set(2018, Calendar.AUGUST, 21, 12, 33);
 
-//        Log.d(TAG, "generateMessages: " +c1.getTime());
-//        Date d = dateFormat.parse(oldDateString);
+        //Imitate todays date
+        final Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(cal2.getTime());
+        cal2.add(Calendar.HOUR, -3);
+        cal2.add(Calendar.MINUTE, -10);
+        listMessages.add(createMessage(recipientId, "Hi, bruv. Today I did not see you at the gym", cal2.getTime()));
+        cal2.add(Calendar.MINUTE, 2);
 
-        //Immitate todays date
-        final Calendar c2 =  Calendar.getInstance();
-        c2.setTime(c2.getTime());
-        c2.add(Calendar.HOUR,-3);
-        c2.add(Calendar.MINUTE,-10);
-        list.add(createMessage(recipientId,"Hi, bruv. Today I did not see you at the gym", c2.getTime()));
-        c2.add(Calendar.MINUTE,2);
+        listMessages.add(createMessage(recipientId, "Are you even lifting bro", cal2.getTime()));
 
-        list.add(createMessage(recipientId,"Are you even lifting bro", c2.getTime()));
+        cal2.add(Calendar.MINUTE, 1);
+        listMessages.add(createMessage(recipientId, "I do \n THIS \n EVERY \n DAY", cal2.getTime()));
 
-        c2.add(Calendar.MINUTE,1);
-        list.add(createMessage(recipientId,"I do \n THIS \n EVERY \n DAY", c2.getTime()));
+        cal2.add(Calendar.MINUTE, 1);
+        listMessages.add(createMessage(recipientId, "you should too", cal2.getTime()));
 
-        c2.add(Calendar.MINUTE,1);
-        list.add(createMessage(recipientId,"you should too", c2.getTime()));
+        listMessages.add(createMessage(recipientId, "promise me", cal2.getTime()));
+        listMessages.add(createMessage(recipientId, "Not tommorow", cal2.getTime()));
+        listMessages.add(createMessage(recipientId, "NOW!", cal2.getTime()));
+        listMessages.add(createMessage(recipientId, "REMEMBER! \nI  \ndo \n THIS \n EVERY \n DAY", cal2.getTime()));
 
+        cal2.add(Calendar.MINUTE, 2);
+        listMessages.add(createMessage(recipientId, "ALRIGHT THEN" +
+                "\n MORE TEXT \n AND EVEN more text", cal2.getTime()));
 
-        list.add(createMessage(recipientId,"promise me", c2.getTime()));
-        list.add(createMessage(recipientId,"Not tommorow", c2.getTime()));
-        list.add(createMessage(recipientId,"NOW!", c2.getTime()));
-        list.add(createMessage(recipientId,"REMEMBER! \nI  \ndo \n THIS \n EVERY \n DAY", c2.getTime()));
+        cal2.add(Calendar.MINUTE, 1);
+        listMessages.add(createMessage(recipientId, "Hahahahaha-\bahahaha hahah hahahah hahahah " +
+                "hahahahahaha\n hahahaha\nhahah\nhaha", cal2.getTime()));
 
-        c2.add(Calendar.MINUTE,2);
-        list.add(createMessage(recipientId,"ALRIGHT THEN" +
-                "\n MORE TEXT \n AND EVEN more text", c2.getTime()));
-
-        c2.add(Calendar.MINUTE,1);
-        list.add(createMessage(recipientId,"Hahahahaha-\bahahaha hahah hahahah hahahah " +
-                "hahahahahaha\n hahahaha\nhahah\nhaha", c2.getTime()));
-
+        //===================================================================================
         recipientId = 3;
 
-        c1.set(2018, Calendar.AUGUST, 17,11,0);
-        list.add(createMessage(recipientId,"So, at 1pm at coffee shop?", c1.getTime()));
-        c1.set(2018, Calendar.AUGUST, 17,11,1);
-        list.add(createMessage(recipientId,"see you there", c1.getTime()));
-
+        cal1.set(2018, Calendar.AUGUST, 17, 11, 0);
+        listMessages.add(createMessage(recipientId, "So, at 1pm at coffee shop?", cal1.getTime()));
+        cal1.set(2018, Calendar.AUGUST, 17, 11, 1);
+        listMessages.add(createMessage(recipientId, "see you there", cal1.getTime()));
+        //===================================================================================
         recipientId = 4;
-        c1.set(2018, Calendar.AUGUST, 20,16,13);
-        list.add(createMessage(recipientId,"I am already at that spot", c1.getTime()));
-        c1.set(2018, Calendar.AUGUST, 20,16,25);
-        list.add(createMessage(recipientId,"where are you? at?", c1.getTime()));
+        cal1.set(2018, Calendar.AUGUST, 20, 16, 13);
+        listMessages.add(createMessage(recipientId, "I am already at that spot", cal1.getTime()));
+        cal1.set(2018, Calendar.AUGUST, 20, 16, 25);
+        listMessages.add(createMessage(recipientId, "where are you? at?", cal1.getTime()));
 
+        //===================================================================================
         recipientId = 5;
-        c1.set(2018, Calendar.MAY, 4,21,33);
-        list.add(createMessage(recipientId,"Do you know where is my keys?", c1.getTime()));
+        cal1.set(2018, Calendar.MAY, 4, 21, 33);
+        listMessages.add(createMessage(recipientId, "Do you know where is my keys?", cal1.getTime()));
 
+        //===================================================================================
         recipientId = 6;
-        c1.set(2018, Calendar.JULY, 30,17,41);
-        list.add(createMessage(recipientId,"sup", c1.getTime()));
+        cal1.set(2018, Calendar.JULY, 30, 17, 41);
+        listMessages.add(createMessage(recipientId, "sup", cal1.getTime()));
 
+        //===================================================================================
         recipientId = 7;
-        c1.set(2018, Calendar.JUNE, 25,12,49);
-        list.add(createMessage(recipientId,"Dont skip my classes anymore", c1.getTime()));
+        cal1.set(2018, Calendar.JUNE, 25, 12, 49);
+        listMessages.add(createMessage(recipientId, "Dont skip my classes anymore", cal1.getTime()));
 
+        //===================================================================================
         recipientId = 8;
-        //will show message like it was written 2 days ago
+        //will show lastMessageLive like it was written 2 days ago
         final Calendar c8 = Calendar.getInstance();
-        c8.add(Calendar.DAY_OF_MONTH,-5);
-        list.add(createMessage(recipientId," need to think about this more carefully", c8.getTime()));
+        c8.add(Calendar.DAY_OF_MONTH, -5);
+        listMessages.add(createMessage(recipientId, " need to think about this more carefully", c8.getTime()));
 
+        //===================================================================================
         recipientId = 9;
-        c1.set(2018, Calendar.AUGUST, 5,9,9);
-        list.add(createMessage(recipientId,"Really?", c1.getTime()));
+        cal1.set(2018, Calendar.AUGUST, 5, 9, 9);
+        listMessages.add(createMessage(recipientId, "Really?", cal1.getTime()));
 
-        return list;
+        return listMessages;
     }
 
     private static Message createMessage(long recipientId, String text, Date date) {
@@ -128,9 +132,9 @@ public class DefaultDataGenerator {
         message.recipientId = recipientId;
         message.text = text;
         message.setDate(date);
-//        message.date = date;
-        message.messageType =  Message.MessageType.RECEIVED;
+//        lastMessageLive.date = date;
+        message.messageType = Message.MessageType.RECEIVED;
         return message;
     }
-
 }
+
