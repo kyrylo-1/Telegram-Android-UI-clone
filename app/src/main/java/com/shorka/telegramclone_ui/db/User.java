@@ -27,6 +27,9 @@ public class User {
     @Nullable
     public String username;
 
+    public String picUrl;
+
+
     public User(long id) {
         this.id = id;
     }

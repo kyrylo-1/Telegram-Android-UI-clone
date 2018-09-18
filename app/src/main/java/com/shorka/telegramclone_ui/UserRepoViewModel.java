@@ -38,6 +38,7 @@ public abstract class UserRepoViewModel extends AndroidViewModel {
         Consumer<User> consumer = userRepo::updateUser;
         Flowable.just(user)
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
                 .subscribe(consumer, Throwable::printStackTrace);
     }
 }

@@ -3,6 +3,7 @@ package com.shorka.telegramclone_ui.chats_previews_screen;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -23,6 +24,8 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.shorka.telegramclone_ui.DividerCustomPaddingItemDecoration;
+import com.shorka.telegramclone_ui.GlideApp;
+import com.shorka.telegramclone_ui.GlideRequest;
 import com.shorka.telegramclone_ui.MessagePreview;
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.RecyclerItemClickListener;
@@ -52,6 +55,7 @@ public class ChatsPreviewActivity extends AppCompatActivity
     private TextView txtUserFullname, txtPhoneNumber;
     private MenuItem menuCurrAccount;
     private ChatPreviewViewModel viewModel;
+    private CircleImageView profileImage, headerProfileImage;
     //endregion
 
     @Override
@@ -90,16 +94,19 @@ public class ChatsPreviewActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+
+
         final Menu menuNav = navigationView.getMenu();
         menuNav.setGroupVisible(R.id.nav_group_accounts, false);
         menuCurrAccount = menuNav.findItem(R.id.nav_curr_account);
 
-        CircleImageView imageView = new CircleImageView(context);
-        imageView.setMinimumHeight(62);
-        imageView.setMinimumWidth(62);
 
-        imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.profile_default_male));
-        menuCurrAccount.setActionView(imageView);
+        profileImage = new CircleImageView(context);
+        profileImage.setMinimumHeight(62);
+        profileImage.setMinimumWidth(62);
+
+        profileImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.profile_default_male));
+        menuCurrAccount.setActionView(profileImage);
 
         final View navHeaderView = navigationView.getHeaderView(0);
         ToggleButton toggleBtn = navHeaderView.findViewById(R.id.account_view_icon_button);
@@ -107,6 +114,7 @@ public class ChatsPreviewActivity extends AppCompatActivity
 
         txtUserFullname = navHeaderView.findViewById(R.id.text_user_fullname);
         txtPhoneNumber = navHeaderView.findViewById(R.id.text_phonenumber);
+        headerProfileImage = navHeaderView.findViewById(R.id.header_profile_image);
         //endregion
 
         recycleView = findViewById(R.id.main_recycler_view_messages);
@@ -252,6 +260,14 @@ public class ChatsPreviewActivity extends AppCompatActivity
         txtUserFullname.setText(user.getFullName());
         txtPhoneNumber.setText(user.phoneNumber);
         menuCurrAccount.setTitle(user.firstName);
+
+        GlideRequest<Drawable> glideRequest = GlideApp.with(this)
+                .load(user.picUrl)
+                .placeholder(R.drawable.profile_default_male)
+                .fitCenter();
+
+        glideRequest.into(profileImage);
+        glideRequest.into(headerProfileImage);
     }
 
     private void clickOnRecycleItem(int position) {

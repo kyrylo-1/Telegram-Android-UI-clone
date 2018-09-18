@@ -59,6 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/scrollView"
+            android:visibility="visible"
             app:layout_behavior="com.shorka.telegramclone_ui.HeaderViewBehaviour" />
 
         <android.support.v4.widget.NestedScrollView

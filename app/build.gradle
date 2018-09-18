@@ -29,9 +29,9 @@ android {
         }
     }
 
-    dataBinding {
-        enabled = true
-    }
+//    dataBinding {
+//        enabled = true
+//    }
 
     if (project.hasProperty('devBuild')) {
         splits.abi.enable = false;
@@ -82,5 +82,7 @@ dependencies {
 
     implementation "com.android.support:support-annotations:$supportLibraryVersion"
 
-
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 }

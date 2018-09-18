@@ -10,7 +10,7 @@ public class Config {
     public final static String USER_ID_EXTRA = "USER_ID";
 
     public static class Requests{
-        public final static int CAMERA_PIC_REQUEST = 1337;
+        public final static int REQUEST_CAPTURE_IMAGE = 1337;
         public final static int GALLERY_REQUEST = 1338;
     }
 

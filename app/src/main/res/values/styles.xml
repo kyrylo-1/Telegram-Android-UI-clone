@@ -16,11 +16,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionModeOverlay">true</item>
-
-
-
     </style>
-
 
     <!--<style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">-->
 

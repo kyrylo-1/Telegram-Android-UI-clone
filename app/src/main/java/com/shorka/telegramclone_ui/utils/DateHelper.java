@@ -43,4 +43,9 @@ public class DateHelper {
             return sd.format(date);
         }
     }
+
+    public static String getFullDateFromYearToSec(Date date){
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sd.format(date);
+    }
 }

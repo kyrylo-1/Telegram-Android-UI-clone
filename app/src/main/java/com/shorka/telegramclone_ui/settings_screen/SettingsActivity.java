@@ -1,9 +1,15 @@
 package com.shorka.telegramclone_ui.settings_screen;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.IdRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
@@ -11,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,21 +33,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shorka.telegramclone_ui.DividerCustomItemDecoration;
+import com.shorka.telegramclone_ui.GlideApp;
+import com.shorka.telegramclone_ui.GlideRequest;
 import com.shorka.telegramclone_ui.HeaderView;
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.RecyclerItemClickListener;
+import com.shorka.telegramclone_ui.SettingsTextEntity;
 import com.shorka.telegramclone_ui.ViewModelFactory;
 import com.shorka.telegramclone_ui.adapter.ComplexRecyclerViewAdapter;
 import com.shorka.telegramclone_ui.db.User;
-import com.shorka.telegramclone_ui.SettingsTextEntity;
 import com.shorka.telegramclone_ui.utils.Config;
+import com.shorka.telegramclone_ui.utils.ImageHelper;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Kyrylo Avramenko on 6/11/2018.
@@ -53,8 +69,11 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
     private HeaderView toolbarHeaderView, floatHeaderView;
     private DividerCustomItemDecoration itemCustomDecor;
     private DividerItemDecoration itemDefaultDecor;
+    private List<AdapterAndList> adapterAndLists;
     private boolean isHideToolbarView = false;
-    private SettingsViewModel settViewModel;
+    private SettingsViewModel viewModel;
+    private CircleImageView profileImgHeader, profileImgFloat;
+    private String imageFilePath;
     //    private ArrayList<Object> listUserInfo;
     private final HashMap<Integer, String> mapRecycleItems = new HashMap<>();
 
@@ -72,14 +91,14 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         Log.d(TAG, "onCreate: ");
         setupUI();
         initRecycleView();
-        setViewModel();
+        observeViewModel();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        updateUserHeader(settViewModel.getCachedUser());
-//        updateAllSettings(settViewModel.getCachedUser());
+        updateUserHeader(viewModel.getCachedUser());
+//        updateAllSettings(viewModel.getCachedUser());
     }
 
     @Override
@@ -122,6 +141,50 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         return true;
     }
 
+    @SuppressLint("CheckResult")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK)
+            return;
+
+        if (requestCode == Config.Requests.REQUEST_CAPTURE_IMAGE) {
+            Log.d(TAG, "onActivityResult: REQUEST_CAPTURE_IMAGE");
+
+
+            if(!TextUtils.isEmpty(imageFilePath)){
+                viewModel.updatePicUrlOfCurrUser(imageFilePath);
+//                profileImgFloat.setImageURI(Uri.parse(imageFilePath));
+            }
+            else {
+                Log.e(TAG, "onActivityResult: imageFilePath is EMPTY" );
+            }
+
+            Log.d(TAG, "onActivityResult: is data NULL " + (data == null));
+
+        } else if (requestCode == Config.Requests.GALLERY_REQUEST) {
+            Log.d(TAG, "onActivityResult: GALLERY_REQUEST");
+
+            try {
+                final Uri imageUri = data.getData();
+                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+
+                Log.d(TAG, "onActivityResult: GALLERY_REQUEST get bitmap");
+                setProfileImage(selectedImage);
+
+                String fileName = viewModel.saveImage(selectedImage);
+                viewModel.updatePicUrlOfCurrUser(fileName);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    //<editor-fold desc="private methods">
     private void setupUI() {
 
         toolbarHeaderView = (HeaderView) findViewById(R.id.header_view_top);
@@ -130,6 +193,9 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
 
         toolbarHeaderView.setTxtViewName((TextView) toolbarHeaderView.findViewById(R.id.name));
         toolbarHeaderView.setTxtViewLastSeen((TextView) toolbarHeaderView.findViewById(R.id.last_seen));
+
+        profileImgHeader = toolbarHeaderView.findViewById(R.id.header_picture);
+        profileImgFloat = floatHeaderView.findViewById(R.id.header_picture);
 
         floatHeaderView.setTxtViewName((TextView) floatHeaderView.findViewById(R.id.name_float));
         floatHeaderView.setTxtViewLastSeen((TextView) floatHeaderView.findViewById(R.id.last_seen_float));
@@ -144,6 +210,7 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         mAppBarLayout.addOnOffsetChangedListener(this);
 
         mToolbar.setNavigationOnClickListener(v -> onBackPressed());
+
 
         FloatingActionButton fabCam = (FloatingActionButton) findViewById(R.id.settings_fab);
         fabCam.setOnClickListener(v -> {
@@ -177,12 +244,12 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
             @Override
             public void onFromCamClicked() {
                 Log.d(TAG, "onFromCamClicked: ");
-                Intent intent = new Intent(Config.Intents.IMAGE_CAPTURE);
-                startActivityForResult(intent, Config.Requests.CAMERA_PIC_REQUEST);
+                dispatchTakePictureIntent();
             }
 
             @Override
             public void onFromGallery() {
+                Log.d(TAG, "onFromGallery: ");
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 photoPickerIntent.setType("image/*");
                 startActivityForResult(photoPickerIntent, Config.Requests.GALLERY_REQUEST);
@@ -195,25 +262,22 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         });
     }
 
-    private void setViewModel() {
+    private void observeViewModel() {
         ViewModelFactory factory = ViewModelFactory.getInstance(getApplication());
-        settViewModel = ViewModelProviders.of(this, factory).get(SettingsViewModel.class);
-        settViewModel.getLiveCurrUser().observe(this, user -> {
+        viewModel = ViewModelProviders.of(this, factory).get(SettingsViewModel.class);
+        viewModel.getLiveCurrUser().observe(this, user -> {
             Log.d(TAG, "onChanged: update user details: ");
             if (user == null)
                 Log.e(TAG, "observeViewModel: user in NULL");
 
             else {
-                Log.d(TAG, "setViewModel: set data from lived user");
-                settViewModel.cacheUser(user);
+                Log.d(TAG, "observeViewModel: set data from lived user");
+                viewModel.cacheUser(user);
                 updateUserHeader(user);
                 updateAllSettings(user);
             }
         });
     }
-
-
-    private List<AdapterAndList> adapterAndLists;
 
     private void initRecycleView() {
 
@@ -260,13 +324,9 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
 
                 Log.d(TAG, "onItemClick: pos: " + position + "\n view: " + view.getId());
 
-//                if(view.getRecipientId() == R.id.recycler_view_info){
-//                    Log.d(TAG, "onItemClick: recycler_view_info");
-//                }
 
-                if (mapRecycleItems.containsKey(view.getId())) {
+                if (mapRecycleItems.containsKey(view.getId()))
                     clickOnRecycleItem(mapRecycleItems.get(view.getId()));
-                }
             }
 
             @Override
@@ -287,11 +347,38 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
             startActivity(new Intent(this, ChangeBioActivity.class));
         } else {
             Toast t = Toast.makeText(context, "Isn't implemented yet", Toast.LENGTH_SHORT);
-//            t.setGravity(Gravity.BOTTOM,0,0);
             t.show();
         }
     }
 
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) == null)
+            return;
+
+        // Create the File where the photo should go
+        File photoFile = null;
+        try {
+            photoFile = ImageHelper.createImageFile(this);
+            imageFilePath = photoFile.getAbsolutePath();
+//            galleryAddPic(imageFilePath);
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+            Log.e(TAG, "dispatchTakePictureIntent: ");
+        }
+        // Continue only if the File was successfully created
+        if (photoFile != null) {
+            Uri photoURI = FileProvider.getUriForFile(this,
+                    getPackageName() + ".provider",
+                    photoFile);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(takePictureIntent, Config.Requests.REQUEST_CAPTURE_IMAGE);
+        }
+    }
+
+
+    //<editor-fold desc="update methods">
     private void updateUserHeader(@NonNull User user) {
         if (user == null)
             return;
@@ -300,6 +387,14 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         final String date = "Dec 14th";
         floatHeaderView.bindTo(name, date);
         toolbarHeaderView.bindTo(name, date);
+
+        GlideRequest<Drawable> glideRequest = GlideApp.with(this)
+                .load(user.picUrl)
+                .placeholder(R.drawable.profile_default_male)
+                .fitCenter();
+
+        glideRequest.into(profileImgFloat);
+        glideRequest.into(profileImgHeader);
     }
 
     private void updateAllSettings(@NonNull final User user) {
@@ -337,19 +432,15 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
             SettingsTextEntity ste = (SettingsTextEntity) obj;
             final String mainText = ste.getMainText();
             final String description = ste.getDescription();
-            Log.d(TAG, "updateUserInfo: ste" + ste.getMainText() + " sec: " + description);
+            Log.d(TAG, "updateUserInfo: ste " + ste.getMainText() + " sec: " + description);
 
             boolean isMainTextEmpty = TextUtils.isEmpty(mainText);
 
             if (description.equals("Phone") && (isMainTextEmpty || !mainText.equals(user.phoneNumber))) {
                 ste.setMainText(user.phoneNumber);
-            }
-
-            else if (description.equals("Username") && (isMainTextEmpty || !mainText.equals(user.username))) {
+            } else if (description.equals("Username") && (isMainTextEmpty || !mainText.equals(user.username))) {
                 ste.setMainText(user.username);
-            }
-
-            else if (description.equals("Bio") && (isMainTextEmpty || !mainText.equals(user.bio))) {
+            } else if (description.equals("Bio") && (isMainTextEmpty || !mainText.equals(user.bio))) {
                 ste.setMainText(user.bio);
             }
         }
@@ -359,6 +450,23 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
             adapter.setItems(list);
         }
     }
+    //</editor-fold>
+
+
+    private void setProfileImage(Bitmap bitmap) {
+        profileImgHeader.setImageBitmap(bitmap);
+        profileImgFloat.setImageBitmap(bitmap);
+    }
+
+    private void galleryAddPic(@NonNull final String filePath) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(filePath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
+    //</editor-fold>
+
 
     @Nullable
     private ComplexRecyclerViewAdapter getAdapter(@Sections.SectionDef final int settingSection) {
