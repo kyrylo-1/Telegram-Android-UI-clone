@@ -3,8 +3,7 @@
 <com.shorka.telegramclone_ui.ConversationItem xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/message_layout"
-    style="@style/LayoutOfMessage"
-    android:background="@drawable/conversation_item_background">
+    style="@style/LayoutOfMessage">
 
     <TextView
         android:id="@+id/text_message_body"
@@ -38,11 +37,11 @@
 
 
     <ImageView
-        android:id="@+id/message_arrow"
-        android:layout_width="@dimen/message_arrow_size"
-        android:layout_height="@dimen/message_arrow_size"
-        android:layout_marginStart="4dp"
-        android:src="@drawable/arrow_message_received"
+        android:id="@+id/message_tail"
+        android:layout_width="@dimen/message_tail_width"
+        android:layout_height="@dimen/message_tail_height"
+        android:layout_marginStart="0dp"
+        android:src="@drawable/tail_receive_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/marginSpacer_beforeMessage" />
 

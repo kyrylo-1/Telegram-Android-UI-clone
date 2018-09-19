@@ -35,7 +35,7 @@ public class ConversationItem extends ConstraintLayout {
 
         txtBody = findViewById(R.id.text_message_body);
         txtTime = findViewById(R.id.text_message_time);
-        imgArrow = findViewById(R.id.message_arrow);
+        imgArrow = findViewById(R.id.message_tail);
     }
 
     public void selectView(boolean doSelect) {

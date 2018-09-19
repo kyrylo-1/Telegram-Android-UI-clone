@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="spacer_margin">5dp</dimen>
+    <dimen name="spacer_margin">8dp</dimen>
     <dimen name="message_radius">10dp</dimen>
-    <dimen name="message_arrow_size">14dp</dimen>
+
+    <dimen name="message_tail_width">19dp</dimen>
+    <dimen name="message_tail_height">19dp</dimen>
 </resources>
