@@ -41,6 +41,7 @@ import com.shorka.telegramclone_ui.RecyclerItemClickListener;
 import com.shorka.telegramclone_ui.SettingsTextEntity;
 import com.shorka.telegramclone_ui.ViewModelFactory;
 import com.shorka.telegramclone_ui.adapter.ComplexRecyclerViewAdapter;
+import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatActivity;
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.utils.Config;
 import com.shorka.telegramclone_ui.utils.ImageHelper;
@@ -197,19 +198,22 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         profileImgHeader = toolbarHeaderView.findViewById(R.id.header_picture);
         profileImgFloat = floatHeaderView.findViewById(R.id.header_picture);
 
+        profileImgHeader.setOnClickListener(v -> clickOnProfileImage());
+        profileImgFloat.setOnClickListener(v -> clickOnProfileImage());
+        
         floatHeaderView.setTxtViewName((TextView) floatHeaderView.findViewById(R.id.name_float));
         floatHeaderView.setTxtViewLastSeen((TextView) floatHeaderView.findViewById(R.id.last_seen_float));
 
-        final AppBarLayout mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar_test);
-        final Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        final AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_test);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        mAppBarLayout.addOnOffsetChangedListener(this);
+        appBarLayout.addOnOffsetChangedListener(this);
 
-        mToolbar.setNavigationOnClickListener(v -> onBackPressed());
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
 
         FloatingActionButton fabCam = (FloatingActionButton) findViewById(R.id.settings_fab);
@@ -451,20 +455,27 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         }
     }
     //</editor-fold>
-
-
+    
     private void setProfileImage(Bitmap bitmap) {
         profileImgHeader.setImageBitmap(bitmap);
         profileImgFloat.setImageBitmap(bitmap);
     }
 
-    private void galleryAddPic(@NonNull final String filePath) {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(filePath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
+//    private void galleryAddPic(@NonNull final String filePath) {
+//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        File f = new File(filePath);
+//        Uri contentUri = Uri.fromFile(f);
+//        mediaScanIntent.setData(contentUri);
+//        this.sendBroadcast(mediaScanIntent);
+//    }
+    
+    private void clickOnProfileImage(){
+        Log.d(TAG, "clickOnProfileImage: ");
+        Intent intent = new Intent(context, ZoomPhotoActivity.class);
+        intent.putExtra(ZoomPhotoActivity.PHOTO_URL, viewModel.getCachedUser().picUrl);
+        startActivity(intent);
     }
+    
     //</editor-fold>
 
 

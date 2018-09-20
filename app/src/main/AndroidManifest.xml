@@ -53,6 +53,7 @@
 
         </activity>
         <activity android:name=".settings_screen.ChangeBioActivity" />
+        <activity android:name=".settings_screen.ZoomPhotoActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
