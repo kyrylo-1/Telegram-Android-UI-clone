@@ -7,8 +7,6 @@ import android.arch.lifecycle.LiveData;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.graphics.Typeface;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.Spannable;
@@ -26,14 +24,13 @@ import com.shorka.telegramclone_ui.db.MessageHelper;
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.utils.StringUtils;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -59,6 +56,7 @@ public class ContactChatViewModel extends AndroidViewModel {
     public void setListCachedMessages(List<Message> listCachedMessages) {
         this.listCachedMessages = listCachedMessages;
     }
+
     public boolean getDoAddEmptyMessage() {
         return doAddEmptyMessage;
     }
@@ -84,7 +82,7 @@ public class ContactChatViewModel extends AndroidViewModel {
     public void sendNonEmptyMessage(long recipientId, String text) {
         Log.d(TAG, "sendNonEmptyMessage with text: " + text);
 
-        if(TextUtils.isEmpty(text))
+        if (TextUtils.isEmpty(text))
             return;
 
         Message m = MessageHelper.createInstance(recipientId, text);
@@ -97,6 +95,7 @@ public class ContactChatViewModel extends AndroidViewModel {
 
         compDisposable.add(disposable);
     }
+
 
     public void handleCopyMessage(final Set<Message> messages) {
 
@@ -121,7 +120,7 @@ public class ContactChatViewModel extends AndroidViewModel {
                 textBuilder.append(nameOfSender).append(":").append('\n');
             }
 
-            String text = m.text;
+            CharSequence text = m.text;
             if (!TextUtils.isEmpty(text))
                 textBuilder.append(text).append('\n').append('\n');
 
@@ -150,7 +149,7 @@ public class ContactChatViewModel extends AndroidViewModel {
     private String getNameOfSender(int messageType, String nameOfCurrUser, String nameOfRecipient,
                                    long recipientId) {
 
-        if (messageType ==  Message.MessageType.SENT)
+        if (messageType == Message.MessageType.SENT)
             return nameOfCurrUser;
 
         if (TextUtils.isEmpty(nameOfRecipient))
@@ -167,11 +166,11 @@ public class ContactChatViewModel extends AndroidViewModel {
                 .observeOn(Schedulers.io())
                 .doOnComplete(() -> {
                     //We need empty message, because otherwise chat will not exist
-                    if(listCachedMessages.size() - message.length <= 0)
+                    if (listCachedMessages.size() - message.length <= 0)
                         Log.d(TAG, "deleteMessage: doAddEmptyMessage = true");
-                        doAddEmptyMessage = true;
+                    doAddEmptyMessage = true;
                 })
-                .subscribe(messages ->localDb.getMessageRepo().deleteMessage(message));
+                .subscribe(messages -> localDb.getMessageRepo().deleteMessage(message));
 
         compDisposable.add(disposable);
     }
@@ -189,22 +188,25 @@ public class ContactChatViewModel extends AndroidViewModel {
     }
 
     @SuppressLint("CheckResult")
-    public void saveDraft(long recipientId, @NonNull final String text) {
+    public void saveDraft(long recipientId, @NonNull final Editable editable) {
 
-        Message m = MessageHelper.createInstance(recipientId, text);
-        m.messageType = Message.MessageType.DRAFT;
+        Disposable disposable = getToCustomHtml(editable).doOnNext(s -> {
 
-        Consumer<Message> consumer = message -> localDb.getMessageRepo().insertMessage(message);
-        Disposable disposable = Flowable.just(m)
-                .observeOn(Schedulers.io())
-                .subscribeOn(Schedulers.io())
-                .subscribe(consumer, Throwable::printStackTrace);
+            Message m = MessageHelper.createInstance(recipientId, s);
+            m.messageType = Message.MessageType.DRAFT;
+            Consumer<Message> consumer = message -> localDb.getMessageRepo().insertMessage(message);
+            Disposable disposable1 = Flowable.just(m)
+                    .observeOn(Schedulers.io())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(consumer, Throwable::printStackTrace);
+            compDisposable.add(disposable1);
+        }).subscribe();
 
         compDisposable.add(disposable);
     }
 
     @SuppressLint("CheckResult")
-    public void addEmptyMessage(long recipientId){
+    public void addEmptyMessage(long recipientId) {
 
         Log.d(TAG, "FINALLY addEmptyMessage: ");
         @SuppressLint("RxSubscribeOnError") Disposable disposable = localDb.getMessageRepo().makeEmptyMessageInsertion(recipientId)
@@ -216,12 +218,21 @@ public class ContactChatViewModel extends AndroidViewModel {
         doAddEmptyMessage = false;
     }
 
+
+    public Flowable<String> getToCustomHtml(Editable editable) {
+        return Flowable.fromCallable(() -> StringUtils.toCustomHtml(editable)).
+                subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+
     public void clearDisposables() {
         if (compDisposable != null && compDisposable.isDisposed())
             compDisposable.clear();
     }
 
-    public SpannableString getSelectedString( @NonNull final Editable editable, @StringUtils.FontType int style,
+    public SpannableString getSelectedString(@NonNull final Editable editable, @StringUtils.FontType int style,
                                              int startSel, int endSel) {
 
         final SpannableString spannable = new SpannableString(editable);
@@ -234,8 +245,8 @@ public class ContactChatViewModel extends AndroidViewModel {
         if (style != StringUtils.FontType.NORMAL) {
 
             Object obj;
-            if(style == StringUtils.FontType.MONO)
-                obj =  new TypefaceSpan("monospace");
+            if (style == StringUtils.FontType.MONO)
+                obj = new TypefaceSpan("monospace");
 
             else obj = new android.text.style.StyleSpan(style);
 
@@ -246,7 +257,6 @@ public class ContactChatViewModel extends AndroidViewModel {
         }
         return spannable;
     }
-
 
 
 }

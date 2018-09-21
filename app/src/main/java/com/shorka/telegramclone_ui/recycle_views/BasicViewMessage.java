@@ -9,6 +9,7 @@ import com.shorka.telegramclone_ui.ConversationItem;
 import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.db.Converters;
 import com.shorka.telegramclone_ui.db.Message;
+import com.shorka.telegramclone_ui.utils.StringUtils;
 
 /**
  * Created by Kyrylo Avramenko on 8/31/2018.
@@ -24,21 +25,15 @@ public class BasicViewMessage extends RecyclerView.ViewHolder {
         super(itemView);
 //        Log.d(TAG, "BasicViewMessage: ");
         convoItem = itemView.findViewById(R.id.message_layout);
-//        convoItem = itemView.findViewById(messageType == Message.RECEIVED ? R.id.message_layout : R.id.message_layout_sent);
-
     }
 
     public Message bind(@NonNull final Message message) {
 //        Log.d(TAG, "bind: lastMessageLive: " + message.text);
         idMessage = message.getIdMessage();
-        if(convoItem != null){
-            convoItem.getTxtBody().setText(message.text);
+        if (convoItem != null) {
+            convoItem.getTxtBody().setText(StringUtils.fromHtml(message.text));
             convoItem.getTxtTime().setText(Converters.dateToHourAndMinute(message.getRealDate()));
-        }
-
-        else {
-            Log.e(TAG, "bind: convoItem of lastMessageLive: " + message.text + " is NULL");
-        }
+        } else Log.e(TAG, "bind: convoItem of lastMessageLive: " + message.text + " is NULL");
 
         message.setSelectionCallback(new Message.SelectionCallBack() {
             @Override
@@ -66,7 +61,4 @@ public class BasicViewMessage extends RecyclerView.ViewHolder {
         return idMessage;
     }
 
-//    public void setConvoItem(ConversationItem convoItem) {
-//        this.convoItem = convoItem;
-//    }
 }

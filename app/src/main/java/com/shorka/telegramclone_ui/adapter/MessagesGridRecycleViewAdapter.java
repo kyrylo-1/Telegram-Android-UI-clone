@@ -9,11 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.MessagePreview;
+import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.recycle_views.ViewMessageGridPreview;
 import com.shorka.telegramclone_ui.utils.DateHelper;
+import com.shorka.telegramclone_ui.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +68,8 @@ public class MessagesGridRecycleViewAdapter extends RecyclerView.Adapter<Recycle
         if (entity != null) {
 
             viewMessageGridPreview.getTitle().setText(entity.getContactName());
-            viewMessageGridPreview.getMessageContent().setText(entity.getLastMessage());
+            viewMessageGridPreview.getMessageContent().setText(StringUtils.clearAllHtmlTags(
+                    entity.getLastMessage()));
             viewMessageGridPreview.setPinImage(entity.isPinned());
             viewMessageGridPreview.setMessageSentTime(DateHelper.getProperDateFormat(entity.getDate()));
 //            Log.d(TAG, "onBindViewHolder: entity.getImageResId()" + entity.getImageResId());

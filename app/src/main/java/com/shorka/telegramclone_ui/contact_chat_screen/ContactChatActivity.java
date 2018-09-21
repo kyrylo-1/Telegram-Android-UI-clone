@@ -1,7 +1,6 @@
 package com.shorka.telegramclone_ui.contact_chat_screen;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,6 +33,10 @@ import com.shorka.telegramclone_ui.utils.StringUtils;
 import java.util.List;
 import java.util.Objects;
 
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * Created by Kyrylo Avramenko on 6/22/2018.
  */
@@ -55,6 +58,7 @@ public class ContactChatActivity extends AppCompatActivity {
     private ContactChatFragment chatFragment;
     private long messageDraftId = -1;
     private int observeTimesQTY = 0;
+    private final CompositeDisposable compDisposable = new CompositeDisposable();
     //endregion
 
     @Override
@@ -98,8 +102,14 @@ public class ContactChatActivity extends AppCompatActivity {
         }
 
         String s = editText.getText().toString();
-        if (!TextUtils.isEmpty(s))
-            viewModel.saveDraft(recipientUserId, s);
+        if (!TextUtils.isEmpty(s)) {
+
+            viewModel.saveDraft(recipientUserId, editText.getText());
+        }
+
+
+        if (compDisposable != null && compDisposable.isDisposed())
+            compDisposable.clear();
 
         viewModel.clearDisposables();
     }
@@ -161,7 +171,6 @@ public class ContactChatActivity extends AppCompatActivity {
         editText.setCustomSelectionActionModeCallback(new ToolBarCallback());
     }
 
-
     private void observeViewModel(long recipientUserId) {
 
         ViewModelFactory factory = ViewModelFactory.getInstance(getApplication());
@@ -195,7 +204,9 @@ public class ContactChatActivity extends AppCompatActivity {
         if (observeTimesQTY == 1 && lastMessage.messageType == Message.MessageType.DRAFT) {
 
             messageDraftId = lastMessage.getIdMessage();
-            setTextToEditText(lastMessage.text);
+
+//            viewModel.getToCustomHtml()
+            setTextToEditText(StringUtils.fromHtml(lastMessage.text));
             listMessages.remove(msgQTY - 1);
             viewModel.deleteMessageById(messageDraftId);
 
@@ -242,26 +253,33 @@ public class ContactChatActivity extends AppCompatActivity {
             viewModel.deleteMessageById(messageDraftId);
             messageDraftId = -1;
         }
-        String text = editText.getText().toString();
-        editText.getText().clear();
-        viewModel.sendNonEmptyMessage(recipientUserId, text);
+
+        Disposable disposable = viewModel.getToCustomHtml(editText.getEditableText())
+                .doOnNext(s -> {
+                    editText.getText().clear();
+                    viewModel.sendNonEmptyMessage(recipientUserId, s);
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+
+        compDisposable.add(disposable);
     }
 
     private void updateRecipientUI(User user) {
         txtChatPersonName.setText(user.firstName);
     }
 
-    private void setTextToEditText(@NonNull String text) {
+    private void setTextToEditText(@NonNull CharSequence text) {
 
+        //Set text to editText box only if its empty. This is needed to avoid overwriting
         if (TextUtils.isEmpty(editText.getText().toString())) {
             editText.setText(text);
-            editText.setSelection(text.length());
+            editText.setSelection(editText.length());
         } else
             Log.e(TAG, "setTextToEditText: Can NOT set text, because edit box is already set with text: " + text);
     }
 
-
-    class ToolBarCallback implements ActionMode.Callback {
+    private class ToolBarCallback implements ActionMode.Callback {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             mode.getMenuInflater().inflate(R.menu.menu_fonts, menu);
