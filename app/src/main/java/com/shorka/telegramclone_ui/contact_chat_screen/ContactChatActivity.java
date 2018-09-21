@@ -1,6 +1,7 @@
 package com.shorka.telegramclone_ui.contact_chat_screen;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,8 +14,10 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -26,6 +29,7 @@ import com.shorka.telegramclone_ui.ViewModelFactory;
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.utils.Config;
+import com.shorka.telegramclone_ui.utils.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -50,6 +54,7 @@ public class ContactChatActivity extends AppCompatActivity {
     private long recipientUserId;
     private ContactChatFragment chatFragment;
     private long messageDraftId = -1;
+    private int observeTimesQTY = 0;
     //endregion
 
     @Override
@@ -84,7 +89,20 @@ public class ContactChatActivity extends AppCompatActivity {
         Objects.requireNonNull(imm).hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
 
+        if (viewModel.getDoAddEmptyMessage()) {
+            viewModel.addEmptyMessage(recipientUserId);
+        }
+
+        String s = editText.getText().toString();
+        if (!TextUtils.isEmpty(s))
+            viewModel.saveDraft(recipientUserId, s);
+
+        viewModel.clearDisposables();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -139,9 +157,10 @@ public class ContactChatActivity extends AppCompatActivity {
                 enableBtnSend(!s.toString().isEmpty());
             }
         });
+
+        editText.setCustomSelectionActionModeCallback(new ToolBarCallback());
     }
 
-    private int observeTimesQTY = 0;
 
     private void observeViewModel(long recipientUserId) {
 
@@ -152,7 +171,6 @@ public class ContactChatActivity extends AppCompatActivity {
             setChatMessages(listMessages);
         });
     }
-
 
     private void setChatMessages(List<Message> listMessages) {
 
@@ -233,29 +251,63 @@ public class ContactChatActivity extends AppCompatActivity {
         txtChatPersonName.setText(user.firstName);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (viewModel.getDoAddEmptyMessage()) {
-            viewModel.addEmptyMessage(recipientUserId);
-        }
-
-        String s = editText.getText().toString();
-        if (!TextUtils.isEmpty(s))
-            viewModel.saveDraft(recipientUserId, s);
-
-        viewModel.clearDisposables();
-    }
-
     private void setTextToEditText(@NonNull String text) {
 
         if (TextUtils.isEmpty(editText.getText().toString())) {
             editText.setText(text);
             editText.setSelection(text.length());
-        } else {
+        } else
             Log.e(TAG, "setTextToEditText: Can NOT set text, because edit box is already set with text: " + text);
+    }
+
+
+    class ToolBarCallback implements ActionMode.Callback {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.menu_fonts, menu);
+            return true;
         }
 
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+            int style = StringUtils.FontType.NORMAL;
+            switch (item.getItemId()) {
+
+                case R.id.bold:
+                    style = StringUtils.FontType.BOLD;
+
+                    break;
+
+                case R.id.italics:
+                    style = StringUtils.FontType.ITALIC;
+                    break;
+
+                case R.id.mono:
+                    style = StringUtils.FontType.MONO;
+                    break;
+
+                case R.id.regular:
+                    style = StringUtils.FontType.NORMAL;
+                    break;
+            }
+            int selEnd = editText.getSelectionEnd();
+            editText.setText(viewModel.getSelectedString(editText.getText(), style,
+                    editText.getSelectionStart(), selEnd),
+                    EditText.BufferType.EDITABLE);
+
+            editText.setSelection(selEnd);
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+
+        }
     }
 }

@@ -7,8 +7,15 @@ import android.arch.lifecycle.LiveData;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.graphics.Typeface;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.CharacterStyle;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,7 +24,10 @@ import com.shorka.telegramclone_ui.db.LocalDatabase;
 import com.shorka.telegramclone_ui.db.Message;
 import com.shorka.telegramclone_ui.db.MessageHelper;
 import com.shorka.telegramclone_ui.db.User;
+import com.shorka.telegramclone_ui.utils.StringUtils;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -210,6 +220,33 @@ public class ContactChatViewModel extends AndroidViewModel {
         if (compDisposable != null && compDisposable.isDisposed())
             compDisposable.clear();
     }
+
+    public SpannableString getSelectedString( @NonNull final Editable editable, @StringUtils.FontType int style,
+                                             int startSel, int endSel) {
+
+        final SpannableString spannable = new SpannableString(editable);
+
+        CharacterStyle[] oldSpans = editable.getSpans(startSel, endSel, CharacterStyle.class);
+        for (CharacterStyle oldSpan : oldSpans) {
+            spannable.removeSpan(oldSpan);
+        }
+
+        if (style != StringUtils.FontType.NORMAL) {
+
+            Object obj;
+            if(style == StringUtils.FontType.MONO)
+                obj =  new TypefaceSpan("monospace");
+
+            else obj = new android.text.style.StyleSpan(style);
+
+            spannable.setSpan(obj,
+                    startSel,
+                    endSel,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        return spannable;
+    }
+
 
 
 }

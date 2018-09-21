@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/bold"
+        android:title="bold">
+    </item>
+
+    <item
+        android:id="@+id/italics"
+        android:title="italics">
+    </item>
+
+    <item
+        android:id="@+id/mono"
+        android:title="mono"></item>
+
+    <item
+        android:id="@+id/regular"
+        android:title="regular">
+    </item>
+
+
+</menu>

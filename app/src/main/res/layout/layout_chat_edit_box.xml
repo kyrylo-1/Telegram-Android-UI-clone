@@ -30,7 +30,6 @@
         android:src="@drawable/ic_send"
         app:layout_constraintBottom_toBottomOf="@id/convo_message_edittext"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="7dp"
- />
+        android:layout_marginBottom="7dp" />
 
 </android.support.constraint.ConstraintLayout>
