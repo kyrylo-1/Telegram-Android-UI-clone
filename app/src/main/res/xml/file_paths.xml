@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<paths>
+<paths >
     <external-path name="my_images"
-        path="."
-
-
-        />
+        path="Android/data/com.shorka.telegramclone_ui/files/Pictures" />
 </paths>

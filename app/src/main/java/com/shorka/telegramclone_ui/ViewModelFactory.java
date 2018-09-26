@@ -13,6 +13,7 @@ import com.shorka.telegramclone_ui.db.LocalDatabase;
 import com.shorka.telegramclone_ui.settings_screen.ChangeBioViewModel;
 import com.shorka.telegramclone_ui.settings_screen.ChangeNameViewModel;
 import com.shorka.telegramclone_ui.settings_screen.SettingsViewModel;
+import com.shorka.telegramclone_ui.settings_screen.ZoomPhotoViewModel;
 import com.shorka.telegramclone_ui.utils.Injection;
 
 /**
@@ -69,6 +70,10 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
         else if (modelClass.isAssignableFrom(ChangeBioViewModel.class)) {
             return (T) new ChangeBioViewModel(application, localDb.getUserRepo());
+        }
+
+        else if (modelClass.isAssignableFrom(ZoomPhotoViewModel.class)) {
+            return (T) new ZoomPhotoViewModel(application, localDb.getUserRepo());
         }
 
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());

@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,6 +31,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.shorka.telegramclone_ui.DividerCustomItemDecoration;
 import com.shorka.telegramclone_ui.GlideApp;
 import com.shorka.telegramclone_ui.GlideRequest;
@@ -41,15 +42,11 @@ import com.shorka.telegramclone_ui.RecyclerItemClickListener;
 import com.shorka.telegramclone_ui.SettingsTextEntity;
 import com.shorka.telegramclone_ui.ViewModelFactory;
 import com.shorka.telegramclone_ui.adapter.ComplexRecyclerViewAdapter;
-import com.shorka.telegramclone_ui.contact_chat_screen.ContactChatActivity;
 import com.shorka.telegramclone_ui.db.User;
 import com.shorka.telegramclone_ui.utils.Config;
 import com.shorka.telegramclone_ui.utils.ImageHelper;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -58,6 +55,8 @@ import java.util.List;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Kyrylo Avramenko on 6/11/2018.
@@ -74,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
     private boolean isHideToolbarView = false;
     private SettingsViewModel viewModel;
     private CircleImageView profileImgHeader, profileImgFloat;
-    private String imageFilePath;
+    private String imgFilePath;
     //    private ArrayList<Object> listUserInfo;
     private final HashMap<Integer, String> mapRecycleItems = new HashMap<>();
 
@@ -147,42 +146,55 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode != RESULT_OK)
+        if (resultCode != RESULT_OK) {
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
             return;
+        }
+
 
         if (requestCode == Config.Requests.REQUEST_CAPTURE_IMAGE) {
             Log.d(TAG, "onActivityResult: REQUEST_CAPTURE_IMAGE");
 
 
-            if(!TextUtils.isEmpty(imageFilePath)){
-                viewModel.updatePicUrlOfCurrUser(imageFilePath);
-//                profileImgFloat.setImageURI(Uri.parse(imageFilePath));
-            }
-            else {
-                Log.e(TAG, "onActivityResult: imageFilePath is EMPTY" );
+            if (TextUtils.isEmpty(imgFilePath)) {
+                Log.e(TAG, "onActivityResult: imgFilePath is EMPTY");
+                return;
             }
 
-            Log.d(TAG, "onActivityResult: is data NULL " + (data == null));
 
-        } else if (requestCode == Config.Requests.GALLERY_REQUEST) {
-            Log.d(TAG, "onActivityResult: GALLERY_REQUEST");
+            GlideApp.with(this)
+                    .asBitmap()
+                    .load(imgFilePath)
+                    .fitCenter()
+                    .into(targetCropBitmap);
 
-            try {
-                final Uri imageUri = data.getData();
-                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-
-                Log.d(TAG, "onActivityResult: GALLERY_REQUEST get bitmap");
-                setProfileImage(selectedImage);
-
-                String fileName = viewModel.saveImage(selectedImage);
-                viewModel.updatePicUrlOfCurrUser(fileName);
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
-            }
+            Flowable.fromCallable(() ->
+                    ImageHelper.getRotation(imgFilePath))
+                    .observeOn(Schedulers.io())
+                    .subscribeOn(Schedulers.io())
+                    .doOnNext(integer -> ImageHelper.addToGallery(imgFilePath, SettingsActivity.this, integer))
+                    .subscribe();
         }
+
+//        else if (requestCode == Config.Requests.GALLERY_REQUEST) {
+//            Log.d(TAG, "onActivityResult: GALLERY_REQUEST");
+//
+//            try {
+//                final Uri imageUri = data.getData();
+//                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+//                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+//
+//                Log.d(TAG, "onActivityResult: GALLERY_REQUEST get bitmap");
+//                setProfileImage(selectedImage);
+//
+//                String fileName = viewModel.saveImage(selectedImage);
+//                viewModel.updatePicUrlOfCurrUser(fileName);
+//
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+//            }
+//        }
     }
 
     //<editor-fold desc="private methods">
@@ -200,7 +212,7 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
 
         profileImgHeader.setOnClickListener(v -> clickOnProfileImage());
         profileImgFloat.setOnClickListener(v -> clickOnProfileImage());
-        
+
         floatHeaderView.setTxtViewName((TextView) floatHeaderView.findViewById(R.id.name_float));
         floatHeaderView.setTxtViewLastSeen((TextView) floatHeaderView.findViewById(R.id.last_seen_float));
 
@@ -248,7 +260,7 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
             @Override
             public void onFromCamClicked() {
                 Log.d(TAG, "onFromCamClicked: ");
-                dispatchTakePictureIntent();
+                dispatchTakePic();
             }
 
             @Override
@@ -355,29 +367,25 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         }
     }
 
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) == null)
-            return;
+    private void dispatchTakePic() {
+        Intent takePicIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        // Create the File where the photo should go
-        File photoFile = null;
-        try {
-            photoFile = ImageHelper.createImageFile(this);
-            imageFilePath = photoFile.getAbsolutePath();
-//            galleryAddPic(imageFilePath);
-        } catch (IOException ex) {
-            // Error occurred while creating the File
-            Log.e(TAG, "dispatchTakePictureIntent: ");
-        }
-        // Continue only if the File was successfully created
-        if (photoFile != null) {
+        File output = ImageHelper.createImageFile(SettingsActivity.this);
+        imgFilePath = output.getAbsolutePath();
+        Log.d(TAG, "addPhotoFromCamera: imgPath:" + imgFilePath);
+
+        if (output != null) {
+//            Log.d(TAG, "addPhotoFromCamera: out is not null with packageName: " + getApplicationContext().getPackageName());
             Uri photoURI = FileProvider.getUriForFile(this,
-                    getPackageName() + ".provider",
-                    photoFile);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            startActivityForResult(takePictureIntent, Config.Requests.REQUEST_CAPTURE_IMAGE);
+                    getApplicationContext().getPackageName() + ".fileprovider",
+                    output);
+
+            takePicIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(takePicIntent, Config.Requests.REQUEST_CAPTURE_IMAGE);
+        } else {
+            imgFilePath = "";
+            Toast.makeText(this, "Can't take a picture", Toast.LENGTH_SHORT);
+            Log.e(TAG, "addPhotoFromCamera: output is NULL");
         }
     }
 
@@ -455,10 +463,16 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         }
     }
     //</editor-fold>
-    
+
     private void setProfileImage(Bitmap bitmap) {
         profileImgHeader.setImageBitmap(bitmap);
         profileImgFloat.setImageBitmap(bitmap);
+    }
+
+    private void setProfileImage(GlideRequest<Drawable> glideRequest) {
+
+        glideRequest.into(profileImgHeader);
+        glideRequest.into(profileImgFloat);
     }
 
 //    private void galleryAddPic(@NonNull final String filePath) {
@@ -468,16 +482,33 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
 //        mediaScanIntent.setData(contentUri);
 //        this.sendBroadcast(mediaScanIntent);
 //    }
-    
-    private void clickOnProfileImage(){
+
+    private void clickOnProfileImage() {
         Log.d(TAG, "clickOnProfileImage: ");
         Intent intent = new Intent(context, ZoomPhotoActivity.class);
-        intent.putExtra(ZoomPhotoActivity.PHOTO_URL, viewModel.getCachedUser().picUrl);
+        intent.putExtra(ZoomPhotoActivity.PHOTO_URL, imgFilePath);
         startActivity(intent);
     }
-    
+
     //</editor-fold>
 
+    private SimpleTarget targetCropBitmap = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
+            Bitmap cropped = ImageHelper.cropToSquare(bitmap);
+            setProfileImage(cropped);
+
+            Flowable<String> flowable = ImageHelper.saveBitmap(SettingsActivity.this, cropped);
+            if (flowable != null) {
+                flowable.doOnNext(s -> {
+                    viewModel.updatePicUrlOfCurrUser(s);
+                    imgFilePath = s;
+                })
+                        .subscribe();
+            } else Log.e(TAG, "onResourceReady: cant save cropped bitmap");
+
+        }
+    };
 
     @Nullable
     private ComplexRecyclerViewAdapter getAdapter(@Sections.SectionDef final int settingSection) {
