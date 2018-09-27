@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,6 +48,8 @@ import com.shorka.telegramclone_ui.utils.Config;
 import com.shorka.telegramclone_ui.utils.ImageHelper;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -181,25 +184,20 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
             compDisposable.add(disposable);
         }
 
-//        else if (requestCode == Config.Requests.GALLERY_REQUEST) {
-//            Log.d(TAG, "onActivityResult: GALLERY_REQUEST");
-//
-//            try {
-//                final Uri imageUri = data.getData();
-//                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-//                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-//
-//                Log.d(TAG, "onActivityResult: GALLERY_REQUEST get bitmap");
-//                setProfileImage(selectedImage);
-//
-//                String fileName = viewModel.saveImage(selectedImage);
-//                viewModel.updatePicUrlOfCurrUser(fileName);
-//
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
-//            }
-//        }
+        else if (requestCode == Config.Requests.GALLERY_REQUEST) {
+            Log.d(TAG, "onActivityResult: GALLERY_REQUEST");
+
+            if (data == null) {
+                Log.e(TAG, "onActivityResult: imageFilePath is EMPTY");
+                return;
+            }
+
+            GlideApp.with(this)
+                    .asBitmap()
+                    .load(data.getData())
+                    .fitCenter()
+                    .into(targetCropBitmap);
+        }
     }
 
     //<editor-fold desc="private methods">
@@ -271,9 +269,11 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
             @Override
             public void onFromGallery() {
                 Log.d(TAG, "onFromGallery: ");
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, Config.Requests.GALLERY_REQUEST);
+                Intent i = new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                startActivityForResult(i, Config.Requests.GALLERY_REQUEST);
             }
 
             @Override
@@ -477,7 +477,7 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
     private void clickOnProfileImage() {
         Log.d(TAG, "clickOnProfileImage: ");
         Intent intent = new Intent(context, ZoomPhotoActivity.class);
-        intent.putExtra(ZoomPhotoActivity.PHOTO_URL, imgFilePath);
+        intent.putExtra(ZoomPhotoActivity.PHOTO_URL, viewModel.getCachedUser().picUrl);
         startActivity(intent);
     }
     //</editor-fold>
