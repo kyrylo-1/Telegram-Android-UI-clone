@@ -9,6 +9,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -20,6 +23,7 @@ import com.shorka.telegramclone_ui.R;
 import com.shorka.telegramclone_ui.ViewModelFactory;
 
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by Kyrylo Avramenko on 9/19/2018.
@@ -44,8 +48,7 @@ public class ZoomPhotoActivity extends AppCompatActivity {
 
         if (getIntent().hasExtra(PHOTO_URL)) {
             viewModel.setCurrPicPath(getIntent().getStringExtra(PHOTO_URL));
-        }
-        else {
+        } else {
             Log.e(TAG, "onCreate: no extra string date for__ " + PHOTO_URL);
         }
         setUpUI();
@@ -58,6 +61,25 @@ public class ZoomPhotoActivity extends AppCompatActivity {
             compDisposable.clear();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_zoom, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.item_addToGallery:
+                Disposable disposable = viewModel.addToGallery(ZoomPhotoActivity.this).subscribe();
+                compDisposable.add(disposable);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     private void setUpToolbar() {
         final Toolbar toolbar = findViewById(R.id.photo_zoom_toolbar);

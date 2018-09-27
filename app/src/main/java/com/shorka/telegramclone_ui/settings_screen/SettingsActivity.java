@@ -56,7 +56,8 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by Kyrylo Avramenko on 6/11/2018.
@@ -77,7 +78,7 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
     //    private ArrayList<Object> listUserInfo;
     private final HashMap<Integer, String> mapRecycleItems = new HashMap<>();
 
-
+    private final CompositeDisposable compDisposable = new CompositeDisposable();
     //</editor-fold>
 
     public static void open(Context context) {
@@ -99,6 +100,13 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         super.onResume();
         updateUserHeader(viewModel.getCachedUser());
 //        updateAllSettings(viewModel.getCachedUser());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (compDisposable != null && compDisposable.isDisposed())
+            compDisposable.clear();
     }
 
     @Override
@@ -161,19 +169,16 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
                 return;
             }
 
-
             GlideApp.with(this)
                     .asBitmap()
                     .load(imgFilePath)
                     .fitCenter()
                     .into(targetCropBitmap);
 
-            Flowable.fromCallable(() ->
-                    ImageHelper.getRotation(imgFilePath))
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(Schedulers.io())
-                    .doOnNext(integer -> ImageHelper.addToGallery(imgFilePath, SettingsActivity.this, integer))
-                    .subscribe();
+            Disposable disposable = viewModel.addToGallery(imgFilePath,
+                    SettingsActivity.this).subscribe();
+
+            compDisposable.add(disposable);
         }
 
 //        else if (requestCode == Config.Requests.GALLERY_REQUEST) {
@@ -469,27 +474,12 @@ public class SettingsActivity extends AppCompatActivity implements AppBarLayout.
         profileImgFloat.setImageBitmap(bitmap);
     }
 
-    private void setProfileImage(GlideRequest<Drawable> glideRequest) {
-
-        glideRequest.into(profileImgHeader);
-        glideRequest.into(profileImgFloat);
-    }
-
-//    private void galleryAddPic(@NonNull final String filePath) {
-//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//        File f = new File(filePath);
-//        Uri contentUri = Uri.fromFile(f);
-//        mediaScanIntent.setData(contentUri);
-//        this.sendBroadcast(mediaScanIntent);
-//    }
-
     private void clickOnProfileImage() {
         Log.d(TAG, "clickOnProfileImage: ");
         Intent intent = new Intent(context, ZoomPhotoActivity.class);
         intent.putExtra(ZoomPhotoActivity.PHOTO_URL, imgFilePath);
         startActivity(intent);
     }
-
     //</editor-fold>
 
     private SimpleTarget targetCropBitmap = new SimpleTarget<Bitmap>() {

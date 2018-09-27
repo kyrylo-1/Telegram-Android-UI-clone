@@ -1,24 +1,14 @@
 package com.shorka.telegramclone_ui.settings_screen;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.graphics.Bitmap;
-import android.media.ExifInterface;
+import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.shorka.telegramclone_ui.UserRepoViewModel;
 import com.shorka.telegramclone_ui.db.UserRepository;
-import com.shorka.telegramclone_ui.utils.ImageHelper;
+import com.shorka.telegramclone_ui.utils.RxImageHelper;
 
-import java.io.IOException;
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-
-import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.Completable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -40,8 +30,9 @@ public class ZoomPhotoViewModel extends UserRepoViewModel {
     }
 
 
-    public boolean addToGallery() {
-//        ImageHelper.addToGallery(currPicPath, getApplication(), ImageHelper.getRotation(currPicPath));
-        return true;
+    Completable addToGallery(final Context context){
+        return RxImageHelper.addToGallery(currPicPath, context)
+                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io());
     }
 }
